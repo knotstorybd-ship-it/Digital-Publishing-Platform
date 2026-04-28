@@ -63,40 +63,22 @@ export function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
             <div className="flex-1 text-center lg:text-left space-y-6">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-50/80 backdrop-blur-sm border border-emerald-100/50 text-emerald-800 rounded-full"
-              >
+              <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-50/80 backdrop-blur-sm border border-emerald-100/50 text-emerald-800 rounded-full">
                 <span className="text-[9px] font-black uppercase tracking-[0.2em]">{authors.length}+ লেখক যুক্ত আছেন</span>
-              </motion.div>
+              </div>
               
               <div className="space-y-1">
-                <motion.h1 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black text-emerald-950 leading-tight py-2 tracking-tight"
-                >
+                <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-black text-emerald-950 leading-tight py-2 tracking-tight">
                   {siteSettings.heroTitle} <br />
                   <span className="bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent py-2 px-1 inline-block">{siteSettings.heroSubtitle}</span>
-                </motion.h1>
+                </h1>
 
-                <motion.p 
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 }}
-                  className="text-base md:text-lg text-slate-500 font-medium max-w-xl leading-relaxed"
-                >
+                <p className="text-base md:text-lg text-slate-500 font-medium max-w-xl leading-relaxed">
                   {siteSettings.heroDescription}
-                </motion.p>
+                </p>
               </div>
 
-              <motion.div 
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex flex-col sm:flex-row items-center gap-4 pt-4 lg:pt-6"
-              >
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 lg:pt-6">
                 <Link 
                   to="/join-writer" 
                   className="group relative px-8 py-5 bg-emerald-600 text-white rounded-2xl font-black text-lg shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 transition-all flex items-center gap-3 overflow-hidden w-full sm:w-auto justify-center"
@@ -111,23 +93,18 @@ export function HomePage() {
                 >
                   {siteSettings.heroSecondaryCtaText}
                 </Link>
-              </motion.div>
+              </div>
             </div>
 
             <div className="flex-1 relative w-full max-w-[280px] lg:max-w-none mx-auto mt-6 lg:mt-0">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                className="relative z-10"
-              >
+              <div className="relative z-10">
                 <div className="absolute -inset-4 bg-emerald-100/50 rounded-[3rem] blur-2xl -z-10 animate-pulse"></div>
                 <img 
                   src={heroMain} 
                   alt="Hero Content" 
                   className="w-full h-auto drop-shadow-[0_32px_64px_rgba(5,150,105,0.15)] rounded-[2.5rem]"
                 />
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
