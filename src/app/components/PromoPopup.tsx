@@ -29,19 +29,19 @@ export function PromoPopup() {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative bg-white rounded-[3rem] max-w-2xl w-full overflow-hidden shadow-2xl shadow-emerald-950/40 border border-emerald-100"
+            className="relative bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl shadow-emerald-950/40 border border-emerald-100"
           >
             {/* Close Button */}
             <button 
               onClick={closePopup}
-              className="absolute top-6 right-6 z-20 p-2 bg-emerald-50 hover:bg-emerald-100 rounded-full transition-colors text-emerald-950"
+              className="absolute top-4 right-4 z-20 p-1.5 bg-emerald-50 hover:bg-emerald-100 rounded-full transition-colors text-emerald-950"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
 
             <div className="flex flex-col md:flex-row">
               {/* Left Side: Visuals */}
-              <div className="md:w-1/2 bg-emerald-950 p-10 flex flex-col justify-center relative overflow-hidden">
+              <div className="md:w-1/2 bg-emerald-950 p-6 md:p-8 flex flex-col justify-center relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full opacity-20">
                   <div className="absolute top-10 left-10 w-32 h-32 bg-emerald-500 rounded-full blur-3xl"></div>
                   <div className="absolute bottom-10 right-10 w-32 h-32 bg-emerald-400 rounded-full blur-3xl"></div>
@@ -52,7 +52,7 @@ export function PromoPopup() {
                     <Zap className="w-3 h-3 fill-emerald-950" />
                     Limited Slots Left
                   </div>
-                  <h2 className="text-4xl font-black text-white leading-tight mb-4">
+                  <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-4">
                     ৬ মাসের <br /> বিশেষ সুবিধা
                   </h2>
                   <p className="text-emerald-100/70 font-medium text-sm leading-relaxed mb-8">
@@ -68,11 +68,11 @@ export function PromoPopup() {
               </div>
 
               {/* Right Side: Offer & CTA */}
-              <div className="md:w-1/2 p-10 flex flex-col justify-center bg-white border-l border-emerald-100">
+              <div className="md:w-1/2 p-6 md:p-8 flex flex-col justify-center bg-white border-l border-emerald-100">
                 <div className="mb-8">
                   <div className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-2">প্রিমিয়াম প্ল্যান ২</div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-5xl font-black text-emerald-950">৳৪৫০</span>
+                    <span className="text-3xl md:text-4xl font-black text-emerald-950">৳৪৫০</span>
                     <span className="text-emerald-600/40 font-bold line-through">৳৯৯৯</span>
                   </div>
                   <div className="mt-2 text-xs font-bold text-emerald-600">৬ মাসের মেম্বারশিপ</div>
@@ -95,7 +95,7 @@ export function PromoPopup() {
                 <Link 
                   to="/checkout?plan=plan2&price=450"
                   onClick={closePopup}
-                  className="w-full py-5 bg-emerald-950 text-white rounded-2xl font-black shadow-xl shadow-emerald-950/20 hover:bg-black transition-all flex items-center justify-center gap-3 group"
+                  className="w-full py-4 bg-emerald-950 text-white rounded-2xl font-black shadow-xl shadow-emerald-950/20 hover:bg-black transition-all flex items-center justify-center gap-3 group"
                 >
                   প্ল্যানটি গ্রহণ করুন
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
