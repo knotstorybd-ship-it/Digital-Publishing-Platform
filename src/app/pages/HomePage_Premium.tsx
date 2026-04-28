@@ -54,7 +54,7 @@ export function HomePage() {
       <PromoPopup />
       
       {/* Hero Section */}
-      <section className="relative min-h-[75vh] lg:h-[85vh] flex items-center pt-8 pb-8 overflow-hidden bg-white">
+      <section className="relative min-h-[90vh] flex items-center pt-20 pb-24 overflow-hidden bg-white">
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-50/50 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-blue-50/30 rounded-full blur-[100px]"></div>
@@ -95,7 +95,7 @@ export function HomePage() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="flex flex-col sm:flex-row items-center gap-4 pt-4"
+                className="flex flex-col sm:flex-row items-center gap-4 pt-8"
               >
                 <Link 
                   to="/join-writer" 
