@@ -260,7 +260,10 @@ export function WriterRegistrationPage() {
                   <motion.div
                     key={plan.id}
                     whileHover={{ y: -10 }}
-                    onClick={() => setSelectedPlan(plan)}
+                    onClick={() => {
+                      setSelectedPlan(plan);
+                      setStep(2);
+                    }}
                     className={`
                       relative p-10 rounded-[3rem] cursor-pointer transition-all duration-500 border-2
                       ${selectedPlan.id === plan.id 
@@ -303,16 +306,6 @@ export function WriterRegistrationPage() {
                     </button>
                   </motion.div>
                 ))}
-              </div>
-
-              <div className="flex justify-center pt-8">
-                <button
-                  onClick={() => setStep(2)}
-                  className="px-12 py-6 bg-emerald-950 text-white rounded-[2rem] font-black shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center gap-4 text-xl"
-                >
-                  শুরু করা যাক
-                  <ArrowRight className="w-6 h-6" />
-                </button>
               </div>
             </motion.div>
           )}
