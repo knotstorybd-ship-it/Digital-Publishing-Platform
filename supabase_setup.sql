@@ -197,4 +197,9 @@ CREATE TABLE IF NOT EXISTS public.bkash_payments (
 ALTER TABLE public.bkash_payments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can insert own bkash payments" ON public.bkash_payments FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can view own bkash payments" ON public.bkash_payments FOR SELECT USING (auth.uid() = user_id);
-ALTER PUBLICATION supabase_realtime ADD TABLE public.bkash_payments;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'bkash_payments') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.bkash_payments;
+    END IF;
+END $$;

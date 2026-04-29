@@ -86,6 +86,7 @@ export function AuthorDashboardPage() {
       price: Number(formData.get("price")),
       category: formData.get("category") as string,
       description: formData.get("desc") as string,
+      pages: Number(formData.get("pages")) || 0,
     };
 
     setIsUploading(true);
@@ -99,8 +100,8 @@ export function AuthorDashboardPage() {
       setEditingBook(null);
       alert("বইটি সফলভাবে প্রকাশ করা হয়েছে!");
     } catch (error: any) {
-      console.error(error);
-      alert("বই আপলোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+      console.error("Upload Error:", error);
+      alert(`বই আপলোড করতে সমস্যা হয়েছে: ${error.message || "Unknown error"}. নিশ্চিত করুন যে আপনি Supabase-এ 'books' নামে একটি পাবলিক বাকেট তৈরি করেছেন।`);
     } finally {
       setIsUploading(false);
     }
