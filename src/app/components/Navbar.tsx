@@ -303,14 +303,16 @@ export function Navbar() {
             </div>
 
             <div className="flex items-center gap-4 lg:hidden">
-              <Link to="/checkout" className="p-2 relative bg-slate-50 rounded-xl">
-                <ShoppingCart className="w-5 h-5 text-emerald-950" />
-                {cart.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-600 text-white text-[10px] font-black rounded-full flex items-center justify-center ring-2 ring-white">
-                    {cart.length}
-                  </span>
+              <button 
+                onClick={() => user ? setIsProfileOpen(!isProfileOpen) : setIsAuthOpen(true)}
+                className="p-2 relative bg-slate-50 rounded-xl"
+              >
+                {user?.avatar ? (
+                  <img src={user.avatar} className="w-6 h-6 rounded-full" alt="Profile" />
+                ) : (
+                  <User className="w-6 h-6 text-emerald-950" />
                 )}
-              </Link>
+              </button>
               <button className="p-2 text-emerald-950 bg-slate-50 rounded-xl" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -330,6 +332,14 @@ export function Navbar() {
               <div className="px-6 py-10 space-y-6">
                 <Link to="/browse" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>সব বই</Link>
                 <Link to="/join-writer" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>লেখক হন</Link>
+                <Link to="/checkout" className="flex items-center justify-between text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>
+                  <span>কার্ট</span>
+                  {cart.length > 0 && (
+                    <span className="text-sm bg-emerald-600 text-white px-4 py-1 rounded-full flex items-center justify-center">
+                      {cart.length}
+                    </span>
+                  )}
+                </Link>
                 <div className="h-px bg-emerald-50"></div>
                 {user ? (
                   <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="w-full py-5 bg-rose-50 text-rose-600 rounded-[2rem] font-black uppercase tracking-widest">লগআউট</button>
