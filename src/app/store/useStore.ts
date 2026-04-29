@@ -330,11 +330,11 @@ export function useStore() {
       const fileExt = coverFile.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
-        .from('books')
+        .from('book-covers')
         .upload(`covers/${fileName}`, coverFile);
       
       if (!uploadError) {
-        const { data } = supabase.storage.from('books').getPublicUrl(`covers/${fileName}`);
+        const { data } = supabase.storage.from('book-covers').getPublicUrl(`covers/${fileName}`);
         coverUrl = data.publicUrl;
       }
     }
@@ -344,11 +344,11 @@ export function useStore() {
       const fileExt = pdfFile.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
-        .from('books')
+        .from('book-covers')
         .upload(`ebooks/${fileName}`, pdfFile);
       
       if (!uploadError) {
-        const { data } = supabase.storage.from('books').getPublicUrl(`ebooks/${fileName}`);
+        const { data } = supabase.storage.from('book-covers').getPublicUrl(`ebooks/${fileName}`);
         pdfUrl = data.publicUrl;
       }
     }
