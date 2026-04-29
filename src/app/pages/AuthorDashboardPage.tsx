@@ -171,6 +171,14 @@ export function AuthorDashboardPage() {
           
           {/* Navigation Sidebar */}
           <aside className="lg:w-72 space-y-3">
+            <button
+              onClick={() => navigate("/")}
+              className="w-full flex items-center gap-4 px-8 py-5 rounded-[2rem] font-black text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-all mb-4 border border-emerald-100 group"
+            >
+              <Globe className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+              ওয়েবসাইট দেখুন
+            </button>
+
             {[
               { id: "overview", label: "ড্যাশবোর্ড", icon: TrendingUp },
               { id: "my-books", label: "আমার বইসমূহ", icon: BookCopy },
