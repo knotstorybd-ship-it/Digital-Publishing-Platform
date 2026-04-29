@@ -181,6 +181,7 @@ export function AuthorDashboardPage() {
 
             {[
               { id: "overview", label: "ড্যাশবোর্ড", icon: TrendingUp },
+              { id: "upload", label: "নতুন বই আপলোড", icon: Upload },
               { id: "my-books", label: "আমার বইসমূহ", icon: BookCopy },
               { id: "earnings", label: "আয় ও রয়্যালটি", icon: DollarSign },
               { id: "settings", label: "সেটিংস", icon: Settings },
@@ -496,6 +497,29 @@ export function AuthorDashboardPage() {
                     </div>
                   </div>
                   
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/40 ml-6">বইয়ের কভার (Image)</label>
+                      <div className="relative group cursor-pointer">
+                        <input type="file" accept="image/*" className="hidden" id="cover-upload" />
+                        <label htmlFor="cover-upload" className="w-full h-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center gap-3 group-hover:border-emerald-300 group-hover:bg-emerald-50 transition-all cursor-pointer">
+                          <Camera className="w-8 h-8 text-slate-300 group-hover:text-emerald-500" />
+                          <span className="text-xs font-bold text-slate-400 group-hover:text-emerald-600">কভার ইমেজ সিলেক্ট করুন</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/40 ml-6">ই-বুক ফাইল (PDF/EPUB)</label>
+                      <div className="relative group cursor-pointer">
+                        <input type="file" accept=".pdf,.epub" className="hidden" id="file-upload" />
+                        <label htmlFor="file-upload" className="w-full h-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center gap-3 group-hover:border-emerald-300 group-hover:bg-emerald-50 transition-all cursor-pointer">
+                          <FileText className="w-8 h-8 text-slate-300 group-hover:text-emerald-500" />
+                          <span className="text-xs font-bold text-slate-400 group-hover:text-emerald-600">PDF অথবা EPUB ফাইল সিলেক্ট করুন</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/40 ml-6">বইয়ের সংক্ষিপ্ত বর্ণনা</label>
                     <textarea name="desc" defaultValue={editingBook?.description} rows={5} placeholder="বইটি সম্পর্কে কিছু লিখুন যা পাঠকদের আকৃষ্ট করবে..." className="w-full px-8 py-6 bg-slate-50 border-0 rounded-[2.5rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none resize-none"></textarea>
