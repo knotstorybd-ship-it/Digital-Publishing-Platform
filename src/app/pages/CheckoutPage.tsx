@@ -4,6 +4,8 @@ import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";
 
+import { BkashPaymentModal } from "../components/BkashPaymentModal";
+
 const paymentMethods = [
   { id: "bkash", name: "bKash", icon: Smartphone, color: "bg-[#D12053]", brand: "বিকাশ" },
   { id: "nagad", name: "Nagad", icon: Wallet, color: "bg-[#F7941D]", brand: "নগদ" },
@@ -17,6 +19,7 @@ export function CheckoutPage() {
   const [selectedPayment, setSelectedPayment] = useState("bkash");
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isBkashModalOpen, setIsBkashModalOpen] = useState(false);
 
   const planId = searchParams.get("plan");
 
@@ -40,6 +43,11 @@ export function CheckoutPage() {
   const total = subtotal - discount;
 
   const handlePayment = async () => {
+    if (selectedPayment === "bkash") {
+      setIsBkashModalOpen(true);
+      return;
+    }
+
     setIsProcessing(true);
     try {
       if (planDetails) {
@@ -51,6 +59,23 @@ export function CheckoutPage() {
     } catch (error) {
       console.error(error);
       alert("পেমেন্ট সম্পন্ন করতে সমস্যা হয়েছে।");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBkashSuccess = async (txId: string) => {
+    setIsProcessing(true);
+    try {
+      if (planDetails) {
+        await subscribe(planDetails.name, planDetails.months);
+      } else {
+        await purchaseCart();
+      }
+      setStep(3);
+    } catch (error) {
+      console.error(error);
+      alert("পেমেন্ট ভেরিফিকেশন করতে সমস্যা হয়েছে।");
     } finally {
       setIsProcessing(false);
     }
@@ -322,6 +347,14 @@ export function CheckoutPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        <BkashPaymentModal 
+          isOpen={isBkashModalOpen}
+          onClose={() => setIsBkashModalOpen(false)}
+          amount={total}
+          onSuccess={handleBkashSuccess}
+          orderType={planDetails ? "Subscription" : "Book"}
+        />
       </div>
     </div>
   );
