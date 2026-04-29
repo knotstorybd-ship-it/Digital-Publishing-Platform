@@ -303,6 +303,7 @@ export function useStore() {
     expiresAt.setMonth(expiresAt.getMonth() + months);
 
     const { error } = await supabase.from('authors').upsert({
+      id: currentState.user.id,
       name: currentState.user.name,
       email: currentState.user.email,
       avatar: currentState.user.avatar,

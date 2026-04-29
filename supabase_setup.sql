@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 -- 3. Authors Table (Writer details)
 CREATE TABLE IF NOT EXISTS public.authors (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    id UUID REFERENCES auth.users(id) PRIMARY KEY,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     avatar TEXT,
@@ -150,3 +150,21 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.testimonials;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.site_settings;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+
+-- 11. bKash Payments Table
+CREATE TABLE IF NOT EXISTS public.bkash_payments (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    order_id TEXT,
+    user_id UUID REFERENCES auth.users(id),
+    name TEXT,
+    phone TEXT,
+    trx_id TEXT UNIQUE,
+    amount INTEGER,
+    status TEXT DEFAULT 'pending',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.bkash_payments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can insert own bkash payments" ON public.bkash_payments FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can view own bkash payments" ON public.bkash_payments FOR SELECT USING (auth.uid() = user_id);
+ALTER PUBLICATION supabase_realtime ADD TABLE public.bkash_payments;
