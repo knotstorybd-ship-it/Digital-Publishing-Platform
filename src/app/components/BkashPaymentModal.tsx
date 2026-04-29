@@ -46,6 +46,7 @@ export default function BkashPaymentModal({
     setLoading(false);
     if (dbError) { setError("Failed to submit. Try again."); return; }
     setDone(true);
+    if (onSuccess) onSuccess(trxId.toUpperCase());
   }
 
   function handleClose() {

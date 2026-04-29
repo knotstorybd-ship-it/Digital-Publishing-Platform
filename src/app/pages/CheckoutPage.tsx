@@ -352,8 +352,9 @@ export function CheckoutPage() {
           isOpen={isBkashModalOpen}
           onClose={() => setIsBkashModalOpen(false)}
           amount={total}
+          orderId={planDetails?.name || "Cart-Purchase"}
+          userId={user?.id || ""}
           onSuccess={handleBkashSuccess}
-          orderType={planDetails ? "Subscription" : "Book"}
         />
       </div>
     </div>

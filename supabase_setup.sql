@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     email TEXT UNIQUE,
     avatar TEXT,
     bio TEXT,
+    is_writer BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -116,9 +117,9 @@ ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 -- 9. Policies
 
 -- A. Profiles
-CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
-CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Users can insert own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "profiles_select_policy" ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "profiles_insert_policy" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "profiles_update_policy" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- B. Authors
 CREATE POLICY "Authors are viewable by everyone" ON public.authors FOR SELECT USING (true);
