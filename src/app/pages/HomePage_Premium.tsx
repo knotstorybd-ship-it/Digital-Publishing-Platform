@@ -6,7 +6,6 @@ import {
   Rocket, Target, Trophy, CheckCircle2, Eye 
 } from "lucide-react";
 import heroMain from "../../images/Hero_image.png";
-import { PromoPopup } from "../components/PromoPopup";
 import { useStore } from "../store/useStore";
 
 export function HomePage() {

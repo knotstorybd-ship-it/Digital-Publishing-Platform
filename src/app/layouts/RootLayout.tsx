@@ -9,11 +9,11 @@ export function RootLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background relative">
-      {/* Premium Noise Texture Overlay */}
+      {/* Premium Geometric Grid Texture Overlay */}
       <div 
-        className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none mix-blend-multiply"
+        className="fixed inset-0 z-0 pointer-events-none"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M0 0l40 40M40 0L0 40M20 0v40M0 20h40' stroke='%23059669' stroke-width='0.5' stroke-opacity='0.1' fill='none'/%3E%3C/svg%3E")`
         }}
       ></div>
       <ScrollToTop />

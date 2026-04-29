@@ -21,10 +21,10 @@ ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
 
 -- 5. Policies setup
 
--- A. Public Read Access (only for approved testimonials)
+-- A. Public Read Access (Modified to allow admin dashboard to see pending)
 CREATE POLICY "Public can view approved testimonials"
 ON public.testimonials FOR SELECT
-USING (is_approved = true);
+USING (true);
 
 -- B. Unified Insert Policy (Allows both guests and users)
 CREATE POLICY "Anyone can insert testimonials"
@@ -34,10 +34,9 @@ WITH CHECK (
   (auth.role() = 'anon' AND user_id IS NULL)
 );
 
--- C. Admin Management
+-- C. Admin Management (Allows frontend admin to modify)
 CREATE POLICY "Admin full access"
 ON public.testimonials FOR ALL
-TO authenticated
 USING (true)
 WITH CHECK (true);
 

@@ -77,7 +77,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                +880 1234-567890
+                +8801868519685
               </li>
             </ul>
             <div className="flex items-center gap-4 mt-4">
@@ -92,7 +92,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-8 text-center text-sm text-white/80">
-          © 2026 Digital Prokashoni. All rights reserved.
+          © 2026 Digital Prokashoni. All rights reserved. • <Link to="/admin" className="hover:text-white transition-colors">Admin Dashboard</Link>
         </div>
       </div>
     </footer>
