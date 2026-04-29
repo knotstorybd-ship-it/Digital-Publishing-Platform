@@ -6,7 +6,7 @@ import { useStore } from "../store/useStore";
 import { Logo } from "./Logo";
 
 export function Navbar() {
-  const { cart, user, signIn, signInWithGoogle, signOut, books, authors } = useStore();
+  const { cart, user, signIn, signInWithGoogle, signOut, books, authors, searchQuery, setSearchQuery } = useStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -15,7 +15,6 @@ export function Navbar() {
   const [error, setError] = useState("");
   
   // Search States
-  const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const navigate = useNavigate();
 
@@ -340,6 +339,15 @@ export function Navbar() {
                     </span>
                   )}
                 </Link>
+                
+                {user && (
+                  <>
+                    <div className="h-px bg-emerald-50"></div>
+                    <Link to="/writer" className="block text-xl font-bold text-emerald-600" onClick={() => setIsMenuOpen(false)}>লেখক ড্যাশবোর্ড</Link>
+                    <Link to="/browse" className="block text-xl font-bold text-emerald-950" onClick={() => setIsMenuOpen(false)}>আমার লাইব্রেরি</Link>
+                  </>
+                )}
+
                 <div className="h-px bg-emerald-50"></div>
                 {user ? (
                   <button onClick={() => { signOut(); setIsMenuOpen(false); }} className="w-full py-5 bg-rose-50 text-rose-600 rounded-[2rem] font-black uppercase tracking-widest">লগআউট</button>

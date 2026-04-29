@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
-import { Upload, FileText, DollarSign, TrendingUp, BookOpen, CheckCircle, Clock, User, X, LogOut, Globe } from "lucide-react";
+import { Upload, FileText, DollarSign, TrendingUp, BookOpen, CheckCircle, Clock, User, X, LogOut, Globe, Edit3, Zap } from "lucide-react";
 import { motion } from "motion/react";
 import { useStore } from "../store/useStore";
 
@@ -47,9 +47,15 @@ const plans = [
 ];
 
 export function WriterDashboardPage() {
-  const { user, books, addBook, subscribe } = useStore();
+  const { user, books, orders, addBook, subscribe, logout, fetchAuthorOrders } = useStore();
   const isWriter = user?.isWriter && user?.subscription;
   const [activeTab, setActiveTab] = useState<"plans" | "upload" | "my-books" | "stats">(isWriter ? "stats" : "plans");
+
+  useEffect(() => {
+    if (isWriter) {
+      fetchAuthorOrders();
+    }
+  }, [isWriter]);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -84,6 +90,12 @@ export function WriterDashboardPage() {
     });
     setActiveTab("my-books");
   };
+
+  // Calculate dynamic stats
+  const myBooks = books.filter(b => b.author === user?.name);
+  const totalSales = orders.reduce((sum, order) => sum + order.amount, 0);
+  const totalRoyalty = totalSales * 0.83;
+  const uniqueReaders = new Set(orders.map(o => o.user_id)).size;
 
   // If user is not logged in, show restricted view
   if (!user) {
@@ -257,7 +269,7 @@ export function WriterDashboardPage() {
           </Link>
 
           <button 
-            onClick={() => useStore.getState().logout()}
+            onClick={() => logout()}
             className="w-full flex items-center justify-center gap-3 px-6 py-4 text-slate-400 hover:text-destructive hover:bg-destructive/5 rounded-2xl font-bold transition-all"
           >
             <LogOut className="w-5 h-5" />
@@ -297,10 +309,10 @@ export function WriterDashboardPage() {
             <div className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { label: "মোট বিক্রয়", value: "৳৪২,৫০০", icon: DollarSign, color: "text-blue-600", bg: "bg-blue-50" },
-                  { label: "বিক্রিত বই", value: "১২৪টি", icon: BookOpen, color: "text-emerald-600", bg: "bg-emerald-50" },
-                  { label: "রয়্যালটি (৮৩%)", value: "৳৩৫,২৭৫", icon: TrendingUp, color: "text-violet-600", bg: "bg-violet-50" },
-                  { label: "পাঠক সংখ্যা", value: "১,৮৫০ জন", icon: User, color: "text-amber-600", bg: "bg-amber-50" },
+                  { label: "মোট বিক্রয়", value: `৳${totalSales.toLocaleString()}`, icon: DollarSign, color: "text-blue-600", bg: "bg-blue-50" },
+                  { label: "বিক্রিত বই", value: `${orders.length}টি`, icon: BookOpen, color: "text-emerald-600", bg: "bg-emerald-50" },
+                  { label: "রয়্যালটি (৮৩%)", value: `৳${totalRoyalty.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, icon: TrendingUp, color: "text-violet-600", bg: "bg-violet-50" },
+                  { label: "পাঠক সংখ্যা", value: `${uniqueReaders} জন`, icon: User, color: "text-amber-600", bg: "bg-amber-50" },
                 ].map((stat, i) => (
                   <div key={stat.label} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
                     <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-4`}>

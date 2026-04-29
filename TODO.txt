@@ -1,0 +1,21 @@
+# DIGITAL PUBLISHING PLATFORM - PENDING TASKS & FIXES
+
+--- CRITICAL SETTINGS ---
+[ ] Storage Bucket: Manually create 'book-covers' bucket in Supabase Dashboard.
+[ ] Privacy: Set 'book-covers' bucket to PUBLIC.
+[ ] Environment: Fill actual VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local.
+
+--- CORE FUNCTIONALITY ---
+[x] Book Reading: Implement a basic PDF opener for purchased books.
+[x] Global Search: Connected the Navbar search bar to filter the books library.
+[ ] Real Payments: Replace simulated bKash/Nagad flow with real API keys and backend verification.
+[ ] Subscription Guard: Add an Edge Function to auto-expire writer plans based on 'expires_at'.
+
+--- UI/UX IMPROVEMENTS ---
+[x] Real-time Author Stats: Added real-time listeners for the 'orders' table in useStore.ts.
+[ ] Email Alerts: Setup SMTP for purchase receipts and writer onboarding.
+[x] Mobile Menu: Fixed the navigation overlap and added missing profile links.
+
+--- DATABASE / SECURITY ---
+[ ] RLS Hardening: Review 'orders' table policies to ensure authors can only see orders for their own books.
+[ ] Backup: Implement a automated daily backup for the PostgreSQL database.

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { CreditCard, Check, ArrowLeft, Trash2, Package, User, ShieldCheck, Zap, Wallet, Building, Smartphone } from "lucide-react";
+import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, User, ShieldCheck, Zap, Wallet, Building, Smartphone } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";

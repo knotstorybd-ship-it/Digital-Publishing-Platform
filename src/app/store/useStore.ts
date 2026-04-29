@@ -96,6 +96,7 @@ type State = {
   loading: boolean;
   profilesCount: number;
   ordersCount: number;
+  searchQuery: string;
 };
 
 let currentState: State = {
@@ -119,6 +120,7 @@ let currentState: State = {
   loading: true,
   profilesCount: 0,
   ordersCount: 0,
+  searchQuery: "",
 };
 
 const listeners = new Set<(state: State) => void>();
@@ -240,6 +242,15 @@ const initSupabase = async () => {
       if (payload.eventType === 'DELETE') currentState.testimonials = currentState.testimonials.filter(t => t.id !== payload.old.id);
       notify();
     })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+      if (payload.eventType === 'INSERT') {
+        currentState.orders = [payload.new as Order, ...currentState.orders];
+        currentState.ordersCount++;
+        // If the user is a writer, we might need to re-fetch to ensure correct data
+        // For now, adding it to the local list is enough for immediate UI feedback
+      }
+      notify();
+    })
     .subscribe();
 
   // 4. Auth State Listener
@@ -295,6 +306,27 @@ export function useStore() {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+  };
+
+  const fetchAuthorOrders = async () => {
+    if (!currentState.user?.name) return;
+    const myBookIds = currentState.books
+      .filter(b => b.author === currentState.user?.name)
+      .map(b => b.id);
+    
+    if (myBookIds.length === 0) return;
+
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .in('book_id', myBookIds);
+    
+    if (data) {
+      // In a real app, we might want a separate state for author orders
+      // For now, we'll just use the orders array if the user is a writer
+      currentState.orders = data;
+      notify();
+    }
   };
 
   // Writing Functions
@@ -458,7 +490,22 @@ export function useStore() {
     notify();
   };
 
+  const setSearchQuery = (query: string) => {
+    currentState.searchQuery = query;
+    notify();
+  };
+
   // Utility Functions
+  const getFilteredBooks = () => {
+    if (!state.searchQuery) return state.books;
+    const q = state.searchQuery.toLowerCase();
+    return state.books.filter(b => 
+      b.title.toLowerCase().includes(q) || 
+      b.author.toLowerCase().includes(q) || 
+      b.category.toLowerCase().includes(q)
+    );
+  };
+
   const getMyBooks = () => {
     if (!currentState.user) return [];
     return currentState.books.filter(b => b.author === currentState.user?.name);
@@ -550,6 +597,8 @@ export function useStore() {
     signIn,
     signInWithGoogle,
     signOut,
+    logout: signOut,
+    fetchAuthorOrders,
     subscribe,
     addBook,
     updateBook,
@@ -561,6 +610,8 @@ export function useStore() {
     addToCart,
     removeFromCart,
     clearCart,
+    setSearchQuery,
+    getFilteredBooks,
     getMyBooks,
     getBookById,
     getAuthorByName,

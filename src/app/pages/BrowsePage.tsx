@@ -8,10 +8,9 @@ import { motion, AnimatePresence } from "motion/react";
 const categories = ["সব", "উপন্যাস", "কবিতা", "ইতিহাস", "শিশু সাহিত্য", "ভয়ংকর", "রম্য"];
 
 export function BrowsePage() {
-  const { books } = useStore();
+  const { books, searchQuery, setSearchQuery, getFilteredBooks } = useStore();
   const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "সব");
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
   const [viewType, setViewType] = useState<"grid" | "list">("grid");
 
   useEffect(() => {
@@ -24,7 +23,8 @@ export function BrowsePage() {
   const filteredBooks = books.filter((book) => {
     const matchesCategory = selectedCategory === "সব" || book.category === selectedCategory;
     const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         book.author.toLowerCase().includes(searchQuery.toLowerCase());
+                         book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         book.category.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 

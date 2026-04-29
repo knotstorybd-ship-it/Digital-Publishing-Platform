@@ -1,16 +1,23 @@
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, BookOpen } from "lucide-react";
 import { Link } from "react-router";
 import { useStore, Book } from "../store/useStore";
 
 interface BookCardProps extends Book {}
 
 export function BookCard(book: BookCardProps) {
-  const { addToCart } = useStore();
-  const { id, title, author, price, cover, rating, category } = book;
+  const { addToCart, user, orders } = useStore();
+  const { id, title, author, price, cover, rating, category, pdf_url } = book;
+
+  const isOwned = orders.some(o => o.book_id === id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isOwned) {
+      if (pdf_url) window.open(pdf_url, '_blank');
+      else alert("এই বইটির ডিজিটাল কপি এখনো আপলোড করা হয়নি।");
+      return;
+    }
     addToCart(book);
     alert(`${title} কার্টে যোগ করা হয়েছে!`);
   };
@@ -50,10 +57,23 @@ export function BookCard(book: BookCardProps) {
             </div>
             <button
               onClick={handleAddToCart}
-              className="w-full py-2 bg-primary/5 text-primary rounded-lg hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2 group/btn"
+              className={`w-full py-2 rounded-lg transition-colors flex items-center justify-center gap-2 group/btn ${
+                isOwned 
+                  ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-600 hover:text-white" 
+                  : "bg-primary/5 text-primary hover:bg-primary hover:text-white"
+              }`}
             >
-              <ShoppingCart className="w-4 h-4" />
-              কিনুন
+              {isOwned ? (
+                <>
+                  <BookOpen className="w-4 h-4" />
+                  পড়ুন
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-4 h-4" />
+                  কিনুন
+                </>
+              )}
             </button>
           </div>
         </div>
