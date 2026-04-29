@@ -39,6 +39,7 @@ export function AuthorDashboardPage() {
   
   const myBooks = getMyBooks();
   const myBookIds = myBooks.map(b => b.id);
+  const mySales = orders.filter(o => myBookIds.includes(o.book_id));
   
   // Calculate dynamic royalty based on plan
   const planRoyaltyRates: Record<string, number> = {
