@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS public.books (
     author TEXT NOT NULL,
     price INTEGER NOT NULL,
     cover TEXT,
+    pdf_url TEXT,
     rating DECIMAL(3,2) DEFAULT 0.00,
     category TEXT,
     description TEXT,
@@ -117,40 +118,68 @@ ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 -- 9. Policies
 
 -- A. Profiles
+DROP POLICY IF EXISTS "profiles_select_policy" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_insert_policy" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_update_policy" ON public.profiles;
+
 CREATE POLICY "profiles_select_policy" ON public.profiles FOR SELECT USING (true);
 CREATE POLICY "profiles_insert_policy" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "profiles_update_policy" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- B. Authors
+DROP POLICY IF EXISTS "Authors are viewable by everyone" ON public.authors;
+DROP POLICY IF EXISTS "Admin can manage authors" ON public.authors;
 CREATE POLICY "Authors are viewable by everyone" ON public.authors FOR SELECT USING (true);
 CREATE POLICY "Admin can manage authors" ON public.authors FOR ALL USING (true);
 
 -- C. Books
+DROP POLICY IF EXISTS "Books are viewable by everyone" ON public.books;
+DROP POLICY IF EXISTS "Admin can manage books" ON public.books;
 CREATE POLICY "Books are viewable by everyone" ON public.books FOR SELECT USING (true);
 CREATE POLICY "Admin can manage books" ON public.books FOR ALL USING (true);
 
 -- D. Orders
+DROP POLICY IF EXISTS "Users can view own orders" ON public.orders;
+DROP POLICY IF EXISTS "Admin can view all orders" ON public.orders;
+DROP POLICY IF EXISTS "Users can insert orders" ON public.orders;
 CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Admin can view all orders" ON public.orders FOR SELECT USING (true);
 CREATE POLICY "Users can insert orders" ON public.orders FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- E. Testimonials
+DROP POLICY IF EXISTS "Anyone can view testimonials" ON public.testimonials;
+DROP POLICY IF EXISTS "Anyone can insert testimonials" ON public.testimonials;
+DROP POLICY IF EXISTS "Admin can manage testimonials" ON public.testimonials;
 CREATE POLICY "Anyone can view testimonials" ON public.testimonials FOR SELECT USING (true);
 CREATE POLICY "Anyone can insert testimonials" ON public.testimonials FOR INSERT WITH CHECK (true);
 CREATE POLICY "Admin can manage testimonials" ON public.testimonials FOR ALL USING (true);
 
 -- F. Site Settings
+DROP POLICY IF EXISTS "Public can view site settings" ON public.site_settings;
+DROP POLICY IF EXISTS "Admin can update site settings" ON public.site_settings;
 CREATE POLICY "Public can view site settings" ON public.site_settings FOR SELECT USING (true);
 CREATE POLICY "Admin can update site settings" ON public.site_settings FOR UPDATE USING (true);
 
 -- 10. Realtime Setup
--- Enable realtime for all tables
-ALTER PUBLICATION supabase_realtime ADD TABLE public.books;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.authors;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.testimonials;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.site_settings;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+-- Enable realtime for all tables only if not already enabled
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'books') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.books;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'authors') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.authors;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'testimonials') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.testimonials;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'profiles') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'orders') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+    END IF;
+END $$;
 
 -- 11. bKash Payments Table
 CREATE TABLE IF NOT EXISTS public.bkash_payments (

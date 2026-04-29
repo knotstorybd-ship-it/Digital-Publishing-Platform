@@ -7,6 +7,7 @@ export interface Book {
   author: string;
   price: number;
   cover: string;
+  pdf_url?: string;
   rating: number;
   category: string;
   description?: string;
@@ -316,14 +317,54 @@ export function useStore() {
     await syncAuth();
   };
 
-  const addBook = async (book: Omit<Book, "id" | "rating" | "reviews" | "status">) => {
+  const addBook = async (
+    book: Omit<Book, "id" | "rating" | "reviews" | "status" | "cover">, 
+    coverFile?: File, 
+    pdfFile?: File
+  ) => {
+    let coverUrl = "";
+    let pdfUrl = "";
+
+    // 1. Upload Cover Image
+    if (coverFile) {
+      const fileExt = coverFile.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from('books')
+        .upload(`covers/${fileName}`, coverFile);
+      
+      if (!uploadError) {
+        const { data } = supabase.storage.from('books').getPublicUrl(`covers/${fileName}`);
+        coverUrl = data.publicUrl;
+      }
+    }
+
+    // 2. Upload PDF/EPUB File
+    if (pdfFile) {
+      const fileExt = pdfFile.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from('books')
+        .upload(`ebooks/${fileName}`, pdfFile);
+      
+      if (!uploadError) {
+        const { data } = supabase.storage.from('books').getPublicUrl(`ebooks/${fileName}`);
+        pdfUrl = data.publicUrl;
+      }
+    }
+
+    // 3. Insert into DB
     const { error } = await supabase.from('books').insert([{
       ...book,
+      cover: coverUrl,
+      pdf_url: pdfUrl,
       rating: 0,
       reviews: 0,
       status: "Published",
     }]);
+
     if (error) throw error;
+    await syncAuth(); // Refresh books in state
   };
 
   const updateBook = async (id: string, updates: Partial<Book>) => {

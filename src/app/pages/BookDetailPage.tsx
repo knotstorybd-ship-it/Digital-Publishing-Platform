@@ -7,9 +7,10 @@ import { useState } from "react";
 
 export function BookDetailPage() {
   const { id } = useParams();
-  const { getBookById, addToCart, books, orders } = useStore();
+  const { getBookById, addToCart, books, orders, user } = useStore();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const book = getBookById(id || "");
+  const isPurchased = user && orders.some(o => o.book_id === book?.id && o.user_id === user.id);
 
   if (!book) {
     return (
@@ -70,13 +71,26 @@ export function BookDetailPage() {
               </motion.div>
 
               <div className="flex items-center gap-4 mt-10">
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-[3] py-6 bg-emerald-600 text-white rounded-[2rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 text-lg"
-                >
-                  <ShoppingCart className="w-6 h-6" />
-                  ৳{book.price} - কার্টে যোগ করুন
-                </button>
+                {isPurchased ? (
+                  <a 
+                    href={book.pdf_url} 
+                    download 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-[3] py-6 bg-emerald-950 text-white rounded-[2rem] font-black shadow-2xl shadow-emerald-900/30 hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 text-lg"
+                  >
+                    <Download className="w-6 h-6" />
+                    বইটি ডাউনলোড করুন
+                  </a>
+                ) : (
+                  <button
+                    onClick={handleAddToCart}
+                    className="flex-[3] py-6 bg-emerald-600 text-white rounded-[2rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 text-lg"
+                  >
+                    <ShoppingCart className="w-6 h-6" />
+                    ৳{book.price} - কার্টে যোগ করুন
+                  </button>
+                )}
                 <button 
                   onClick={() => setIsWishlisted(!isWishlisted)}
                   className={`flex-1 p-6 rounded-[2rem] border-2 transition-all flex items-center justify-center ${isWishlisted ? 'bg-rose-50 border-rose-100 text-rose-500 shadow-lg shadow-rose-500/10' : 'bg-white border-slate-100 text-slate-300 hover:border-emerald-200 hover:text-emerald-600'}`}

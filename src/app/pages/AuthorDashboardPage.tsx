@@ -70,27 +70,40 @@ export function AuthorDashboardPage() {
     { label: "রিভিউ", value: myBooks.reduce((sum, b) => sum + (b.reviews || 0), 0), icon: MessageSquare, color: "text-rose-600", bg: "bg-rose-50" },
   ];
 
-  const handleBookSubmit = (e: React.FormEvent) => {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    const coverFile = (form.querySelector('#cover-upload') as HTMLInputElement).files?.[0];
+    const pdfFile = (form.querySelector('#file-upload') as HTMLInputElement).files?.[0];
+
     const bookData = {
       title: formData.get("title") as string,
       author: user.name,
       price: Number(formData.get("price")),
       category: formData.get("category") as string,
-      cover: formData.get("cover") as string || "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
       description: formData.get("desc") as string,
-      status: "Published" as const
     };
 
-    if (editingBook) {
-      updateBook(editingBook.id, bookData);
-    } else {
-      addBook(bookData);
+    setIsUploading(true);
+    try {
+      if (editingBook) {
+        await updateBook(editingBook.id, bookData);
+      } else {
+        await addBook(bookData, coverFile, pdfFile);
+      }
+      setShowUploadModal(false);
+      setEditingBook(null);
+      alert("বইটি সফলভাবে প্রকাশ করা হয়েছে!");
+    } catch (error: any) {
+      console.error(error);
+      alert("বই আপলোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    } finally {
+      setIsUploading(false);
     }
-    
-    setShowUploadModal(false);
-    setEditingBook(null);
   };
 
   return (
@@ -533,9 +546,17 @@ export function AuthorDashboardPage() {
                     >
                       বাতিল
                     </button>
-                    <button type="submit" className="flex-[2] py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] transition-all text-lg flex items-center justify-center gap-2">
-                      <CheckCircle2 className="w-6 h-6" />
-                      {editingBook ? "আপডেট করুন" : "প্রকাশ করুন"}
+                    <button 
+                      type="submit" 
+                      disabled={isUploading}
+                      className="flex-[2] py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {isUploading ? (
+                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <CheckCircle2 className="w-6 h-6" />
+                      )}
+                      {isUploading ? "আপলোড হচ্ছে..." : (editingBook ? "আপডেট করুন" : "প্রকাশ করুন")}
                     </button>
                   </div>
                 </form>
