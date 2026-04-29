@@ -378,7 +378,8 @@ export function useStore() {
 
   // Purchasing Functions
   const purchaseCart = async () => {
-    if (!currentState.user) return;
+    if (!currentState.user) throw new Error("Please login to purchase books.");
+    if (currentState.cart.length === 0) return;
     
     const orders = currentState.cart.map(book => ({
       user_id: currentState.user?.id,
@@ -388,10 +389,14 @@ export function useStore() {
     }));
 
     const { error } = await supabase.from('orders').insert(orders);
-    if (error) throw error;
+    if (error) {
+      console.error("Order Insert Error:", error);
+      throw error;
+    }
     
     currentState.cart = [];
     notify();
+    await syncAuth(); // Refresh orders in state
   };
 
   // Cart Functions
