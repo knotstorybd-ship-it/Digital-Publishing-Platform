@@ -51,7 +51,6 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col bg-slate-50/30">
-      <PromoPopup />
       
       {/* Hero Section */}
       <section className="relative min-h-[70vh] lg:min-h-[85vh] flex items-center pt-12 pb-6 lg:pt-16 lg:pb-12 bg-white">
@@ -169,14 +168,6 @@ export function HomePage() {
               >
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <img src={book.cover} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                    <button 
-                      onClick={() => addToCart(book)}
-                      className="w-full py-3 bg-white text-emerald-950 rounded-xl font-black shadow-xl flex items-center justify-center gap-2"
-                    >
-                      <ShoppingBag className="w-4 h-4" /> কার্টে যোগ করুন
-                    </button>
-                  </div>
                 </div>
                 <div className="p-6">
                   <div className="flex items-center gap-1 mb-2">
@@ -185,11 +176,20 @@ export function HomePage() {
                   </div>
                   <h3 className="font-black text-emerald-950 mb-1 line-clamp-1">{book.title}</h3>
                   <p className="text-xs font-bold text-slate-400">{book.author}</p>
-                  <div className="mt-4 flex items-center justify-between">
-                    <div className="text-lg font-black text-emerald-600">৳{book.price}</div>
-                    <Link to={`/book/${book.id}`} className="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
-                      <Eye className="w-5 h-5" />
-                    </Link>
+                  
+                  <div className="mt-4 flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="text-lg font-black text-emerald-600">৳{book.price}</div>
+                      <Link to={`/book/${book.id}`} className="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
+                        <Eye className="w-5 h-5" />
+                      </Link>
+                    </div>
+                    <button 
+                      onClick={() => addToCart(book)}
+                      className="w-full py-3 bg-emerald-50 text-emerald-700 rounded-xl font-black hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-2"
+                    >
+                      <ShoppingBag className="w-4 h-4" /> কার্টে যোগ করুন
+                    </button>
                   </div>
                 </div>
               </motion.div>
