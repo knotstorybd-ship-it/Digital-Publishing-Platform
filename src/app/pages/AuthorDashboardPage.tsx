@@ -485,6 +485,49 @@ export function AuthorDashboardPage() {
               {/* Modal Form */}
               <div className="flex-1 p-12 md:p-16 overflow-y-auto max-h-[85vh]">
                 <form onSubmit={handleBookSubmit} className="space-y-10">
+                  
+                  {/* File Upload Section - HIGHLIGHTED AT TOP */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-emerald-50 rounded-[3rem] border-2 border-dashed border-emerald-200">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/60 ml-6">বইয়ের কভার (Image)</label>
+                      <div className="relative group cursor-pointer">
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          id="cover-upload" 
+                          onChange={(e) => {
+                            const label = document.getElementById('cover-label');
+                            if (label && e.target.files?.[0]) label.innerText = "✓ কভার সিলেক্ট করা হয়েছে";
+                          }}
+                        />
+                        <label htmlFor="cover-upload" className="w-full h-32 bg-white border-2 border-emerald-100 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 group-hover:border-emerald-400 group-hover:bg-emerald-50 transition-all cursor-pointer">
+                          <Camera className="w-6 h-6 text-emerald-400 group-hover:text-emerald-600" />
+                          <span id="cover-label" className="text-[10px] font-black text-emerald-600">কভার ইমেজ সিলেক্ট করুন</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/60 ml-6">ই-বুক ফাইল (PDF/EPUB)</label>
+                      <div className="relative group cursor-pointer">
+                        <input 
+                          type="file" 
+                          accept=".pdf,.epub" 
+                          className="hidden" 
+                          id="file-upload" 
+                          onChange={(e) => {
+                            const label = document.getElementById('file-label');
+                            if (label && e.target.files?.[0]) label.innerText = "✓ PDF সিলেক্ট করা হয়েছে";
+                          }}
+                        />
+                        <label htmlFor="file-upload" className="w-full h-32 bg-white border-2 border-emerald-100 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 group-hover:border-emerald-400 group-hover:bg-emerald-50 transition-all cursor-pointer">
+                          <FileText className="w-6 h-6 text-emerald-400 group-hover:text-emerald-600" />
+                          <span id="file-label" className="text-[10px] font-black text-emerald-600">PDF অথবা EPUB ফাইল সিলেক্ট করুন</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-3">
                       <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/40 ml-6">বইয়ের শিরোনাম</label>
@@ -505,31 +548,8 @@ export function AuthorDashboardPage() {
                       <input name="price" type="number" defaultValue={editingBook?.price} required placeholder="৳ পরিমাণ" className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" />
                     </div>
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/40 ml-6">কভার ফটো URL</label>
-                      <input name="cover" defaultValue={editingBook?.cover} placeholder="https://..." className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/40 ml-6">বইয়ের কভার (Image)</label>
-                      <div className="relative group cursor-pointer">
-                        <input type="file" accept="image/*" className="hidden" id="cover-upload" />
-                        <label htmlFor="cover-upload" className="w-full h-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center gap-3 group-hover:border-emerald-300 group-hover:bg-emerald-50 transition-all cursor-pointer">
-                          <Camera className="w-8 h-8 text-slate-300 group-hover:text-emerald-500" />
-                          <span className="text-xs font-bold text-slate-400 group-hover:text-emerald-600">কভার ইমেজ সিলেক্ট করুন</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/40 ml-6">ই-বুক ফাইল (PDF/EPUB)</label>
-                      <div className="relative group cursor-pointer">
-                        <input type="file" accept=".pdf,.epub" className="hidden" id="file-upload" />
-                        <label htmlFor="file-upload" className="w-full h-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[2rem] flex flex-col items-center justify-center gap-3 group-hover:border-emerald-300 group-hover:bg-emerald-50 transition-all cursor-pointer">
-                          <FileText className="w-8 h-8 text-slate-300 group-hover:text-emerald-500" />
-                          <span className="text-xs font-bold text-slate-400 group-hover:text-emerald-600">PDF অথবা EPUB ফাইল সিলেক্ট করুন</span>
-                        </label>
-                      </div>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/40 ml-6">পৃষ্ঠা সংখ্যা</label>
+                      <input name="pages" type="number" defaultValue={editingBook?.pages} placeholder="যেমন: ২৫০" className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" />
                     </div>
                   </div>
 
