@@ -42,7 +42,8 @@ export function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState("overview");
   const { 
     books, deleteBook, addBook, authors, updateAuthor, deleteAuthor, updateBook, orders,
-    siteSettings, updateSiteSettings, testimonials, approveTestimonial, deleteTestimonial 
+    siteSettings, updateSiteSettings, testimonials, approveTestimonial, deleteTestimonial,
+    user, signIn, signInWithGoogle, signOut
   } = useStore();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditAuthorModal, setShowEditAuthorModal] = useState(false);
@@ -53,19 +54,16 @@ export function AdminDashboardPage() {
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   
   // Admin Login State
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
-    return localStorage.getItem("admin_authenticated") === "true";
-  });
+  const isAdminAuthenticated = Boolean(user?.isAdmin);
   const [adminUsername, setAdminUsername] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (adminUsername === "admin" && adminPassword === "2026dp") {
-      setIsAdminAuthenticated(true);
-      localStorage.setItem("admin_authenticated", "true");
+    if (adminUsername.includes("@")) {
+      await signIn(adminUsername);
       setLoginError("");
     } else {
       setLoginError("ভুল ইউজারনেম অথবা পাসওয়ার্ড!");
@@ -275,7 +273,7 @@ export function AdminDashboardPage() {
               View System Logs
             </button>
             <button 
-              onClick={() => setIsAdminAuthenticated(false)}
+              onClick={() => signOut()}
               className="w-full py-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-black text-rose-600 hover:bg-rose-100 transition-colors flex items-center justify-center gap-2"
             >
               <LogOut className="w-3.5 h-3.5" />

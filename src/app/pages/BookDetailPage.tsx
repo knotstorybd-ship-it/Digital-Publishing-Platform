@@ -3,14 +3,13 @@ import { Star, ShoppingCart, Heart, Share2, Download, Eye, BookOpen, ShieldCheck
 import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";
-import { useState } from "react";
 
 export function BookDetailPage() {
   const { id } = useParams();
-  const { getBookById, addToCart, books, orders, user } = useStore();
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { getBookById, addToCart, books, orders, user, favoriteBookIds, toggleFavoriteBook } = useStore();
   const book = getBookById(id || "");
   const isPurchased = user && orders.some(o => o.book_id === book?.id && o.user_id === user.id);
+  const isWishlisted = book ? favoriteBookIds.includes(book.id) : false;
 
   if (!book) {
     return (
@@ -92,7 +91,7 @@ export function BookDetailPage() {
                   </button>
                 )}
                 <button 
-                  onClick={() => setIsWishlisted(!isWishlisted)}
+                  onClick={() => book && toggleFavoriteBook(book.id).catch(() => window.dispatchEvent(new CustomEvent("open-auth")))}
                   className={`flex-1 p-6 rounded-[2rem] border-2 transition-all flex items-center justify-center ${isWishlisted ? 'bg-rose-50 border-rose-100 text-rose-500 shadow-lg shadow-rose-500/10' : 'bg-white border-slate-100 text-slate-300 hover:border-emerald-200 hover:text-emerald-600'}`}
                 >
                   <Heart className={`w-6 h-6 ${isWishlisted ? 'fill-rose-500' : ''}`} />

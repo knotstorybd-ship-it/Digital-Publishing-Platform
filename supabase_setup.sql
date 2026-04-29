@@ -28,7 +28,11 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     email TEXT UNIQUE,
     avatar TEXT,
     bio TEXT,
+    phone TEXT,
+    present_address TEXT,
+    permanent_address TEXT,
     is_writer BOOLEAN DEFAULT false,
+    is_admin BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -120,6 +124,38 @@ CREATE TABLE IF NOT EXISTS public.bkash_payments (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- H. Payment Transactions Table
+CREATE TABLE IF NOT EXISTS public.payment_transactions (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    order_id TEXT NOT NULL,
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    gateway TEXT NOT NULL,
+    transaction_id TEXT UNIQUE NOT NULL,
+    payer_name TEXT,
+    payer_phone TEXT,
+    amount INTEGER NOT NULL,
+    currency TEXT DEFAULT 'BDT',
+    status TEXT DEFAULT 'completed' CHECK (status IN ('completed', 'pending', 'failed')),
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- I. Reader Favorites
+CREATE TABLE IF NOT EXISTS public.favorite_books (
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    book_id UUID REFERENCES public.books(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    PRIMARY KEY (user_id, book_id)
+);
+
+-- J. Author Follows
+CREATE TABLE IF NOT EXISTS public.author_follows (
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    author_id UUID REFERENCES public.authors(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    PRIMARY KEY (user_id, author_id)
+);
+
 -- ==========================================================
 -- 4. DEFAULT DATA
 -- ==========================================================
@@ -149,12 +185,20 @@ ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bkash_payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.payment_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.favorite_books ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.author_follows ENABLE ROW LEVEL SECURITY;
 
 -- ==========================================================
 -- 6. POLICIES
 -- ==========================================================
 
 -- A. Profiles
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS present_address TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS permanent_address TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT false;
+
 DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
 CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
 
@@ -176,11 +220,33 @@ DROP POLICY IF EXISTS "Books are viewable by everyone" ON public.books;
 CREATE POLICY "Books are viewable by everyone" ON public.books FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Authenticated users can manage books" ON public.books;
-CREATE POLICY "Authenticated users can manage books" ON public.books FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Authenticated users can manage books" ON public.books FOR ALL USING (
+    auth.role() = 'authenticated'
+);
+
+DROP POLICY IF EXISTS "Admins can manage all books" ON public.books;
+CREATE POLICY "Admins can manage all books" ON public.books FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.profiles admin_profile
+        WHERE admin_profile.id = auth.uid() AND admin_profile.is_admin = true
+    )
+);
 
 -- D. Orders
 DROP POLICY IF EXISTS "Users can view own orders" ON public.orders;
-CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT USING (
+    auth.uid() = user_id
+    OR EXISTS (
+        SELECT 1
+        FROM public.books b
+        JOIN public.authors a ON a.name = b.author
+        WHERE b.id = orders.book_id AND a.id = auth.uid()
+    )
+    OR EXISTS (
+        SELECT 1 FROM public.profiles admin_profile
+        WHERE admin_profile.id = auth.uid() AND admin_profile.is_admin = true
+    )
+);
 
 DROP POLICY IF EXISTS "Users can insert orders" ON public.orders;
 CREATE POLICY "Users can insert orders" ON public.orders FOR INSERT WITH CHECK (auth.uid() = user_id);
@@ -197,7 +263,12 @@ DROP POLICY IF EXISTS "Public can view site settings" ON public.site_settings;
 CREATE POLICY "Public can view site settings" ON public.site_settings FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Admin can update site settings" ON public.site_settings;
-CREATE POLICY "Admin can update site settings" ON public.site_settings FOR ALL USING (true);
+CREATE POLICY "Admin can update site settings" ON public.site_settings FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.profiles admin_profile
+        WHERE admin_profile.id = auth.uid() AND admin_profile.is_admin = true
+    )
+);
 
 -- G. bKash Payments
 DROP POLICY IF EXISTS "Users can view own payments" ON public.bkash_payments;
@@ -206,22 +277,70 @@ CREATE POLICY "Users can view own payments" ON public.bkash_payments FOR SELECT 
 DROP POLICY IF EXISTS "Users can insert own payments" ON public.bkash_payments;
 CREATE POLICY "Users can insert own payments" ON public.bkash_payments FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+-- H. Payment Transactions
+DROP POLICY IF EXISTS "Users can view own payment transactions" ON public.payment_transactions;
+CREATE POLICY "Users can view own payment transactions" ON public.payment_transactions FOR SELECT USING (
+    auth.uid() = user_id
+    OR EXISTS (
+        SELECT 1 FROM public.profiles admin_profile
+        WHERE admin_profile.id = auth.uid() AND admin_profile.is_admin = true
+    )
+);
+
+DROP POLICY IF EXISTS "Users can insert own payment transactions" ON public.payment_transactions;
+CREATE POLICY "Users can insert own payment transactions" ON public.payment_transactions FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- I. Reader Favorites
+DROP POLICY IF EXISTS "Users can manage own favorite books" ON public.favorite_books;
+CREATE POLICY "Users can manage own favorite books" ON public.favorite_books FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+
+-- J. Author Follows
+DROP POLICY IF EXISTS "Users can manage own author follows" ON public.author_follows;
+CREATE POLICY "Users can manage own author follows" ON public.author_follows FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+
 -- ==========================================================
 -- 7. REALTIME
 -- ==========================================================
 -- Enable realtime for all tables
-ALTER PUBLICATION supabase_realtime ADD TABLE public.books;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.authors;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.testimonials;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.profiles;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.bkash_payments;
+DO $$
+DECLARE
+  table_name TEXT;
+BEGIN
+  FOREACH table_name IN ARRAY ARRAY[
+    'books',
+    'authors',
+    'testimonials',
+    'profiles',
+    'orders',
+    'bkash_payments',
+    'payment_transactions',
+    'favorite_books',
+    'author_follows'
+  ] LOOP
+    BEGIN
+      EXECUTE format('ALTER PUBLICATION supabase_realtime ADD TABLE public.%I', table_name);
+    EXCEPTION
+      WHEN duplicate_object THEN NULL;
+    END;
+  END LOOP;
+END $$;
 
 -- ==========================================================
 -- 8. STORAGE BUCKETS (Note: Run these policies AFTER creating 'book-covers' bucket in UI)
 -- ==========================================================
--- Policy for public read access to book covers
--- CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'book-covers');
--- Policy for authenticated users to upload to book covers
--- CREATE POLICY "Authenticated Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'book-covers' AND auth.role() = 'authenticated');
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('book-covers', 'book-covers', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
 
+DROP POLICY IF EXISTS "Public Access book-covers" ON storage.objects;
+CREATE POLICY "Public Access book-covers" ON storage.objects FOR SELECT USING (bucket_id = 'book-covers');
+
+DROP POLICY IF EXISTS "Authenticated Upload book-covers" ON storage.objects;
+CREATE POLICY "Authenticated Upload book-covers" ON storage.objects FOR INSERT WITH CHECK (
+    bucket_id = 'book-covers' AND auth.role() = 'authenticated'
+);
+
+DROP POLICY IF EXISTS "Authenticated Update book-covers" ON storage.objects;
+CREATE POLICY "Authenticated Update book-covers" ON storage.objects FOR UPDATE USING (
+    bucket_id = 'book-covers' AND auth.role() = 'authenticated'
+);

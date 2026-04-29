@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, User, ShieldCheck, Zap, Wallet, Building, Smartphone } from "lucide-react";
+import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, User, ShieldCheck, Zap, Building, Smartphone } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";
@@ -7,16 +7,29 @@ import { motion, AnimatePresence } from "motion/react";
 import { BkashPaymentModal } from "../components/BkashPaymentModal";
 
 const paymentMethods = [
-  { id: "bkash", name: "bKash", icon: Smartphone, color: "bg-[#D12053]", brand: "বিকাশ" },
-  { id: "nagad", name: "Nagad", icon: Wallet, color: "bg-[#F7941D]", brand: "নগদ" },
-  { id: "card", name: "Card", icon: CreditCard, color: "bg-[#1A1F71]", brand: "কার্ড" },
+  {
+    id: "dpay",
+    name: "DP Pay Sandbox",
+    icon: CreditCard,
+    color: "bg-emerald-600",
+    brand: "Sandbox Gateway",
+    note: "Free test gateway with OTP verification",
+  },
+  {
+    id: "wallet",
+    name: "Mobile Wallet Sandbox",
+    icon: Smartphone,
+    color: "bg-[#D12053]",
+    brand: "Wallet Sandbox",
+    note: "Works without merchant approval or paid setup",
+  },
 ];
 
 export function CheckoutPage() {
   const { cart, removeFromCart, clearCart, subscribe, purchaseCart, user } = useStore();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [selectedPayment, setSelectedPayment] = useState("bkash");
+  const [selectedPayment, setSelectedPayment] = useState("dpay");
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isBkashModalOpen, setIsBkashModalOpen] = useState(false);
@@ -41,9 +54,10 @@ export function CheckoutPage() {
   const subtotal = planDetails ? planDetails.price : cart.reduce((sum, item) => sum + item.price, 0);
   const discount = 0;
   const total = subtotal - discount;
+  const selectedGateway = paymentMethods.find((method) => method.id === selectedPayment) || paymentMethods[0];
 
   const handlePayment = async () => {
-    if (selectedPayment === "bkash") {
+    if (selectedPayment) {
       setIsBkashModalOpen(true);
       return;
     }
@@ -219,7 +233,7 @@ export function CheckoutPage() {
                       পেমেন্ট পদ্ধতি
                     </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                       {paymentMethods.map((method) => (
                         <button
                           key={method.id}
@@ -233,6 +247,7 @@ export function CheckoutPage() {
                             <method.icon className="w-7 h-7" />
                           </div>
                           <span className="font-black text-emerald-950">{method.brand}</span>
+                          <span className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">{method.note}</span>
                           {selectedPayment === method.id && (
                             <div className="absolute top-4 right-4 w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center scale-110 shadow-lg animate-in zoom-in">
                               <Check className="w-3 h-3" />
@@ -243,8 +258,19 @@ export function CheckoutPage() {
                     </div>
 
                     <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 mb-10 space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className={`w-12 h-12 ${selectedGateway.color} rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0`}>
+                          <selectedGateway.icon className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-black text-emerald-950">{selectedGateway.name}</h3>
+                          <p className="text-sm text-slate-500 font-medium leading-relaxed mt-1">
+                            This free sandbox gateway opens a secure payment modal. Use OTP 123456 there; the app records the transaction before activating the plan or purchase.
+                          </p>
+                        </div>
+                      </div>
                       {selectedPayment !== 'card' ? (
-                        <div className="space-y-4">
+                        <div className="hidden">
                           <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950/40 ml-4">আপনার {selectedPayment === 'bkash' ? 'বিকাশ' : 'নগদ'} নম্বর</label>
                           <input type="tel" placeholder="01XXXXXXXXX" className="w-full px-8 py-5 bg-white border-0 rounded-2xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" />
                         </div>
@@ -354,6 +380,7 @@ export function CheckoutPage() {
           amount={total}
           orderId={planDetails?.name || "Cart-Purchase"}
           userId={user?.id || ""}
+          gateway={selectedGateway.name}
           onSuccess={handleBkashSuccess}
         />
       </div>

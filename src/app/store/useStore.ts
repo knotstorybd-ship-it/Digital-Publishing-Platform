@@ -45,6 +45,7 @@ export interface User {
   name: string;
   email: string;
   isWriter: boolean;
+  isAdmin?: boolean;
   avatar?: string;
   bio?: string;
   phone?: string;
@@ -97,6 +98,92 @@ type State = {
   profilesCount: number;
   ordersCount: number;
   searchQuery: string;
+  favoriteBookIds: string[];
+  followedAuthorIds: string[];
+};
+
+const mapBookFromDb = (row: any): Book => ({
+  id: row.id,
+  title: row.title,
+  author: row.author,
+  price: Number(row.price || 0),
+  cover: row.cover || "",
+  pdf_url: row.pdf_url || undefined,
+  rating: Number(row.rating || 0),
+  category: row.category || "",
+  description: row.description || undefined,
+  pages: row.pages || undefined,
+  language: row.language || undefined,
+  published: row.published || undefined,
+  reviews: Number(row.reviews || 0),
+  isFeatured: Boolean(row.is_featured ?? row.isFeatured),
+  status: row.status || "Published",
+});
+
+const mapAuthorFromDb = (row: any): Author => ({
+  id: row.id,
+  name: row.name,
+  email: row.email,
+  avatar: row.avatar || "",
+  bio: row.bio || "",
+  phone: row.phone || undefined,
+  presentAddress: row.present_address || row.presentAddress || undefined,
+  permanentAddress: row.permanent_address || row.permanentAddress || undefined,
+  bookCount: Number(row.book_count ?? row.bookCount ?? 0),
+  rating: Number(row.rating || 0),
+  joinDate: row.join_date || row.joinDate || "",
+  subscriptionPlan: row.subscription_plan || row.subscriptionPlan || undefined,
+  subscriptionExpiry: row.subscription_expiry || row.subscriptionExpiry || undefined,
+});
+
+const mapSiteSettingsFromDb = (row: any): SiteSettings => ({
+  heroTitle: row.hero_title,
+  heroSubtitle: row.hero_subtitle,
+  heroDescription: row.hero_description,
+  heroCtaText: row.hero_cta_text,
+  heroSecondaryCtaText: row.hero_secondary_cta_text,
+  featuredAuthorName: row.featured_author_name,
+  featuredAuthorRating: row.featured_author_rating,
+  totalReadersCount: row.total_readers_count,
+  authorsCountText: row.authors_count_text,
+});
+
+const bookToDb = (book: Partial<Book>) => {
+  const row: any = { ...book };
+  if ("isFeatured" in row) {
+    row.is_featured = row.isFeatured;
+    delete row.isFeatured;
+  }
+  return row;
+};
+
+const authorToDb = (author: Partial<Author>) => {
+  const row: any = { ...author };
+  if ("presentAddress" in row) {
+    row.present_address = row.presentAddress;
+    delete row.presentAddress;
+  }
+  if ("permanentAddress" in row) {
+    row.permanent_address = row.permanentAddress;
+    delete row.permanentAddress;
+  }
+  if ("bookCount" in row) {
+    row.book_count = row.bookCount;
+    delete row.bookCount;
+  }
+  if ("joinDate" in row) {
+    row.join_date = row.joinDate;
+    delete row.joinDate;
+  }
+  if ("subscriptionPlan" in row) {
+    row.subscription_plan = row.subscriptionPlan;
+    delete row.subscriptionPlan;
+  }
+  if ("subscriptionExpiry" in row) {
+    row.subscription_expiry = row.subscriptionExpiry;
+    delete row.subscriptionExpiry;
+  }
+  return row;
 };
 
 let currentState: State = {
@@ -121,6 +208,8 @@ let currentState: State = {
   profilesCount: 0,
   ordersCount: 0,
   searchQuery: "",
+  favoriteBookIds: [],
+  followedAuthorIds: [],
 };
 
 const listeners = new Set<(state: State) => void>();
@@ -137,15 +226,19 @@ const syncAuth = async () => {
   
   if (session?.user) {
     // 1. Fetch profile & subscription data in parallel
-    const [profileRes, authorRes, ordersRes] = await Promise.all([
+    const [profileRes, authorRes, ordersRes, favoritesRes, followsRes] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', session.user.id).single(),
       supabase.from('authors').select('*').eq('email', session.user.email).single(),
-      supabase.from('orders').select('*').eq('user_id', session.user.id)
+      supabase.from('orders').select('*').eq('user_id', session.user.id),
+      supabase.from('favorite_books').select('book_id').eq('user_id', session.user.id),
+      supabase.from('author_follows').select('author_id').eq('user_id', session.user.id)
     ]);
 
     const profile = profileRes.data;
-    const authorData = authorRes.data;
+    const authorData = authorRes.data ? mapAuthorFromDb(authorRes.data) : null;
     if (ordersRes.data) currentState.orders = ordersRes.data;
+    currentState.favoriteBookIds = favoritesRes.data?.map((row: any) => row.book_id) || [];
+    currentState.followedAuthorIds = followsRes.data?.map((row: any) => row.author_id) || [];
 
     // Auto-create/sync profile if missing or logged in with Google
     if (!profile || (session.user.app_metadata.provider === 'google' && !profile.name)) {
@@ -162,16 +255,22 @@ const syncAuth = async () => {
       name: profile?.name || session.user.user_metadata.full_name || session.user.user_metadata.name || "User",
       email: session.user.email || "",
       isWriter: !!authorData,
+      isAdmin: Boolean(profile?.is_admin),
       avatar: profile?.avatar || session.user.user_metadata.avatar_url,
       bio: profile?.bio,
+      phone: profile?.phone || authorData?.phone,
+      presentAddress: profile?.present_address || authorData?.presentAddress,
+      permanentAddress: profile?.permanent_address || authorData?.permanentAddress,
       subscription: authorData ? {
-        planName: authorData.subscription_plan,
-        expiresAt: authorData.subscription_expiry,
+        planName: authorData.subscriptionPlan || "",
+        expiresAt: authorData.subscriptionExpiry || "",
       } : undefined
     };
   } else {
     currentState.user = null;
     currentState.orders = [];
+    currentState.favoriteBookIds = [];
+    currentState.followedAuthorIds = [];
   }
   currentState.loading = false;
   notify();
@@ -188,8 +287,8 @@ const initSupabase = async () => {
     supabase.from('site_settings').select('*').eq('id', 1).single()
   ]);
 
-  if (booksRes.data) currentState.books = booksRes.data;
-  if (authorsRes.data) currentState.authors = authorsRes.data;
+  if (booksRes.data) currentState.books = booksRes.data.map(mapBookFromDb);
+  if (authorsRes.data) currentState.authors = authorsRes.data.map(mapAuthorFromDb);
   
   if (testimonialsRes.error) {
     console.warn("Testimonials table not found in Supabase. Please run the SQL in supabase_setup.sql.");
@@ -198,18 +297,7 @@ const initSupabase = async () => {
   }
 
   if (settingsRes.data) {
-    const s = settingsRes.data;
-    currentState.siteSettings = {
-      heroTitle: s.hero_title,
-      heroSubtitle: s.hero_subtitle,
-      heroDescription: s.hero_description,
-      heroCtaText: s.hero_cta_text,
-      heroSecondaryCtaText: s.hero_secondary_cta_text,
-      featuredAuthorName: s.featured_author_name,
-      featuredAuthorRating: s.featured_author_rating,
-      totalReadersCount: s.total_readers_count,
-      authorsCountText: s.authors_count_text
-    };
+    currentState.siteSettings = mapSiteSettingsFromDb(settingsRes.data);
   }
 
   if (profilesRes.count !== null) currentState.profilesCount = profilesRes.count;
@@ -221,15 +309,15 @@ const initSupabase = async () => {
   // 3. Real-time Subscriptions
   supabase.channel('db-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, (payload) => {
-      if (payload.eventType === 'INSERT') currentState.books = [payload.new as Book, ...currentState.books];
-      if (payload.eventType === 'UPDATE') currentState.books = currentState.books.map(b => b.id === payload.new.id ? payload.new as Book : b);
+      if (payload.eventType === 'INSERT') currentState.books = [mapBookFromDb(payload.new), ...currentState.books];
+      if (payload.eventType === 'UPDATE') currentState.books = currentState.books.map(b => b.id === payload.new.id ? mapBookFromDb(payload.new) : b);
       if (payload.eventType === 'DELETE') currentState.books = currentState.books.filter(b => b.id !== payload.old.id);
       notify();
     })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'authors' }, (payload) => {
-      if (payload.eventType === 'INSERT') currentState.authors = [payload.new as Author, ...currentState.authors];
+      if (payload.eventType === 'INSERT') currentState.authors = [mapAuthorFromDb(payload.new), ...currentState.authors];
       if (payload.eventType === 'UPDATE') {
-        currentState.authors = currentState.authors.map(a => a.id === payload.new.id ? payload.new as Author : a);
+        currentState.authors = currentState.authors.map(a => a.id === payload.new.id ? mapAuthorFromDb(payload.new) : a);
         // If current user is this author, update their session data too
         if (currentState.user?.email === payload.new.email) syncAuth();
       }
@@ -339,22 +427,23 @@ export function useStore() {
       id: currentState.user.id,
       name: currentState.user.name,
       email: currentState.user.email,
-      avatar: currentState.user.avatar,
+      avatar: currentState.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentState.user.name}`,
       bio: currentState.user.bio || "নতুন লেখক",
       subscription_plan: planName,
       subscription_expiry: expiresAt.toISOString(),
     }, { onConflict: 'email' });
 
     if (error) throw error;
+    await supabase.from('profiles').update({ is_writer: true }).eq('id', currentState.user.id);
     await syncAuth();
   };
 
   const addBook = async (
-    book: Omit<Book, "id" | "rating" | "reviews" | "status" | "cover">, 
+    book: Partial<Book> & Pick<Book, "title" | "author" | "price" | "category">, 
     coverFile?: File, 
     pdfFile?: File
   ) => {
-    let coverUrl = "";
+    let coverUrl = book.cover || "";
     let pdfUrl = "";
 
     // 1. Upload Cover Image
@@ -365,10 +454,9 @@ export function useStore() {
         .from('book-covers')
         .upload(`covers/${fileName}`, coverFile);
       
-      if (!uploadError) {
-        const { data } = supabase.storage.from('book-covers').getPublicUrl(`covers/${fileName}`);
-        coverUrl = data.publicUrl;
-      }
+      if (uploadError) throw uploadError;
+      const { data } = supabase.storage.from('book-covers').getPublicUrl(`covers/${fileName}`);
+      coverUrl = data.publicUrl;
     }
 
     // 2. Upload PDF/EPUB File
@@ -379,29 +467,38 @@ export function useStore() {
         .from('book-covers')
         .upload(`ebooks/${fileName}`, pdfFile);
       
-      if (!uploadError) {
-        const { data } = supabase.storage.from('book-covers').getPublicUrl(`ebooks/${fileName}`);
-        pdfUrl = data.publicUrl;
-      }
+      if (uploadError) throw uploadError;
+      const { data } = supabase.storage.from('book-covers').getPublicUrl(`ebooks/${fileName}`);
+      pdfUrl = data.publicUrl;
     }
 
     // 3. Insert into DB
-    const { error } = await supabase.from('books').insert([{
+    const { data, error } = await supabase.from('books').insert([bookToDb({
       ...book,
       cover: coverUrl,
       pdf_url: pdfUrl,
       rating: 0,
       reviews: 0,
       status: "Published",
-    }]);
+    })]).select().single();
 
     if (error) throw error;
-    await syncAuth(); // Refresh books in state
+    if (data) {
+      const created = mapBookFromDb(data);
+      if (!currentState.books.some(b => b.id === created.id)) {
+        currentState.books = [created, ...currentState.books];
+        notify();
+      }
+    }
   };
 
   const updateBook = async (id: string, updates: Partial<Book>) => {
-    const { error } = await supabase.from('books').update(updates).eq('id', id);
+    const { data, error } = await supabase.from('books').update(bookToDb(updates)).eq('id', id).select().single();
     if (error) throw error;
+    if (data) {
+      currentState.books = currentState.books.map(b => b.id === id ? mapBookFromDb(data) : b);
+      notify();
+    }
   };
 
   const deleteBook = async (id: string) => {
@@ -410,8 +507,12 @@ export function useStore() {
   };
 
   const updateAuthor = async (id: string, updates: Partial<Author>) => {
-    const { error } = await supabase.from('authors').update(updates).eq('id', id);
+    const { data, error } = await supabase.from('authors').update(authorToDb(updates)).eq('id', id).select().single();
     if (error) throw error;
+    if (data) {
+      currentState.authors = currentState.authors.map(a => a.id === id ? mapAuthorFromDb(data) : a);
+      notify();
+    }
   };
 
   const deleteAuthor = async (id: string) => {
@@ -428,7 +529,10 @@ export function useStore() {
       .update({
         name: updates.name,
         avatar: updates.avatar,
-        bio: updates.bio
+        bio: updates.bio,
+        phone: updates.phone,
+        present_address: updates.presentAddress,
+        permanent_address: updates.permanentAddress
       })
       .eq('id', currentState.user.id);
     
@@ -441,7 +545,10 @@ export function useStore() {
         .update({
           name: updates.name,
           avatar: updates.avatar,
-          bio: updates.bio
+          bio: updates.bio,
+          phone: updates.phone,
+          present_address: updates.presentAddress,
+          permanent_address: updates.permanentAddress
         })
         .eq('email', currentState.user.email);
     }
@@ -495,6 +602,48 @@ export function useStore() {
     notify();
   };
 
+  const toggleFavoriteBook = async (bookId: string) => {
+    if (!currentState.user) throw new Error("Please login to save books.");
+    const isFavorite = currentState.favoriteBookIds.includes(bookId);
+    if (isFavorite) {
+      const { error } = await supabase
+        .from('favorite_books')
+        .delete()
+        .eq('user_id', currentState.user.id)
+        .eq('book_id', bookId);
+      if (error) throw error;
+      currentState.favoriteBookIds = currentState.favoriteBookIds.filter(id => id !== bookId);
+    } else {
+      const { error } = await supabase
+        .from('favorite_books')
+        .insert({ user_id: currentState.user.id, book_id: bookId });
+      if (error) throw error;
+      currentState.favoriteBookIds = [...currentState.favoriteBookIds, bookId];
+    }
+    notify();
+  };
+
+  const toggleAuthorFollow = async (authorId: string) => {
+    if (!currentState.user) throw new Error("Please login to follow authors.");
+    const isFollowing = currentState.followedAuthorIds.includes(authorId);
+    if (isFollowing) {
+      const { error } = await supabase
+        .from('author_follows')
+        .delete()
+        .eq('user_id', currentState.user.id)
+        .eq('author_id', authorId);
+      if (error) throw error;
+      currentState.followedAuthorIds = currentState.followedAuthorIds.filter(id => id !== authorId);
+    } else {
+      const { error } = await supabase
+        .from('author_follows')
+        .insert({ user_id: currentState.user.id, author_id: authorId });
+      if (error) throw error;
+      currentState.followedAuthorIds = [...currentState.followedAuthorIds, authorId];
+    }
+    notify();
+  };
+
   // Utility Functions
   const getFilteredBooks = () => {
     if (!state.searchQuery) return state.books;
@@ -528,15 +677,15 @@ export function useStore() {
     
     // Map camelCase to snake_case for DB
     const dbSettings: any = {};
-    if (newSettings.heroTitle) dbSettings.hero_title = newSettings.heroTitle;
-    if (newSettings.heroSubtitle) dbSettings.hero_subtitle = newSettings.heroSubtitle;
-    if (newSettings.heroDescription) dbSettings.hero_description = newSettings.heroDescription;
-    if (newSettings.heroCtaText) dbSettings.hero_cta_text = newSettings.heroCtaText;
-    if (newSettings.heroSecondaryCtaText) dbSettings.hero_secondary_cta_text = newSettings.heroSecondaryCtaText;
-    if (newSettings.featuredAuthorName) dbSettings.featured_author_name = newSettings.featuredAuthorName;
-    if (newSettings.featuredAuthorRating) dbSettings.featured_author_rating = newSettings.featuredAuthorRating;
-    if (newSettings.totalReadersCount) dbSettings.total_readers_count = newSettings.totalReadersCount;
-    if (newSettings.authorsCountText) dbSettings.authors_count_text = newSettings.authorsCountText;
+    if ("heroTitle" in newSettings) dbSettings.hero_title = newSettings.heroTitle;
+    if ("heroSubtitle" in newSettings) dbSettings.hero_subtitle = newSettings.heroSubtitle;
+    if ("heroDescription" in newSettings) dbSettings.hero_description = newSettings.heroDescription;
+    if ("heroCtaText" in newSettings) dbSettings.hero_cta_text = newSettings.heroCtaText;
+    if ("heroSecondaryCtaText" in newSettings) dbSettings.hero_secondary_cta_text = newSettings.heroSecondaryCtaText;
+    if ("featuredAuthorName" in newSettings) dbSettings.featured_author_name = newSettings.featuredAuthorName;
+    if ("featuredAuthorRating" in newSettings) dbSettings.featured_author_rating = newSettings.featuredAuthorRating;
+    if ("totalReadersCount" in newSettings) dbSettings.total_readers_count = newSettings.totalReadersCount;
+    if ("authorsCountText" in newSettings) dbSettings.authors_count_text = newSettings.authorsCountText;
 
     const { error } = await supabase.from('site_settings').update(dbSettings).eq('id', 1);
     if (error) console.error("Error updating site settings:", error);
@@ -611,6 +760,8 @@ export function useStore() {
     removeFromCart,
     clearCart,
     setSearchQuery,
+    toggleFavoriteBook,
+    toggleAuthorFollow,
     getFilteredBooks,
     getMyBooks,
     getBookById,

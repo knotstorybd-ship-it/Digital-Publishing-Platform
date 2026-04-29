@@ -1,18 +1,18 @@
-import { useState } from "react";
 import { useParams, Link } from "react-router";
 import { Star, BookOpen, User, Award, ShieldCheck, Mail, MapPin, Globe, Share2, Heart } from "lucide-react";
 import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";
+import { useState } from "react";
 
 export function AuthorPage() {
   const { name } = useParams();
-  const { getAuthorByName, books } = useStore();
-  const [isFollowing, setIsFollowing] = useState(false);
+  const { getAuthorByName, books, followedAuthorIds, toggleAuthorFollow } = useStore();
   const [activeTab, setActiveTab] = useState("books");
   
   const author = getAuthorByName(name || "");
   const authorBooks = author ? books.filter((b) => b.author === author.name) : [];
+  const isFollowing = author ? followedAuthorIds.includes(author.id) : false;
 
   if (!author) {
     return (
@@ -97,7 +97,7 @@ export function AuthorPage() {
 
               <div className="flex flex-col gap-4">
                 <button 
-                  onClick={() => setIsFollowing(!isFollowing)}
+                  onClick={() => author && toggleAuthorFollow(author.id).catch(() => window.dispatchEvent(new CustomEvent("open-auth")))}
                   className={`w-full py-5 rounded-2xl font-black transition-all flex items-center justify-center gap-3 ${
                     isFollowing 
                       ? "bg-slate-100 text-slate-500" 

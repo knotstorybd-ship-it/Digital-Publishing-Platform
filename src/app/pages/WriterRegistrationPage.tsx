@@ -69,27 +69,29 @@ const plans = [
   }
 ];
 
+const getPlanFromSearch = (search: string) => {
+  const planId = new URLSearchParams(search).get("plan");
+  return plans.find((plan) => plan.id === planId) || plans[1];
+};
+
 export function WriterRegistrationPage() {
-  const [step, setStep] = useState(1);
-  const [selectedPlan, setSelectedPlan] = useState(plans[1]);
+  const location = useLocation();
+  const initialPlan = getPlanFromSearch(location.search);
+  const [step, setStep] = useState(() => (new URLSearchParams(location.search).get("plan") ? 2 : 1));
+  const [selectedPlan, setSelectedPlan] = useState(initialPlan);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
   const { user, signInWithGoogle } = useStore();
 
   // Detect plan from URL
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const planId = params.get('plan');
-    if (planId) {
-      const plan = plans.find(p => p.id === planId);
-      if (plan) {
-        setSelectedPlan(plan);
-        setStep(2); // Jump to account step if plan is pre-selected
-      }
+    const plan = getPlanFromSearch(location.search);
+    setSelectedPlan(plan);
+    if (!user) {
+      setStep(new URLSearchParams(location.search).get("plan") ? 2 : 1);
     }
-  }, [location]);
+  }, [location.search, user]);
 
   const [formData, setFormData] = useState({
     name: "",
