@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { 
   BookOpen, Zap, TrendingUp, ArrowRight, Star, Shield, Users, Quote, Edit3, Sparkles, ShoppingBag, 
   Rocket, Target, Trophy, CheckCircle2, Eye 
@@ -9,11 +9,27 @@ import heroMain from "../../images/Hero_image.png";
 import { useStore } from "../store/useStore";
 
 export function HomePage() {
-  const { books, addToCart, user, authors, siteSettings, testimonials, addTestimonial, profilesCount } = useStore();
+  const { books, addToCart, user, authors, siteSettings, testimonials, addTestimonial, profilesCount, loading } = useStore();
   const [newTestimonial, setNewTestimonial] = useState("");
   const [guestName, setGuestName] = useState("");
   const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  // Redirect writers to dashboard automatically
+  useEffect(() => {
+    if (!loading && user?.isWriter) {
+      navigate("/writer");
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="w-16 h-16 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const popularBooks = [...books].sort((a, b) => b.rating - a.rating).slice(0, 4);
   const approvedTestimonials = testimonials.filter(t => t.is_approved);
