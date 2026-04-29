@@ -53,7 +53,9 @@ export function AdminDashboardPage() {
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   
   // Admin Login State
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
+    return localStorage.getItem("admin_authenticated") === "true";
+  });
   const [adminUsername, setAdminUsername] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [loginError, setLoginError] = useState("");
@@ -63,6 +65,7 @@ export function AdminDashboardPage() {
     e.preventDefault();
     if (adminUsername === "admin" && adminPassword === "2026dp") {
       setIsAdminAuthenticated(true);
+      localStorage.setItem("admin_authenticated", "true");
       setLoginError("");
     } else {
       setLoginError("ভুল ইউজারনেম অথবা পাসওয়ার্ড!");
