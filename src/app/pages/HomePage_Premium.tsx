@@ -77,12 +77,12 @@ export function HomePage() {
             </div>
             
             <div className="space-y-4">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black text-emerald-950 leading-tight py-2 tracking-tight mx-auto">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-emerald-950 leading-tight py-2 tracking-tight mx-auto">
                 {siteSettings.heroTitle} <br />
                 <span className="bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent py-2 px-1 inline-block">{siteSettings.heroSubtitle}</span>
               </h1>
 
-              <p className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed px-4">
                 {siteSettings.heroDescription}
               </p>
             </div>
@@ -90,7 +90,7 @@ export function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
               <Link 
                 to={user?.isWriter ? "/writer" : "/join-writer"} 
-                className="group relative px-8 py-5 bg-emerald-600 text-white rounded-2xl font-black text-lg shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 overflow-hidden w-full sm:w-auto"
+                className="group relative px-6 py-4 md:px-8 md:py-5 bg-emerald-600 text-white rounded-2xl font-black text-base md:text-lg shadow-xl shadow-emerald-600/30 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 overflow-hidden w-full sm:w-auto"
               >
                 <span className="relative z-10">{user?.isWriter ? "ড্যাশবোর্ডে প্রবেশ করুন" : siteSettings.heroCtaText}</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
@@ -98,7 +98,7 @@ export function HomePage() {
               </Link>
               <Link 
                 to="/browse" 
-                className="px-8 py-5 bg-slate-50 text-emerald-950 rounded-2xl font-black text-lg hover:bg-slate-100 transition-all border border-slate-200/50 w-full sm:w-auto text-center"
+                className="px-6 py-4 md:px-8 md:py-5 bg-slate-50 text-emerald-950 rounded-2xl font-black text-base md:text-lg hover:bg-slate-100 transition-all border border-slate-200/50 w-full sm:w-auto text-center"
               >
                 {siteSettings.heroSecondaryCtaText}
               </Link>
@@ -108,9 +108,9 @@ export function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12">
             {[
               { label: "Total Books", value: books.length, icon: BookOpen, color: "emerald" },
               { label: "Active Authors", value: authors.length, icon: Edit3, color: "blue" },
@@ -142,11 +142,11 @@ export function HomePage() {
       </section>
 
       {/* Featured Books Section */}
-      <section className="py-24 bg-slate-50/50">
+      <section className="py-16 md:py-24 bg-slate-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-end mb-12">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 md:mb-12 gap-4">
             <div>
-              <h2 className="text-3xl md:text-5xl font-black text-emerald-950 mb-4 tracking-tight">জনপ্রিয় বইসমূহ</h2>
+              <h2 className="text-3xl md:text-5xl font-black text-emerald-950 mb-2 md:mb-4 tracking-tight">জনপ্রিয় বইসমূহ</h2>
               <p className="text-slate-500 font-medium">পাঠকদের পছন্দের তালিকায় থাকা সেরা কিছু বই</p>
             </div>
             <Link to="/browse" className="hidden md:flex items-center gap-2 text-emerald-600 font-black hover:gap-3 transition-all">
@@ -154,7 +154,7 @@ export function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
             {popularBooks.map((book, i) => (
               <motion.div
                 key={book.id}
@@ -162,31 +162,33 @@ export function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group bg-white rounded-[2rem] overflow-hidden shadow-xl shadow-emerald-900/5 border border-emerald-100/20 hover:shadow-2xl transition-all"
+                className="group bg-white rounded-2xl md:rounded-[2rem] overflow-hidden shadow-lg shadow-emerald-900/5 border border-emerald-100/20 hover:shadow-2xl transition-all flex flex-col"
               >
                 <div className="relative aspect-[3/4] overflow-hidden">
                   <img src={book.cover} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 </div>
-                <div className="p-6">
+                <div className="p-4 md:p-6 flex flex-col flex-grow">
                   <div className="flex items-center gap-1 mb-2">
-                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    <span className="text-sm font-black text-emerald-950">{book.rating}</span>
+                    <Star className="w-3 h-3 md:w-4 md:h-4 fill-amber-400 text-amber-400" />
+                    <span className="text-xs md:text-sm font-black text-emerald-950">{book.rating}</span>
                   </div>
-                  <h3 className="font-black text-emerald-950 mb-1 line-clamp-1">{book.title}</h3>
-                  <p className="text-xs font-bold text-slate-400">{book.author}</p>
+                  <h3 className="font-black text-sm md:text-base text-emerald-950 mb-1 line-clamp-1">{book.title}</h3>
+                  <p className="text-[10px] md:text-xs font-bold text-slate-400 line-clamp-1 mb-2 md:mb-4">{book.author}</p>
                   
-                  <div className="mt-4 flex flex-col gap-3">
+                  <div className="mt-auto flex flex-col gap-2 md:gap-3">
                     <div className="flex items-center justify-between">
-                      <div className="text-lg font-black text-emerald-600">৳{book.price}</div>
-                      <Link to={`/book/${book.id}`} className="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
-                        <Eye className="w-5 h-5" />
+                      <div className="text-base md:text-lg font-black text-emerald-600">৳{book.price}</div>
+                      <Link to={`/book/${book.id}`} className="p-1.5 md:p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
+                        <Eye className="w-4 h-4 md:w-5 md:h-5" />
                       </Link>
                     </div>
                     <button 
                       onClick={() => addToCart(book)}
-                      className="w-full py-3 bg-emerald-50 text-emerald-700 rounded-xl font-black hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-2"
+                      className="w-full py-2 md:py-3 bg-emerald-50 text-emerald-700 rounded-xl font-black text-xs md:text-sm hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-1 md:gap-2"
                     >
-                      <ShoppingBag className="w-4 h-4" /> কার্টে যোগ করুন
+                      <ShoppingBag className="w-3 h-3 md:w-4 md:h-4" /> 
+                      <span className="hidden sm:inline">কার্টে যোগ করুন</span>
+                      <span className="sm:hidden">কার্টে নিন</span>
                     </button>
                   </div>
                 </div>
@@ -197,10 +199,10 @@ export function HomePage() {
       </section>
 
       {/* Subscription Plans Section */}
-      <section className="py-24 bg-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-50 rounded-full blur-[120px] -mr-64 -mt-64 opacity-50"></div>
+      <section className="py-16 md:py-24 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-emerald-50 rounded-full blur-[80px] md:blur-[120px] -mr-32 md:-mr-64 -mt-32 md:-mt-64 opacity-50"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12 md:mb-20">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -209,16 +211,16 @@ export function HomePage() {
             >
               <Sparkles className="w-4 h-4" /> লেখক হওয়ার সুযোগ
             </motion.div>
-            <h2 className="text-4xl md:text-6xl font-black text-emerald-950 tracking-tight leading-tight mb-6">
+            <h2 className="text-3xl md:text-6xl font-black text-emerald-950 tracking-tight leading-tight mb-4 md:mb-6">
               আপনার সৃজনশীলতা <br />
               প্রকাশ করুন <span className="text-emerald-600">সঠিক প্ল্যানে</span>
             </h2>
-            <p className="text-slate-500 font-medium text-lg max-w-2xl mx-auto">
+            <p className="text-slate-500 font-medium text-base md:text-lg max-w-2xl mx-auto px-4">
               আমাদের বিশেষ প্যাকেজগুলো থেকে আপনার জন্য সেরাটি বেছে নিন এবং আপনার সাহিত্যিক যাত্রা শুরু করুন।
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {[
               {
                 id: "plan1",
@@ -255,7 +257,7 @@ export function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className={`relative p-10 rounded-[3rem] border-2 transition-all duration-500 bg-white group hover:shadow-2xl hover:shadow-emerald-950/10 ${
+                className={`relative p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border-2 transition-all duration-500 bg-white group hover:shadow-2xl hover:shadow-emerald-950/10 ${
                   plan.popular ? "border-emerald-500 shadow-xl" : "border-slate-100 hover:border-emerald-200"
                 }`}
               >
@@ -301,15 +303,15 @@ export function HomePage() {
       </section>
 
       {/* Dynamic Testimonials Section */}
-      <section className="py-24 relative bg-white overflow-hidden">
+      <section className="py-16 md:py-24 relative bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-black text-emerald-950 tracking-tight leading-tight">
+          <div className="text-center mb-12 md:mb-20">
+            <h2 className="text-3xl md:text-6xl font-black text-emerald-950 tracking-tight leading-tight">
               আমাদের কমিউনিটি <span className="text-emerald-600">কী বলছে</span>
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16">
             <div className="space-y-8">
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-emerald-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-600/20">
@@ -359,7 +361,7 @@ export function HomePage() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="bg-emerald-950 rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl"
+                className="bg-emerald-950 rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-10 text-white relative overflow-hidden shadow-2xl"
               >
                 {!hasSubmitted ? (
                   <>
@@ -447,12 +449,12 @@ export function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-emerald-950"></div>
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] -mr-32 -mt-32"></div>
+        <div className="absolute top-0 right-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-emerald-500/10 rounded-full blur-[80px] md:blur-[120px] -mr-32 -mt-32"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="bg-gradient-to-br from-emerald-500/10 to-transparent p-12 md:p-24 rounded-[4rem] border border-white/5 text-center">
+          <div className="bg-gradient-to-br from-emerald-500/10 to-transparent p-8 md:p-24 rounded-[2rem] md:rounded-[4rem] border border-white/5 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -463,33 +465,33 @@ export function HomePage() {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full mb-8"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full mb-6 md:mb-8"
               >
                 <Sparkles className="w-4 h-4 text-emerald-300" />
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100">আজই আপনার যাত্রা শুরু করুন</span>
               </motion.div>
               
-              <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tight leading-tight">
+              <h2 className="text-3xl md:text-7xl font-black text-white mb-6 md:mb-8 tracking-tight leading-tight">
                 আপনার পাণ্ডুলিপি <br />
                 এখনই <span className="text-emerald-400">প্রকাশ করুন</span>
               </h2>
               
-              <p className="text-emerald-50/60 text-lg md:text-xl mb-12 font-medium">
+              <p className="text-emerald-50/60 text-base md:text-xl mb-10 md:mb-12 font-medium">
                 হাজারো লেখক ইতিমধ্যে আমাদের প্ল্যাটফর্মে তাদের সাহিত্যিক ক্যারিয়ার গড়ে তুলেছেন। 
                 আপনি কি পিছিয়ে থাকবেন?
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
                 <Link 
                   to={user?.isWriter ? "/writer" : "/join-writer"} 
-                  className="group px-12 py-6 bg-white text-emerald-950 rounded-3xl font-black text-xl shadow-2xl hover:scale-105 transition-all flex items-center gap-3"
+                  className="w-full sm:w-auto group px-8 py-5 md:px-12 md:py-6 bg-white text-emerald-950 rounded-2xl md:rounded-3xl font-black text-lg md:text-xl shadow-2xl hover:scale-105 transition-all flex items-center justify-center gap-3"
                 >
                   {user?.isWriter ? "ড্যাশবোর্ডে প্রবেশ করুন" : "লেখক হিসেবে যোগ দিন"}
-                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 md:w-6 md:h-6 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link 
                   to="/browse" 
-                  className="px-12 py-6 bg-emerald-800/40 text-white border-2 border-white/20 backdrop-blur-md rounded-3xl font-black text-xl hover:bg-emerald-800/60 transition-all"
+                  className="w-full sm:w-auto px-8 py-5 md:px-12 md:py-6 bg-emerald-800/40 text-white border-2 border-white/20 backdrop-blur-md rounded-2xl md:rounded-3xl font-black text-lg md:text-xl hover:bg-emerald-800/60 transition-all text-center"
                 >
                   বইসমূহ দেখুন
                 </Link>
