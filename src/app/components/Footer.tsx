@@ -98,7 +98,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-8 text-center text-sm text-white/80">
-          © 2026 Digital Prokashoni. All rights reserved. • <Link to="/admin" className="hover:text-white transition-colors">Admin Dashboard</Link>
+          © {new Date().getFullYear()} Digital Prokashoni. All rights reserved.
         </div>
       </div>
     </footer>

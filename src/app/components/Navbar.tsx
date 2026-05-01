@@ -76,8 +76,8 @@ export function Navbar() {
       <nav 
         className={`sticky top-0 z-50 transition-all duration-500 ${
           isScrolled 
-            ? "py-3 bg-white/70 backdrop-blur-xl border-b border-emerald-50/50 shadow-[0_8px_32px_rgba(6,78,59,0.05)]" 
-            : "py-6 bg-white border-b border-transparent"
+            ? "py-3 bg-white/80 backdrop-blur-2xl border-b border-emerald-100 shadow-[0_12px_40px_rgba(6,78,59,0.08)]" 
+            : "py-6 bg-white/95 backdrop-blur-sm border-b border-slate-100 shadow-sm"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,6 +99,18 @@ export function Navbar() {
                     <Link to="/join-writer" className="relative group py-2">
                       <span className="text-sm font-bold text-emerald-950/70 group-hover:text-emerald-950 transition-colors uppercase tracking-widest">
                         লেখক হন
+                      </span>
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-600 transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                    <Link to="/about" className="relative group py-2">
+                      <span className="text-sm font-bold text-emerald-950/70 group-hover:text-emerald-950 transition-colors uppercase tracking-widest">
+                        আমাদের সম্পর্কে
+                      </span>
+                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-600 transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                    <Link to="/contact" className="relative group py-2">
+                      <span className="text-sm font-bold text-emerald-950/70 group-hover:text-emerald-950 transition-colors uppercase tracking-widest">
+                        যোগাযোগ
                       </span>
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-emerald-600 transition-all duration-300 group-hover:w-full"></span>
                     </Link>
@@ -331,6 +343,8 @@ export function Navbar() {
               <div className="px-6 py-10 space-y-6">
                 <Link to="/browse" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>সব বই</Link>
                 <Link to="/join-writer" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>লেখক হন</Link>
+                <Link to="/about" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>আমাদের সম্পর্কে</Link>
+                <Link to="/contact" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>যোগাযোগ</Link>
                 <Link to="/checkout" className="flex items-center justify-between text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>
                   <span>কার্ট</span>
                   {cart.length > 0 && (
