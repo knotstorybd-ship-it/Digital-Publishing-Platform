@@ -341,13 +341,25 @@ const initSupabase = async () => {
       if (payload.eventType === 'DELETE') currentState.testimonials = currentState.testimonials.filter(t => t.id !== payload.old.id);
       notify();
     })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, async (payload) => {
       if (payload.eventType === 'INSERT') {
         currentState.orders = [payload.new as Order, ...currentState.orders];
         currentState.ordersCount++;
-        // If the user is a writer, we might need to re-fetch to ensure correct data
-        // For now, adding it to the local list is enough for immediate UI feedback
+        // Re-fetch author orders if relevant
+        if (currentState.user?.isWriter) {
+          const myBookIds = currentState.books
+            .filter(b => b.author === currentState.user?.name)
+            .map(b => b.id);
+          if (myBookIds.includes(payload.new.book_id)) {
+            // Already added to local orders, but notify to refresh UI
+          }
+        }
       }
+      notify();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, (payload) => {
+      if (payload.eventType === 'INSERT') currentState.profilesCount++;
+      if (payload.eventType === 'DELETE') currentState.profilesCount--;
       notify();
     })
     .subscribe();
@@ -498,6 +510,14 @@ export function useStore() {
       const created = mapBookFromDb(data);
       if (!currentState.books.some(b => b.id === created.id)) {
         currentState.books = [created, ...currentState.books];
+        
+        // Update author's book count in DB
+        const author = currentState.authors.find(a => a.name === book.author);
+        if (author) {
+          const newCount = (author.bookCount || 0) + 1;
+          await supabase.from('authors').update({ book_count: newCount }).eq('id', author.id);
+        }
+        
         notify();
       }
     }
