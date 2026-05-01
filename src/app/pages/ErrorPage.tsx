@@ -1,6 +1,5 @@
 import { useRouteError, isRouteErrorResponse, Link } from "react-router";
 import { AlertCircle, Home, RefreshCw, MessageSquare } from "lucide-react";
-import { motion } from "motion/react";
 import { SEO } from "../components/SEO";
 
 export function ErrorPage() {
@@ -22,11 +21,7 @@ export function ErrorPage() {
       <SEO title={`Error ${statusCode}`} />
       
       <div className="max-w-2xl w-full text-center relative">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="relative z-10"
-        >
+        <div className="relative z-10">
           <div className="w-32 h-32 bg-white rounded-[3rem] shadow-2xl border border-slate-100 flex items-center justify-center mx-auto mb-10 relative">
              <div className="absolute inset-0 bg-rose-500/5 blur-[40px] rounded-full animate-pulse"></div>
              <AlertCircle className="w-16 h-16 text-rose-500 relative z-10" />
@@ -47,7 +42,7 @@ export function ErrorPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => window.location.reload()}
-              className="flex-1 py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-105 transition-all flex items-center justify-center gap-3"
+              className="flex-1 py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3"
             >
               <RefreshCw className="w-5 h-5" />
               আবার চেষ্টা করুন
@@ -71,7 +66,7 @@ export function ErrorPage() {
                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Digital Prokashoni v1.0</span>
              </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Decorative elements */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] pointer-events-none -z-10 overflow-hidden">

@@ -3,7 +3,6 @@ import { BookCard } from "../components/BookCard";
 import { Search, Filter, SlidersHorizontal, BookOpen, Sparkles, TrendingUp, Grid, List } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { useSearchParams } from "react-router";
-import { motion, AnimatePresence } from "motion/react";
 import { SEO } from "../components/SEO";
 import { BookCardSkeleton } from "../components/Skeleton";
 
@@ -40,14 +39,10 @@ export function BrowsePage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-8">
           <div className="space-y-4">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100"
-            >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
               <BookOpen className="w-4 h-4" />
               <span className="text-[10px] font-black uppercase tracking-widest">বইয়ের বিশাল সংগ্রহশালা</span>
-            </motion.div>
+            </div>
             <h1 className="text-4xl md:text-6xl font-black text-emerald-950 tracking-tight leading-tight">
               আপনার পছন্দের <br />
               <span className="text-emerald-600">বই খুঁজে নিন</span>
@@ -123,7 +118,7 @@ export function BrowsePage() {
             </div>
           </div>
 
-          <AnimatePresence mode="popLayout">
+          <div>
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-8">
                 {[...Array(8)].map((_, i) => (
@@ -131,27 +126,20 @@ export function BrowsePage() {
                 ))}
               </div>
             ) : filteredBooks.length > 0 ? (
-              <motion.div 
-                layout
+              <div 
                 className={`grid gap-8 ${viewType === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6' : 'grid-cols-1'}`}
               >
                 {filteredBooks.map((book) => (
-                  <motion.div
+                  <div
                     key={book.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
+                    className="opacity-100"
                   >
                     <BookCard key={book.id} {...book} />
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
             ) : (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+              <div 
                 className="text-center py-32 bg-white rounded-[4rem] border-2 border-dashed border-slate-100"
               >
                 <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center text-slate-200 mx-auto mb-8">
@@ -167,9 +155,9 @@ export function BrowsePage() {
                 >
                   ফিল্টার ক্লিয়ার করুন
                 </button>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>

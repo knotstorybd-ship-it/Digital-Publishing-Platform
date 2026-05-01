@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
-import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, Maximize2, Minimize2, ChevronLeft, ChevronRight, Settings, Info, Share2, Download, Printer } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -40,11 +39,7 @@ export function ReaderPage() {
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-white flex flex-col h-screen overflow-hidden selection:bg-emerald-500/30">
       {/* Header Bar */}
-      <motion.div 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="h-20 bg-black/40 backdrop-blur-xl border-b border-white/5 px-8 flex items-center justify-between z-50 shrink-0"
-      >
+      <div className="h-20 bg-black/40 backdrop-blur-xl border-b border-white/5 px-8 flex items-center justify-between z-50 shrink-0">
         <div className="flex items-center gap-6">
           <button 
             onClick={() => navigate(-1)}
@@ -90,13 +85,11 @@ export function ReaderPage() {
             <Download className="w-5 h-5" />
           </a>
         </div>
-      </motion.div>
+      </div>
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-auto bg-slate-900/50 relative flex justify-center p-4 md:p-12 scrollbar-hide">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+        <div 
           style={{ width: `${zoom}%`, maxWidth: '1000px' }}
           className="bg-white rounded-lg shadow-[0_50px_100px_rgba(0,0,0,0.5)] origin-top min-h-full"
         >

@@ -1,10 +1,3 @@
-import { motion } from "motion/react";
-
-interface SkeletonProps {
-  className?: string;
-  variant?: "rect" | "circle" | "text";
-}
-
 export function Skeleton({ className = "", variant = "rect" }: SkeletonProps) {
   const baseClass = "bg-slate-100 relative overflow-hidden";
   const variantClass = 
@@ -14,17 +7,7 @@ export function Skeleton({ className = "", variant = "rect" }: SkeletonProps) {
 
   return (
     <div className={`${baseClass} ${variantClass} ${className}`}>
-      <motion.div
-        animate={{
-          x: ["-100%", "100%"],
-        }}
-        transition={{
-          repeat: Infinity,
-          duration: 1.5,
-          ease: "linear",
-        }}
-        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full h-full"
-      />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-full h-full animate-[shimmer_1.5s_infinite]" />
     </div>
   );
 }

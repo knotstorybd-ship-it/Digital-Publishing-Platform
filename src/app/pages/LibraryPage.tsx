@@ -47,11 +47,7 @@ export function LibraryPage() {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
         <div className="mb-16">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12"
-          >
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
             <div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-600/20">
@@ -97,11 +93,9 @@ export function LibraryPage() {
         ) : purchasedBooks.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
             {filteredBooks.map((book, i) => (
-              <motion.div
+              <div
                 key={book.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
+                className="opacity-100"
               >
                 <div className="group relative">
                   <BookCard {...book} />
@@ -114,7 +108,7 @@ export function LibraryPage() {
                     </Link>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
             {filteredBooks.length === 0 && search && (
               <div className="col-span-full py-32 text-center bg-white rounded-[4rem] border border-dashed border-slate-200">

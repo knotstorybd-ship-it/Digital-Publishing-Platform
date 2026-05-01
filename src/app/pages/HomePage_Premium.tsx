@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { 
   BookOpen, Zap, TrendingUp, ArrowRight, Star, Shield, Users, Quote, Edit3, Sparkles, ShoppingBag, 
@@ -123,7 +122,7 @@ export function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
               <Link 
                 to={user?.isWriter ? "/writer" : "/join-writer"} 
-                className="group relative px-6 py-4 md:px-8 md:py-5 bg-emerald-600 text-white rounded-2xl font-black text-base md:text-lg shadow-xl shadow-emerald-600/30 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 overflow-hidden w-full sm:w-auto"
+                className="group relative px-6 py-4 md:px-8 md:py-5 bg-emerald-600 text-white rounded-2xl font-black text-base md:text-lg shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 overflow-hidden w-full sm:w-auto"
               >
                 <span className="relative z-10">{user?.isWriter ? "ড্যাশবোর্ডে প্রবেশ করুন" : siteSettings.heroCtaText}</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
@@ -150,13 +149,9 @@ export function HomePage() {
               { label: "Happy Readers", value: profilesCount, icon: Users, color: "amber" },
               { label: "Verified Reviews", value: approvedTestimonials.length, icon: Star, color: "rose" }
             ].map((stat, i) => (
-              <motion.div
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center space-y-3"
+                className="text-center space-y-3 opacity-100"
               >
                 <div className={`w-12 h-12 mx-auto rounded-2xl flex items-center justify-center ${
                   stat.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' :
@@ -168,7 +163,7 @@ export function HomePage() {
                 </div>
                 <div className="text-3xl font-black text-emerald-950">{stat.value}</div>
                 <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

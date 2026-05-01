@@ -1,6 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { AlertTriangle, RotateCcw, Home, MessageSquare } from "lucide-react";
-import { motion } from "motion/react";
 
 interface Props {
   children?: ReactNode;
@@ -28,11 +27,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-[#fafbfc] flex items-center justify-center p-6 text-center">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-xl w-full"
-          >
+          <div className="max-w-xl w-full">
             <div className="w-24 h-24 bg-rose-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-rose-500 border border-rose-100 shadow-xl shadow-rose-500/5">
               <AlertTriangle className="w-12 h-12" />
             </div>
@@ -58,7 +53,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={() => window.location.reload()}
-                className="flex-1 py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-105 transition-all flex items-center justify-center gap-3"
+                className="flex-1 py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3"
               >
                 <RotateCcw className="w-5 h-5" />
                 আবার চেষ্টা করুন
@@ -79,11 +74,11 @@ export class ErrorBoundary extends Component<Props, State> {
                <span className="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Digital Prokashoni v1.0</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       );
     }
 
-    return this.children;
+    return this.props.children;
   }
 }
