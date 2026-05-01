@@ -294,7 +294,12 @@ const syncAuth = async () => {
   }
 };
 
+let _initialized = false;
+let _authListenerSet = false;
+
 const initSupabase = async () => {
+  if (_initialized) return;
+  _initialized = true;
   setLoading(true);
   try {
     const [booksRes, authorsRes, settingsRes, testimonialsRes, profilesRes, ordersRes] = await Promise.all([
@@ -380,15 +385,41 @@ const initSupabase = async () => {
     .subscribe();
 };
 
+// --- AUTH STATE CHANGE LISTENER (runs once at module load) ---
+const setupAuthListener = () => {
+  if (_authListenerSet) return;
+  _authListenerSet = true;
+  
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log('[Auth Event]', event, session?.user?.email);
+    
+    if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+      // User just logged in (e.g. Google OAuth redirect) or token refreshed
+      await syncAuth();
+    }
+    
+    if (event === 'SIGNED_OUT') {
+      currentState.user = null;
+      currentState.orders = [];
+      currentState.favoriteBookIds = [];
+      currentState.followedAuthorIds = [];
+      currentState.reviews = [];
+      currentState.payoutRequests = [];
+      notify();
+    }
+  });
+};
+
+// Set up the listener immediately when this module loads
+setupAuthListener();
+
 export const useStore = () => {
   const [state, setState] = useState(currentState);
 
   useEffect(() => {
     const listener = (newState: State) => setState(newState);
     listeners.add(listener);
-    if (currentState.books.length === 0) {
-      initSupabase();
-    }
+    initSupabase();
     return () => {
       listeners.delete(listener);
     };
@@ -413,6 +444,7 @@ export const useStore = () => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    // State cleanup is handled by onAuthStateChange SIGNED_OUT event
   };
 
   const fetchAuthorOrders = async () => {
@@ -701,43 +733,65 @@ export const useStore = () => {
   const toggleFavoriteBook = async (bookId: string) => {
     if (!currentState.user) throw new Error("Please login to save books.");
     const isFavorite = currentState.favoriteBookIds.includes(bookId);
+    
+    // Update local state optimistically first
     if (isFavorite) {
-      const { error } = await supabase
-        .from('favorite_books')
-        .delete()
-        .eq('user_id', currentState.user.id)
-        .eq('book_id', bookId);
-      if (error) throw error;
       currentState.favoriteBookIds = currentState.favoriteBookIds.filter(id => id !== bookId);
     } else {
-      const { error } = await supabase
-        .from('favorite_books')
-        .insert({ user_id: currentState.user.id, book_id: bookId });
-      if (error) throw error;
       currentState.favoriteBookIds = [...currentState.favoriteBookIds, bookId];
     }
     notify();
+    
+    // Then sync to database
+    try {
+      if (isFavorite) {
+        const { error } = await supabase
+          .from('favorite_books')
+          .delete()
+          .eq('user_id', currentState.user.id)
+          .eq('book_id', bookId);
+        if (error) console.warn('Favorite DB sync error:', error.message);
+      } else {
+        const { error } = await supabase
+          .from('favorite_books')
+          .insert({ user_id: currentState.user.id, book_id: bookId });
+        if (error) console.warn('Favorite DB sync error:', error.message);
+      }
+    } catch (err) {
+      console.warn('Favorite toggle DB error:', err);
+    }
   };
 
   const toggleAuthorFollow = async (authorId: string) => {
     if (!currentState.user) throw new Error("Please login to follow authors.");
     const isFollowing = currentState.followedAuthorIds.includes(authorId);
+    
+    // Update local state optimistically first
     if (isFollowing) {
-      const { error } = await supabase
-        .from('author_follows')
-        .delete()
-        .eq('user_id', currentState.user.id)
-        .eq('author_id', authorId);
-      if (error) throw error;
       currentState.followedAuthorIds = currentState.followedAuthorIds.filter(id => id !== authorId);
     } else {
-      const { error } = await supabase
-        .from('author_follows')
-        .insert({ user_id: currentState.user.id, author_id: authorId });
-      if (error) throw error;
       currentState.followedAuthorIds = [...currentState.followedAuthorIds, authorId];
     }
     notify();
+    
+    // Then sync to database
+    try {
+      if (isFollowing) {
+        const { error } = await supabase
+          .from('author_follows')
+          .delete()
+          .eq('user_id', currentState.user.id)
+          .eq('author_id', authorId);
+        if (error) console.warn('Follow DB sync error:', error.message);
+      } else {
+        const { error } = await supabase
+          .from('author_follows')
+          .insert({ user_id: currentState.user.id, author_id: authorId });
+        if (error) console.warn('Follow DB sync error:', error.message);
+      }
+    } catch (err) {
+      console.warn('Follow toggle DB error:', err);
+    }
   };
 
   const getFilteredBooks = () => {
