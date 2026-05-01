@@ -42,10 +42,10 @@ export function Navbar() {
       setIsAuthOpen(false);
     } catch (err: any) {
       console.error(err);
-      if (err.message?.includes("rate limit")) {
-        setError("ইমেইল পাঠানোর লিমিট শেষ হয়ে গেছে। গুগল দিয়ে লগইন করার চেষ্টা করুন।");
+      if (err.message?.includes("rate limit") || err.message?.toLowerCase().includes("email")) {
+        setError("ইমেইল সার্ভারে সমস্যা হচ্ছে। দয়া করে গুগল দিয়ে লগইন করার চেষ্টা করুন।");
       } else {
-        setError("লগইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+        setError(`লগইন করতে সমস্যা হয়েছে (${err.message || 'Error'})। গুগল (Google) দিয়ে লগইন করুন।`);
       }
     }
   };
