@@ -58,3 +58,27 @@
 [2m2:21:48 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/LibraryPage.tsx, /src/styles/index.css[22m
 [2m2:22:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/ErrorPage.tsx, /src/styles/index.css[22m
 [2m2:22:15 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/NotFoundPage.tsx, /src/styles/index.css[22m
+[2m2:24:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/components/ErrorBoundary.tsx, /src/styles/index.css[22m
+[2m2:25:48 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/components/ErrorBoundary.tsx, /src/styles/index.css[22m
+[2m2:26:10 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/main.tsx[22m
+[2m2:26:20 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\components\Skeleton.tsx, /src/styles/index.css[22m
+[2m2:26:27 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles/index.css[22m
+[2m2:26:45 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/ReaderPage.tsx, /src/styles/index.css[22m
+[2m2:26:55 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/ReaderPage.tsx, /src/styles/index.css[22m
+[2m2:27:09 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/LibraryPage.tsx, /src/styles/index.css[22m
+[2m2:27:35 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/BrowsePage.tsx, /src/styles/index.css[22m
+[2m2:28:03 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/HomePage_Premium.tsx, /src/styles/index.css[22m
+[2m2:28:55 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\components\Navbar.tsx, /src/styles/index.css[22m
+[2m2:29:20 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\components\Navbar.tsx, /src/styles/index.css[22m
+[2m2:31:48 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/ErrorPage.tsx, /src/styles/index.css[22m
+[2m2:37:57 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/BookDetailPage.tsx, /src/styles/index.css[22m
+[2m2:38:08 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/BookDetailPage.tsx, /src/styles/index.css[22m
+[2m2:38:13 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/BookDetailPage.tsx, /src/styles/index.css[22m
+[2m2:38:59 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/WriterRegistrationPage.tsx, /src/styles/index.css[22m
+[2m2:39:23 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/app/pages/WriterDashboardPage.tsx[22m
+[2m2:40:04 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/CheckoutPage.tsx, /src/styles/index.css[22m
+[2m2:40:28 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/AuthorPage.tsx, /src/styles/index.css[22m
+[2m2:40:40 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/NotFoundPage.tsx, /src/styles/index.css[22m
+[2m2:41:49 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/AuthorDashboardPage.tsx, /src/styles/index.css[22m
+[2m2:43:10 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/HomePage_Premium.tsx, /src/styles/index.css[22m
+[2m2:43:27 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/app/pages/AdminDashboardPage.tsx, /src/styles/index.css[22m

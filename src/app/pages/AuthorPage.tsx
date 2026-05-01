@@ -1,185 +1,197 @@
+import { useParams, Link } from "react-router";
 import { useStore } from "../store/useStore";
-import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { SEO } from "../components/SEO";
+import { BookCard } from "../components/BookCard";
+import { Star, Users, BookOpen, Globe, Mail, Share2, Heart, Filter, ChevronDown, Rocket, ShieldCheck } from "lucide-react";
 
 export function AuthorPage() {
   const { name } = useParams();
-  const { getAuthorByName, books, followedAuthorIds, toggleAuthorFollow } = useStore();
+  const { getAuthorByName, books, followedAuthorIds, toggleAuthorFollow, user } = useStore();
   const [activeTab, setActiveTab] = useState("books");
   
-  const author = getAuthorByName(name || "");
-  const authorBooks = author ? books.filter((b) => b.author === author.name) : [];
-  const isFollowing = author ? followedAuthorIds.includes(author.id) : false;
+  const author = getAuthorByName(decodeURIComponent(name || ""));
+  const authorBooks = books.filter(b => b.author === author?.name);
+  const isFollowed = author ? followedAuthorIds.includes(author.id) : false;
 
   if (!author) {
     return (
-      <div className="min-h-screen bg-[#fafbfc] flex items-center justify-center p-4">
-        <SEO title="লেখক পাওয়া যায়নি" />
-        <div className="text-center space-y-6">
-          <div className="w-24 h-24 bg-slate-100 rounded-[2rem] flex items-center justify-center text-slate-300 mx-auto">
-            <User className="w-12 h-12" />
+      <div className="min-h-screen flex items-center justify-center pt-24">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center text-slate-300 mx-auto mb-6">
+            <Users className="w-10 h-10" />
           </div>
-          <h1 className="text-2xl font-black text-emerald-950">লেখককে পাওয়া যায়নি</h1>
-          <p className="text-slate-500">দুঃখিত, এই নামের কোনো লেখক আমাদের সিস্টেমে নেই।</p>
-          <Link to="/browse" className="inline-flex px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-lg shadow-emerald-600/20">
-            বইসমূহ দেখুন
-          </Link>
+          <h2 className="text-2xl font-black text-emerald-950 mb-2">লেখক পাওয়া যায়নি</h2>
+          <p className="text-slate-500 mb-8">দুঃখিত, এই লেখককে আমরা খুঁজে পাচ্ছি না।</p>
+          <Link to="/browse" className="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black">সব লেখক দেখুন</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] selection:bg-emerald-100">
-      <SEO 
-        title={`${author.name} - লেখক প্রোফাইল`}
-        description={author.bio?.slice(0, 160) || `${author.name}-এর প্রোফাইল এবং প্রকাশিত সকল বই দেখুন ডিজিটাল প্রকাশনীতে।`}
-        image={author.avatar}
-      />
-      {/* Hero Header */}
-      <div className="h-80 bg-emerald-950 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-          <div className="absolute -top-[50%] -left-[10%] w-[80%] h-[150%] bg-emerald-400 rounded-full blur-[120px]"></div>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 h-full flex items-end pb-12 relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col md:flex-row items-center md:items-end gap-8"
-          >
+    <div className="min-h-screen bg-[#fafbfc] pt-32 pb-20 selection:bg-emerald-100 selection:text-emerald-900">
+      <SEO title={`${author.name} - লেখক প্রোফাইল`} />
+      
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Author Header Card */}
+        <div className="bg-white rounded-[4rem] p-10 md:p-16 shadow-2xl shadow-slate-200/50 border border-slate-100 mb-12 relative overflow-hidden">
+          {/* Decorative Gradient Blob */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3"></div>
+          
+          <div className="relative flex flex-col md:flex-row items-center gap-12">
             <div className="relative group">
-              <div className="w-48 h-48 rounded-[3.5rem] overflow-hidden border-[6px] border-white shadow-2xl bg-white relative">
-                <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
+              <div className="w-48 h-48 rounded-[3.5rem] overflow-hidden border-8 border-white shadow-2xl relative z-10">
+                <img src={author.avatar} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               </div>
-              <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center border-4 border-white shadow-xl">
-                <Award className="w-6 h-6" />
-              </div>
+              <div className="absolute inset-0 bg-emerald-600/10 blur-[50px] rounded-full scale-90 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
 
-            <div className="text-center md:text-left pb-4">
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-4">
-                <span className="px-4 py-1 bg-white/10 backdrop-blur-md text-emerald-100 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10">
-                  Verified Author
-                </span>
-                <span className="px-4 py-1 bg-emerald-500/20 backdrop-blur-md text-emerald-300 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
-                  Elite Club
-                </span>
-              </div>
-              <h1 className="text-4xl md:text-6xl font-black text-white mb-4 tracking-tight">{author.name}</h1>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-emerald-100/60 font-bold">
-                <span className="flex items-center gap-2"><MapPin className="w-4 h-4" /> ঢাকা, বাংলাদেশ</span>
-                <span className="flex items-center gap-2"><Globe className="w-4 h-4" /> website.com</span>
-                <span className="flex items-center gap-2 text-emerald-400"><ShieldCheck className="w-4 h-4" /> ট্রাস্টেড লেখক</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid lg:grid-cols-12 gap-12">
-          {/* Sidebar */}
-          <div className="lg:col-span-4 space-y-8">
-            <div className="bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100">
-              <h3 className="text-lg font-black text-emerald-950 mb-6 uppercase tracking-widest">লেখকের বায়ো</h3>
-              <p className="text-slate-500 font-medium leading-relaxed mb-8">{author.bio}</p>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-6 bg-slate-50 rounded-3xl text-center">
-                  <div className="text-2xl font-black text-emerald-950">{author.bookCount}</div>
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">বই</div>
-                </div>
-                <div className="p-6 bg-slate-50 rounded-3xl text-center">
-                  <div className="text-2xl font-black text-emerald-950">{author.rating}</div>
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-secondary">রেটিং</div>
+            <div className="flex-1 text-center md:text-left">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-6">
+                <h1 className="text-5xl font-black text-emerald-950 tracking-tight">{author.name}</h1>
+                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                  <Star className="w-3 h-3 fill-emerald-600" /> Verified Author
                 </div>
               </div>
 
-              <div className="h-px bg-slate-50 my-10"></div>
+              <p className="text-slate-500 font-medium text-lg leading-relaxed mb-8 max-w-2xl italic">
+                "{author.bio || "আমি একজন স্বপ্নবাজ লেখক। শব্দ আর ভাবনার মেলবন্ধনে নতুন কিছু সৃষ্টির চেষ্টায় নিয়োজিত থাকি সবসময়।"}"
+              </p>
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap justify-center md:justify-start items-center gap-8 mb-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-black text-emerald-950">{authorBooks.length}</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">বইসমূহ</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600">
+                    <Star className="w-5 h-5 fill-amber-600" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-black text-emerald-950">{author.rating || "4.8"}</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">রেটিং</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-rose-600">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-black text-emerald-950">{(authorBooks.length * 42).toLocaleString()}+</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">পাঠক</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
                 <button 
-                  onClick={() => author && toggleAuthorFollow(author.id).catch(() => window.dispatchEvent(new CustomEvent("open-auth")))}
-                  className={`w-full py-5 rounded-2xl font-black transition-all flex items-center justify-center gap-3 ${
-                    isFollowing 
-                      ? "bg-slate-100 text-slate-500" 
-                      : "bg-emerald-600 text-white shadow-xl shadow-emerald-600/20 hover:bg-emerald-700"
+                  onClick={() => toggleAuthorFollow(author.id).catch(() => window.dispatchEvent(new CustomEvent("open-auth")))}
+                  className={`px-10 py-4 rounded-2xl font-black shadow-xl transition-all flex items-center gap-3 ${
+                    isFollowed 
+                      ? 'bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600' 
+                      : 'bg-emerald-600 text-white shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-105 active:scale-95'
                   }`}
                 >
-                  <Heart className={`w-5 h-5 ${isFollowing ? 'fill-rose-500 text-rose-500' : ''}`} />
-                  {isFollowing ? "ফলো করা হয়েছে" : "ফলো করুন"}
+                  {isFollowed ? 'Unfollow' : 'Follow Author'}
                 </button>
-                <div className="flex gap-4">
-                  <button className="flex-1 py-4 bg-white border-2 border-slate-100 text-slate-500 rounded-2xl font-black hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                    <Mail className="w-4 h-4" /> মেসেজ
+                <div className="flex items-center gap-2">
+                  <button className="p-4 bg-white border border-slate-100 rounded-2xl hover:bg-slate-50 transition-all text-slate-400 hover:text-emerald-600">
+                    <Share2 className="w-5 h-5" />
                   </button>
-                  <button className="p-4 bg-white border-2 border-slate-100 text-slate-500 rounded-2xl hover:bg-slate-50 transition-all">
-                    <Share2 className="w-4 h-4" />
+                  <button className="p-4 bg-white border border-slate-100 rounded-2xl hover:bg-slate-50 transition-all text-slate-400 hover:text-emerald-600">
+                    <Globe className="w-5 h-5" />
                   </button>
                 </div>
-              </div>
-            </div>
-
-            {/* Achievement Badges */}
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-[3rem] p-10 text-white">
-              <h3 className="text-lg font-black mb-8 uppercase tracking-widest opacity-60">অর্জনসমূহ</h3>
-              <div className="space-y-6">
-                {[
-                  { label: "বেস্ট সেলার ২০২৪", desc: "হাজারো কপি বিক্রিত", icon: Star },
-                  { label: "টপ ভেরিফাইড", desc: "বিশ্বস্ত সাহিত্যিক", icon: ShieldCheck },
-                ].map((badge, i) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
-                      <badge.icon className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p className="font-black tracking-tight">{badge.label}</p>
-                      <p className="text-xs text-white/60">{badge.desc}</p>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-8 space-y-12">
-            <div className="flex items-center gap-8 border-b border-slate-100 pb-2">
-              {[
-                { id: "books", label: "লেখকের বইসমূহ", icon: BookOpen },
-                { id: "about", label: "বিস্তারিত", icon: User },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`
-                    relative py-4 px-2 flex items-center gap-2 text-sm font-black transition-all
-                    ${activeTab === tab.id ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'}
-                  `}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                  {activeTab === tab.id && (
-                    <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 w-full h-1 bg-emerald-600 rounded-full" />
-                  )}
-                </button>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-              {authorBooks.map((book) => (
-                <BookCard key={book.id} {...book} />
-              ))}
-            </div>
-
-            {authorBooks.length === 0 && (
-              <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
-                <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center text-slate-300 mx-auto mb-6">
-                  <BookOpen className="w-10 h-10" />
+        {/* Author Content */}
+        <div className="flex flex-col lg:flex-row gap-12">
+          <div className="lg:w-80 shrink-0 space-y-8">
+            <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100">
+              <h3 className="text-sm font-black text-emerald-950 uppercase tracking-widest mb-6 flex items-center gap-3">
+                <div className="w-1 h-5 bg-emerald-600 rounded-full"></div>
+                লেখকের তথ্য
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">সদস্যপদ</p>
+                  <p className="font-bold text-emerald-950 flex items-center gap-2">
+                    <Rocket className="w-4 h-4 text-emerald-600" /> {author.subscriptionPlan || "Starter"}
+                  </p>
                 </div>
-                <p className="text-slate-400 font-bold">এই লেখকের কোনো বই এখনো প্রকাশিত হয়নি</p>
+                <div>
+                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">যোগদান</p>
+                  <p className="font-bold text-emerald-950">{new Date(author.joinDate).toLocaleDateString('bn-BD', { year: 'numeric', month: 'long' })}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">অবস্থান</p>
+                  <p className="font-bold text-emerald-950">ঢাকা, বাংলাদেশ</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-emerald-950 text-white p-8 rounded-[2.5rem] relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform duration-500">
+                <ShieldCheck className="w-20 h-20" />
+              </div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-500 mb-2">Exclusive Author</p>
+              <p className="font-black text-lg mb-6 leading-tight">ডিজিটাল প্রকাশনীর সকল এক্সক্লুসিভ বই সরাসরি লেখকের কাছ থেকে পান।</p>
+              <button className="w-full py-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-black uppercase tracking-widest transition-all">Support Author</button>
+            </div>
+          </div>
+
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-10">
+              <div className="flex items-center gap-8 border-b border-slate-100 flex-1">
+                <button 
+                  onClick={() => setActiveTab("books")}
+                  className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === 'books' ? 'text-emerald-600' : 'text-slate-300 hover:text-emerald-950'}`}
+                >
+                  বইসমূহ ({authorBooks.length})
+                  {activeTab === 'books' && <div className="absolute bottom-0 left-0 w-full h-1 bg-emerald-600 rounded-full"></div>}
+                </button>
+                <button 
+                  onClick={() => setActiveTab("series")}
+                  className={`pb-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === 'series' ? 'text-emerald-600' : 'text-slate-300 hover:text-emerald-950'}`}
+                >
+                  সিরিজ
+                  {activeTab === 'series' && <div className="absolute bottom-0 left-0 w-full h-1 bg-emerald-600 rounded-full"></div>}
+                </button>
+              </div>
+              <div className="hidden sm:flex items-center gap-4 ml-8">
+                <Filter className="w-4 h-4 text-slate-400" />
+                <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl text-xs font-black text-emerald-950 border border-slate-100 hover:bg-slate-50">
+                  সর্টিং <ChevronDown className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+
+            {activeTab === "books" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {authorBooks.map(book => (
+                  <BookCard key={book.id} book={book} />
+                ))}
+                {authorBooks.length === 0 && (
+                  <div className="col-span-full py-20 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
+                    <BookOpen className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                    <p className="text-slate-400 font-bold italic">এই লেখক এখনো কোনো বই প্রকাশ করেননি।</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "series" && (
+              <div className="py-20 text-center bg-white rounded-[3rem] border border-slate-100">
+                <p className="text-slate-400 font-black uppercase tracking-[0.2em]">শীঘ্রই আসছে...</p>
               </div>
             )}
           </div>

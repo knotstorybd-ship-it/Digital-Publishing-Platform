@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { 
   CheckCircle2, 
   User, 
@@ -238,16 +237,10 @@ export function WriterRegistrationPage() {
           ))}
         </div>
 
-        <AnimatePresence mode="wait">
+        <div>
           {/* Step 1: Plan Selection */}
           {step === 1 && (
-            <motion.div
-              key="step1"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-12"
-            >
+            <div className="space-y-12">
               <div className="text-center max-w-2xl mx-auto">
                 <h1 className="text-4xl md:text-6xl font-black text-emerald-950 mb-6 tracking-tight">আপনার লেখক যাত্রা <br /><span className="text-emerald-600">এখান থেকেই শুরু</span></h1>
                 <p className="text-slate-500 font-medium text-lg">আমাদের ৩টি বিশেষ সাবস্ক্রিপশন প্ল্যান থেকে আপনার পছন্দমতো একটি বেছে নিন।</p>
@@ -255,15 +248,14 @@ export function WriterRegistrationPage() {
 
               <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 {plans.map((plan) => (
-                  <motion.div
+                  <div
                     key={plan.id}
-                    whileHover={{ y: -10, borderColor: '#10b981' }}
                     onClick={() => {
                       setSelectedPlan(plan);
                       setStep(2);
                     }}
                     className={`
-                      relative p-10 rounded-[3rem] cursor-pointer transition-all duration-500 border-2
+                      relative p-10 rounded-[3rem] cursor-pointer transition-all duration-500 border-2 hover:border-emerald-500 hover:-translate-y-2
                       ${selectedPlan.id === plan.id 
                         ? 'bg-white border-emerald-500 shadow-2xl shadow-emerald-950/10' 
                         : 'bg-white/50 border-slate-50'}
@@ -302,21 +294,15 @@ export function WriterRegistrationPage() {
                     `}>
                       নির্বাচন করুন
                     </button>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Step 2: Account Creation */}
           {step === 2 && (
-            <motion.div
-              key="step2"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              className="max-w-2xl mx-auto"
-            >
+            <div className="max-w-2xl mx-auto">
               <div className="bg-white rounded-[3.5rem] p-10 md:p-16 shadow-[0_40px_80px_rgba(0,0,0,0.03)] border border-slate-50">
                 <div className="mb-12">
                   <h2 className="text-3xl font-black text-emerald-950 mb-3 tracking-tight">আপনার অ্যাকাউন্ট</h2>
@@ -408,8 +394,6 @@ export function WriterRegistrationPage() {
                     </div>
                   )}
 
-                  {/* Address and Phone removed for a simpler, faster onboarding */}
-
                   <div className="flex gap-4 pt-6">
                     <button
                       onClick={() => setStep(1)}
@@ -427,7 +411,7 @@ export function WriterRegistrationPage() {
                         setError("");
                         setStep(3);
                       }}
-                      className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-lg"
+                      className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 text-lg"
                     >
                       পরবর্তী ধাপ
                       <ArrowRight className="w-6 h-6" />
@@ -435,18 +419,12 @@ export function WriterRegistrationPage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Step 3: Profile Setup */}
           {step === 3 && (
-            <motion.div
-              key="step3"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              className="max-w-2xl mx-auto"
-            >
+            <div className="max-w-2xl mx-auto">
               <div className="bg-white rounded-[3.5rem] p-10 md:p-16 shadow-[0_40px_80px_rgba(0,0,0,0.03)] border border-slate-50">
                 <div className="mb-12 text-center">
                   <div className="relative inline-block group mb-8">
@@ -524,7 +502,7 @@ export function WriterRegistrationPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 text-lg"
+                      className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 text-lg"
                     >
                       {loading ? "লোডিং..." : "রেজিস্ট্রেশন সম্পন্ন করুন"}
                       <ArrowRight className="w-6 h-6" />
@@ -532,21 +510,16 @@ export function WriterRegistrationPage() {
                   </div>
                 </form>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Step 4: Success */}
           {step === 4 && (
-            <motion.div
-              key="step4"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="max-w-2xl mx-auto text-center"
-            >
+            <div className="max-w-2xl mx-auto text-center">
               <div className="bg-white rounded-[4rem] p-16 md:p-24 shadow-2xl relative overflow-hidden border border-emerald-50">
                 <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-emerald-400 to-teal-600"></div>
                 
-                <div className="w-32 h-32 bg-emerald-100 rounded-[3rem] flex items-center justify-center text-emerald-600 mx-auto mb-12 animate-bounce">
+                <div className="w-32 h-32 bg-emerald-100 rounded-[3rem] flex items-center justify-center text-emerald-600 mx-auto mb-12">
                   <CheckCircle2 className="w-16 h-16" />
                 </div>
 
@@ -571,9 +544,9 @@ export function WriterRegistrationPage() {
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </div>
     </div>
   );

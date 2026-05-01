@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { Upload, FileText, DollarSign, TrendingUp, BookOpen, CheckCircle, Clock, User, X, LogOut, Globe, Edit3, Zap } from "lucide-react";
-import { motion } from "motion/react";
 import { useStore } from "../store/useStore";
 
 const plans = [

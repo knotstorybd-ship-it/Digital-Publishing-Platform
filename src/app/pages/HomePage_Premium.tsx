@@ -44,9 +44,6 @@ export function HomePage() {
     }
   ];
 
-  // Replaced automatic redirect with dynamic CTAs below so writers can browse the homepage
-  // without getting stuck in a redirect loop.
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -60,7 +57,7 @@ export function HomePage() {
 
   const hasSubmitted = user 
     ? testimonials.some(t => t.user_id === user.id)
-    : localStorage.getItem("dp_guest_testimonial_submitted") === "true";
+    : typeof window !== 'undefined' && localStorage.getItem("dp_guest_testimonial_submitted") === "true";
 
   const handleSubmitTestimonial = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,12 +181,8 @@ export function HomePage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
             {popularBooks.map((book, i) => (
-              <motion.div
+              <div
                 key={book.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
                 className="group bg-white rounded-2xl md:rounded-[2rem] overflow-hidden shadow-lg shadow-emerald-900/5 border border-emerald-100/20 hover:shadow-2xl transition-all flex flex-col"
               >
                 <div className="relative aspect-[3/4] overflow-hidden">
@@ -220,7 +213,7 @@ export function HomePage() {
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -231,14 +224,9 @@ export function HomePage() {
         <div className="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-emerald-50 rounded-full blur-[80px] md:blur-[120px] -mr-32 md:-mr-64 -mt-32 md:-mt-64 opacity-50"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12 md:mb-20">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full mb-6 font-black text-[10px] uppercase tracking-widest"
-            >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full mb-6 font-black text-[10px] uppercase tracking-widest">
               <Sparkles className="w-4 h-4" /> লেখক হওয়ার সুযোগ
-            </motion.div>
+            </div>
             <h2 className="text-3xl md:text-6xl font-black text-emerald-950 tracking-tight leading-tight mb-4 md:mb-6">
               আপনার সৃজনশীলতা <br />
               প্রকাশ করুন <span className="text-emerald-600">সঠিক প্ল্যানে</span>
@@ -279,14 +267,9 @@ export function HomePage() {
                 icon: Zap
               }
             ].map((plan, i) => (
-              <motion.div
+              <div
                 key={plan.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                whileHover={{ y: -12, borderColor: '#10b981', transition: { duration: 0.2 } }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className={`relative p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border-2 transition-all duration-300 bg-white group hover:shadow-[0_20px_50px_rgba(16,185,129,0.1)] ${
+                className={`relative p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border-2 transition-all duration-300 bg-white group hover:shadow-[0_20px_50px_rgba(16,185,129,0.1)] hover:-translate-y-2 ${
                   plan.popular ? "border-emerald-500 shadow-xl" : "border-slate-100"
                 }`}
               >
@@ -325,7 +308,7 @@ export function HomePage() {
                 >
                   প্ল্যানটি শুরু করুন <ArrowRight className="w-4 h-4" />
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -352,12 +335,8 @@ export function HomePage() {
               {approvedTestimonials.length > 0 ? (
                 <div className="grid gap-6">
                   {approvedTestimonials.slice(0, 3).map((t, i) => (
-                    <motion.div
+                    <div
                       key={t.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
                       className="bg-white p-6 rounded-[2rem] shadow-xl shadow-emerald-900/5 border border-emerald-100/50 relative group"
                     >
                       <div className="flex items-center gap-1 mb-4">
@@ -375,7 +354,7 @@ export function HomePage() {
                           </div>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               ) : (
@@ -386,12 +365,7 @@ export function HomePage() {
             </div>
 
             <div>
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="bg-emerald-950 rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-10 text-white relative overflow-hidden shadow-2xl"
-              >
+              <div className="bg-emerald-950 rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-10 text-white relative overflow-hidden shadow-2xl">
                 {!hasSubmitted ? (
                   <>
                     <h3 className="text-2xl font-black mb-2 flex items-center gap-3">
@@ -429,10 +403,7 @@ export function HomePage() {
                       </div>
 
                       {!user && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                        >
+                        <div>
                           <input
                             type="text"
                             value={guestName}
@@ -441,7 +412,7 @@ export function HomePage() {
                             className="w-full bg-emerald-900/30 border border-emerald-800/50 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-4 focus:ring-emerald-500/20 outline-none transition-all placeholder:text-emerald-700"
                             required={!user}
                           />
-                        </motion.div>
+                        </div>
                       )}
 
                       <textarea
@@ -471,7 +442,7 @@ export function HomePage() {
                     <p className="text-emerald-200/60 font-medium">আপনার মতামত ইতিমধ্য গ্রহণ করা হয়েছে।</p>
                   </div>
                 )}
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>
@@ -481,14 +452,9 @@ export function HomePage() {
       <section className="py-16 md:py-24 bg-slate-50/50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 md:mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full mb-6 font-black text-[10px] uppercase tracking-widest"
-            >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full mb-6 font-black text-[10px] uppercase tracking-widest">
               <HelpCircle className="w-4 h-4" /> সচরাচর জিজ্ঞাসিত প্রশ্ন
-            </motion.div>
+            </div>
             <h2 className="text-3xl md:text-5xl font-black text-emerald-950 tracking-tight mb-4">
               আপনার প্রশ্নের <span className="text-emerald-600">উত্তরসমূহ</span>
             </h2>
@@ -499,12 +465,8 @@ export function HomePage() {
 
           <div className="space-y-4 md:space-y-6">
             {faqs.map((faq, index) => (
-              <motion.div 
+              <div 
                 key={index}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
                 className={`bg-white border rounded-[1.5rem] md:rounded-[2rem] overflow-hidden transition-all duration-300 ${openFaq === index ? 'border-emerald-500 shadow-lg shadow-emerald-900/5' : 'border-emerald-100/50 hover:border-emerald-200 shadow-sm'}`}
               >
                 <button 
@@ -525,7 +487,7 @@ export function HomePage() {
                     {faq.a}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -538,21 +500,11 @@ export function HomePage() {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="bg-gradient-to-br from-emerald-500/10 to-transparent p-8 md:p-24 rounded-[2rem] md:rounded-[4rem] border border-white/5 text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="max-w-4xl mx-auto"
-            >
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full mb-6 md:mb-8"
-              >
+            <div className="max-w-4xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full mb-6 md:mb-8">
                 <Sparkles className="w-4 h-4 text-emerald-300" />
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-100">আজই আপনার যাত্রা শুরু করুন</span>
-              </motion.div>
+              </div>
               
               <h2 className="text-3xl md:text-7xl font-black text-white mb-6 md:mb-8 tracking-tight leading-tight">
                 আপনার পাণ্ডুলিপি <br />
@@ -560,7 +512,7 @@ export function HomePage() {
               </h2>
               
               <p className="text-emerald-50/60 text-base md:text-xl mb-10 md:mb-12 font-medium">
-                হাজারো লেখক ইতিমধ্যে আমাদের প্ল্যাটফর্মে তাদের সাহিত্যিক ক্যারিয়ার গড়ে তুলেছেন। 
+                হাজারো লেখক ইতিমধ্যে আমাদের প্ল্যাটোফর্মে তাদের সাহিত্যিক ক্যারিয়ার গড়ে তুলেছেন। 
                 আপনি কি পিছিয়ে থাকবেন?
               </p>
               
@@ -579,7 +531,7 @@ export function HomePage() {
                   বইসমূহ দেখুন
                 </Link>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

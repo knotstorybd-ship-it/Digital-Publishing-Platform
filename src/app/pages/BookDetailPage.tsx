@@ -2,7 +2,6 @@ import { useParams, Link } from "react-router";
 import { Star, ShoppingCart, Heart, Share2, Download, Eye, BookOpen, ShieldCheck, Zap, ArrowLeft, Bookmark } from "lucide-react";
 import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
-import { motion, AnimatePresence } from "motion/react";
 import { SEO } from "../components/SEO";
 
 export function BookDetailPage() {
@@ -56,11 +55,7 @@ export function BookDetailPage() {
           {/* Left: Book Cover & Actions */}
           <div className="lg:col-span-5 space-y-8">
             <div className="sticky top-32">
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="relative group"
-              >
+            <div className="relative group">
                 <div className="absolute inset-0 bg-emerald-600/10 blur-[100px] rounded-full scale-75 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="relative rounded-[3rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.1)] border border-white bg-white aspect-[2/3]">
                   <img
@@ -74,7 +69,7 @@ export function BookDetailPage() {
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
               <div className="flex items-center gap-4 mt-10">
                 {isPurchased ? (
@@ -122,11 +117,7 @@ export function BookDetailPage() {
           {/* Right: Book Details */}
           <div className="lg:col-span-7 space-y-10">
             <div>
-              <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-3 mb-6"
-              >
+              <div className="flex items-center gap-3 mb-6">
                 <span className="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100">
                   {book.category}
                 </span>
@@ -134,7 +125,7 @@ export function BookDetailPage() {
                   <Star className="w-3 h-3 fill-amber-600" />
                   Bestseller
                 </span>
-              </motion.div>
+              </div>
               
               <h1 className="text-5xl md:text-7xl font-black text-emerald-950 mb-6 tracking-tight leading-tight">
                 {book.title}
