@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { 
   BookOpen, Zap, TrendingUp, ArrowRight, Star, Shield, Users, Quote, Edit3, Sparkles, ShoppingBag, 
-  Rocket, Target, Trophy, CheckCircle2, Eye 
+  Rocket, Target, Trophy, CheckCircle2, Eye, ChevronDown, HelpCircle 
 } from "lucide-react";
 import heroMain from "../../images/Hero_image.png";
 import { useStore } from "../store/useStore";
@@ -14,7 +14,35 @@ export function HomePage() {
   const [guestName, setGuestName] = useState("");
   const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const navigate = useNavigate();
+
+  const faqs = [
+    {
+      q: "ডিজিটাল প্রকাশনী প্ল্যাটফর্মটি কীভাবে কাজ করে?",
+      a: "ডিজিটাল প্রকাশনী হলো লেখক ও পাঠকদের জন্য একটি সমন্বিত অনলাইন প্ল্যাটফর্ম। এখানে লেখকরা তাদের পাণ্ডুলিপি সরাসরি প্রকাশ করে রয়্যালটি উপার্জন করতে পারেন, এবং পাঠকরা খুব সহজেই পছন্দের ডিজিটাল বই কিনে যেকোনো ডিভাইস থেকে পড়তে পারেন।"
+    },
+    {
+      q: "একজন নতুন লেখক হিসেবে আমি কীভাবে বই প্রকাশ করব?",
+      a: "খুব সহজেই 'লেখক হিসেবে যোগ দিন' বাটনে ক্লিক করে আপনার সুবিধামতো একটি প্ল্যান বেছে নিন। এরপর আপনার ড্যাশবোর্ড থেকে বইয়ের কভার, পাণ্ডুলিপি (PDF/EPUB) এবং প্রয়োজনীয় তথ্য আপলোড করলেই আপনার বই পাঠকদের জন্য উন্মুক্ত হয়ে যাবে।"
+    },
+    {
+      q: "বই বিক্রির রয়্যালটি কীভাবে এবং কত শতাংশ প্রদান করা হয়?",
+      a: "আমরা লেখকদের সর্বোচ্চ ৮৫% পর্যন্ত রয়্যালটি প্রদান করি, যা নির্বাচিত প্ল্যানের ওপর নির্ভর করে। আপনার প্রতিটি বই বিক্রির রয়্যালটি তাৎক্ষণিকভাবে ড্যাশবোর্ডে যোগ হয় এবং নির্দিষ্ট থ্রেশহোল্ড (যেমন ৳৫০০) পূর্ণ হলে আপনি পেমেন্ট উত্তোলন করতে পারবেন।"
+    },
+    {
+      q: "পাঠকরা কেনা বই কীভাবে পড়তে পারবেন?",
+      a: "প্ল্যাটফর্ম থেকে বই কেনার পর সেটি স্বয়ংক্রিয়ভাবে আপনার ব্যক্তিগত 'লাইব্রেরি'-তে যুক্ত হয়ে যাবে। আপনি আপনার অ্যাকাউন্টে লগইন করে যেকোনো সময় মোবাইল, ট্যাবলেট বা কম্পিউটার থেকে বইটি পড়তে পারবেন।"
+    },
+    {
+      q: "কপিরাইট বা মেধাস্বত্ব সুরক্ষার ক্ষেত্রে আপনাদের নীতিমালা কী?",
+      a: "ডিজিটাল প্রকাশনী লেখকদের মেধাস্বত্বের প্রতি সম্পূর্ণ শ্রদ্ধাশীল। এখানে প্রকাশিত প্রতিটি বইয়ের ১০০% কপিরাইট লেখকের কাছে সংরক্ষিত থাকে। আমরা শুধুমাত্র ডিজিটাল ডিস্ট্রিবিউশনের প্রযুক্তিগত সুবিধা প্রদান করি।"
+    },
+    {
+      q: "বই কেনার ক্ষেত্রে পেমেন্ট পদ্ধতিগুলো কী কী?",
+      a: "আপনি বাংলাদেশের যেকোনো জনপ্রিয় মোবাইল ব্যাংকিং (বিকাশ, নগদ, রকেট) এবং কার্ডের মাধ্যমে সম্পূর্ণ সুরক্ষিত উপায়ে বই কিনতে বা লেখক প্ল্যান সাবস্ক্রাইব করতে পারবেন।"
+    }
+  ];
 
   // Replaced automatic redirect with dynamic CTAs below so writers can browse the homepage
   // without getting stuck in a redirect loop.
@@ -444,6 +472,60 @@ export function HomePage() {
                 )}
               </motion.div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 md:py-24 bg-slate-50/50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 md:mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full mb-6 font-black text-[10px] uppercase tracking-widest"
+            >
+              <HelpCircle className="w-4 h-4" /> সচরাচর জিজ্ঞাসিত প্রশ্ন
+            </motion.div>
+            <h2 className="text-3xl md:text-5xl font-black text-emerald-950 tracking-tight mb-4">
+              আপনার প্রশ্নের <span className="text-emerald-600">উত্তরসমূহ</span>
+            </h2>
+            <p className="text-slate-500 font-medium text-base md:text-lg">
+              প্ল্যাটফর্ম ব্যবহার, বই প্রকাশ এবং পেমেন্ট সংক্রান্ত সাধারণ প্রশ্নের উত্তরগুলো জেনে নিন।
+            </p>
+          </div>
+
+          <div className="space-y-4 md:space-y-6">
+            {faqs.map((faq, index) => (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className={`bg-white border rounded-[1.5rem] md:rounded-[2rem] overflow-hidden transition-all duration-300 ${openFaq === index ? 'border-emerald-500 shadow-lg shadow-emerald-900/5' : 'border-emerald-100/50 hover:border-emerald-200 shadow-sm'}`}
+              >
+                <button 
+                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                  className="w-full px-6 py-6 md:px-8 md:py-8 flex items-center justify-between gap-4 text-left"
+                >
+                  <h3 className={`font-black text-lg md:text-xl transition-colors ${openFaq === index ? 'text-emerald-700' : 'text-emerald-950'}`}>
+                    {faq.q}
+                  </h3>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 ${openFaq === index ? 'bg-emerald-100 text-emerald-600 rotate-180' : 'bg-slate-50 text-slate-400'}`}>
+                    <ChevronDown className="w-5 h-5" />
+                  </div>
+                </button>
+                <div 
+                  className={`px-6 md:px-8 overflow-hidden transition-all duration-500 ease-in-out ${openFaq === index ? 'max-h-96 pb-6 md:pb-8 opacity-100' : 'max-h-0 opacity-0'}`}
+                >
+                  <p className="text-slate-600 font-medium leading-relaxed md:text-lg">
+                    {faq.a}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
