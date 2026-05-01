@@ -283,10 +283,11 @@ export function HomePage() {
                 key={plan.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -12, borderColor: '#10b981', transition: { duration: 0.2 } }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className={`relative p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border-2 transition-all duration-500 bg-white group hover:shadow-2xl hover:shadow-emerald-950/10 ${
-                  plan.popular ? "border-emerald-500 shadow-xl" : "border-slate-100 hover:border-emerald-200"
+                className={`relative p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border-2 transition-all duration-300 bg-white group hover:shadow-[0_20px_50px_rgba(16,185,129,0.1)] ${
+                  plan.popular ? "border-emerald-500 shadow-xl" : "border-slate-100"
                 }`}
               >
                 {plan.popular && (

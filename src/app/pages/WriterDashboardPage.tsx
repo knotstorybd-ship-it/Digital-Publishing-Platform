@@ -145,8 +145,9 @@ export function WriterDashboardPage() {
           
           <div className="grid md:grid-cols-3 gap-8">
             {plans.map((plan) => (
-              <div
+              <motion.div
                 key={plan.name}
+                whileHover={{ y: -10, borderColor: '#10b981' }}
                 className={`bg-white rounded-2xl p-8 shadow-sm border transition-all hover:shadow-2xl relative flex flex-col ${
                   plan.featured
                     ? "border-secondary ring-2 ring-secondary/20 scale-105 z-10"
@@ -197,7 +198,7 @@ export function WriterDashboardPage() {
                 >
                   {plan.isHot ? "🚀 আজীবন লাইফটাইম শুরু করুন" : "প্ল্যানটি বেছে নিন"}
                 </Link>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

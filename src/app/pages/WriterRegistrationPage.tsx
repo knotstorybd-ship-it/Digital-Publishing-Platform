@@ -257,7 +257,7 @@ export function WriterRegistrationPage() {
                 {plans.map((plan) => (
                   <motion.div
                     key={plan.id}
-                    whileHover={{ y: -10 }}
+                    whileHover={{ y: -10, borderColor: '#10b981' }}
                     onClick={() => {
                       setSelectedPlan(plan);
                       setStep(2);
@@ -266,7 +266,7 @@ export function WriterRegistrationPage() {
                       relative p-10 rounded-[3rem] cursor-pointer transition-all duration-500 border-2
                       ${selectedPlan.id === plan.id 
                         ? 'bg-white border-emerald-500 shadow-2xl shadow-emerald-950/10' 
-                        : 'bg-white/50 border-transparent hover:border-slate-200'}
+                        : 'bg-white/50 border-slate-50'}
                     `}
                   >
                     {plan.popular && (
