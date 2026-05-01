@@ -1,11 +1,13 @@
 import { Star, ShoppingCart, BookOpen } from "lucide-react";
 import { Link } from "react-router";
 import { useStore, Book } from "../store/useStore";
+import { useNavigate } from "react-router";
 
 interface BookCardProps extends Book {}
 
 export function BookCard(book: BookCardProps) {
   const { addToCart, user, orders } = useStore();
+  const navigate = useNavigate();
   const { id, title, author, price, cover, rating, category, pdf_url } = book;
 
   const isOwned = orders.some(o => o.book_id === id);
@@ -41,7 +43,7 @@ export function BookCard(book: BookCardProps) {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              window.location.href = `/author/${encodeURIComponent(author)}`;
+              navigate(`/author/${encodeURIComponent(author)}`);
             }}
             className="text-sm text-muted-foreground mb-2 hover:text-primary transition-colors cursor-pointer inline-block"
           >

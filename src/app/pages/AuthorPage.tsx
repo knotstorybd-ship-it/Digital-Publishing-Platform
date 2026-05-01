@@ -7,12 +7,12 @@ import { Star, Users, BookOpen, Globe, Mail, Share2, Heart, Filter, ChevronDown,
 
 export function AuthorPage() {
   const { name } = useParams();
-  const { getAuthorByName, books, followedAuthorIds, toggleAuthorFollow, user } = useStore();
+  const { getAuthorByName, books, followedAuthorIds, toggleAuthorFollow, user, loading } = useStore();
   const [activeTab, setActiveTab] = useState("books");
   
   let author = getAuthorByName(decodeURIComponent(name || ""));
   const authorName = author?.name || decodeURIComponent(name || "");
-  const authorBooks = books.filter(b => b.author === authorName);
+  const authorBooks = books.filter(b => b.author.toLowerCase() === authorName.toLowerCase());
   
   if (!author && authorBooks.length > 0) {
     author = {
@@ -28,6 +28,14 @@ export function AuthorPage() {
   }
 
   const isFollowed = author ? followedAuthorIds.includes(author.id) : false;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-24 bg-[#fafbfc]">
+        <div className="w-16 h-16 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   if (!author) {
     return (
@@ -193,7 +201,7 @@ export function AuthorPage() {
             {activeTab === "books" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {authorBooks.map(book => (
-                  <BookCard key={book.id} book={book} />
+                  <BookCard key={book.id} {...book} />
                 ))}
                 {authorBooks.length === 0 && (
                   <div className="col-span-full py-20 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
