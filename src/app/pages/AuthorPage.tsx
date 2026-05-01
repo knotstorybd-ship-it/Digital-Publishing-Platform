@@ -1,9 +1,7 @@
-import { useParams, Link } from "react-router";
-import { Star, BookOpen, User, Award, ShieldCheck, Mail, MapPin, Globe, Share2, Heart } from "lucide-react";
-import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
+import { SEO } from "../components/SEO";
 
 export function AuthorPage() {
   const { name } = useParams();
@@ -17,6 +15,7 @@ export function AuthorPage() {
   if (!author) {
     return (
       <div className="min-h-screen bg-[#fafbfc] flex items-center justify-center p-4">
+        <SEO title="লেখক পাওয়া যায়নি" />
         <div className="text-center space-y-6">
           <div className="w-24 h-24 bg-slate-100 rounded-[2rem] flex items-center justify-center text-slate-300 mx-auto">
             <User className="w-12 h-12" />
@@ -33,6 +32,11 @@ export function AuthorPage() {
 
   return (
     <div className="min-h-screen bg-[#fafbfc] selection:bg-emerald-100">
+      <SEO 
+        title={`${author.name} - লেখক প্রোফাইল`}
+        description={author.bio?.slice(0, 160) || `${author.name}-এর প্রোফাইল এবং প্রকাশিত সকল বই দেখুন ডিজিটাল প্রকাশনীতে।`}
+        image={author.avatar}
+      />
       {/* Hero Header */}
       <div className="h-80 bg-emerald-950 relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">

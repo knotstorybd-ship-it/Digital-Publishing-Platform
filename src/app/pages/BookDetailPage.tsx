@@ -3,6 +3,7 @@ import { Star, ShoppingCart, Heart, Share2, Download, Eye, BookOpen, ShieldCheck
 import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";
+import { SEO } from "../components/SEO";
 
 export function BookDetailPage() {
   const { id } = useParams();
@@ -38,6 +39,12 @@ export function BookDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#fafbfc] pt-24 pb-20 selection:bg-emerald-100 selection:text-emerald-900">
+      <SEO 
+        title={`${book.title} - ${book.author}`}
+        description={book.description?.slice(0, 160) || `${book.author}-এর লেখা চমৎকার এই বইটি এখনই পড়ুন ডিজিটাল প্রকাশনীতে।`}
+        image={book.cover}
+        type="book"
+      />
       <div className="max-w-7xl mx-auto px-4">
         {/* Breadcrumbs */}
         <Link to="/browse" className="inline-flex items-center gap-2 text-slate-400 hover:text-emerald-600 font-black text-[10px] uppercase tracking-widest transition-colors mb-8 group">
@@ -71,16 +78,25 @@ export function BookDetailPage() {
 
               <div className="flex items-center gap-4 mt-10">
                 {isPurchased ? (
-                  <a 
-                    href={book.pdf_url} 
-                    download 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-[3] py-6 bg-emerald-950 text-white rounded-[2rem] font-black shadow-2xl shadow-emerald-900/30 hover:bg-black hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 text-lg"
-                  >
-                    <Download className="w-6 h-6" />
-                    বইটি ডাউনলোড করুন
-                  </a>
+                  <div className="flex-[3] flex flex-col gap-3">
+                    <Link 
+                      to={`/reader/${book.id}`}
+                      className="w-full py-6 bg-emerald-600 text-white rounded-[2rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 text-lg"
+                    >
+                      <BookOpen className="w-6 h-6" />
+                      এখনই পড়ুন
+                    </Link>
+                    <a 
+                      href={book.pdf_url} 
+                      download 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-4 bg-emerald-950/5 text-emerald-950 rounded-2xl font-black border border-emerald-950/10 hover:bg-emerald-950 hover:text-white transition-all flex items-center justify-center gap-3 text-xs"
+                    >
+                      <Download className="w-4 h-4" />
+                      অফলাইন ডাউনলোড
+                    </a>
+                  </div>
                 ) : (
                   <button
                     onClick={handleAddToCart}

@@ -217,7 +217,6 @@ export function AdminDashboardPage() {
         )}
       </AnimatePresence>
 
-      {/* Sidebar navigation */}
       <aside className="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col shadow-2xl z-20">
         <div className="p-10 border-b border-slate-100">
           <div className="flex items-center gap-4 group">
@@ -236,9 +235,10 @@ export function AdminDashboardPage() {
             { id: "overview", label: "Dashboard Overview", icon: LayoutDashboard },
             { id: "authors", label: "Author Network", icon: Users },
             { id: "books", label: "Book Inventory", icon: BookCopy },
-             { id: "appearance", label: "Site Appearance", icon: Palette },
-             { id: "testimonials", label: "Testimonials", icon: Quote },
-             { id: "settings", label: "System Settings", icon: Settings },
+            { id: "payments", label: "Payments", icon: CreditCard },
+            { id: "appearance", label: "Site Appearance", icon: Palette },
+            { id: "testimonials", label: "Testimonials", icon: Quote },
+            { id: "settings", label: "System Settings", icon: Settings },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -630,6 +630,121 @@ export function AdminDashboardPage() {
           )}
 
           {/* Site Appearance Tab */}
+          {activeTab === "payments" && (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+              <div className="flex items-center justify-between mb-2 px-4">
+                <div>
+                  <h2 className="text-3xl font-black text-emerald-950 mb-2">পেমেন্ট ভেরিফিকেশন</h2>
+                  <p className="text-slate-400 font-bold text-sm">ম্যানুয়াল পেমেন্ট রিকোয়েস্টগুলো যাচাই করুন</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-[3.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50/50">
+                      <th className="py-8 px-10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অর্ডার ও তারিখ</th>
+                      <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ব্যবহারকারী ও পেমেন্ট</th>
+                      <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ট্রানজেকশন আইডি</th>
+                      <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">স্ক্রিনশট</th>
+                      <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অবস্থা</th>
+                      <th className="py-8 px-10 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অ্যাকশন</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {orders.map((order) => (
+                      <tr key={order.id} className="group hover:bg-slate-50/50 transition-all">
+                        <td className="py-8 px-10">
+                          <div className="flex flex-col">
+                            <span className="font-black text-emerald-950 mb-1">
+                              {order.order_type === 'subscription' ? `Subscription: ${order.plan_name}` : "Book Purchase"}
+                            </span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                              {new Date(order.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-8 px-6">
+                          <div className="flex flex-col">
+                            <span className="font-bold text-slate-600">{order.user_id}</span>
+                            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-1">
+                              {order.payment_method} - ৳{order.amount}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-8 px-6">
+                          <code className="px-3 py-1 bg-slate-100 rounded-lg text-xs font-black text-slate-600">
+                            {order.transaction_id || "N/A"}
+                          </code>
+                        </td>
+                        <td className="py-8 px-6">
+                          {order.screenshot_url ? (
+                            <button 
+                              onClick={() => window.open(order.screenshot_url, '_blank')}
+                              className="w-12 h-12 rounded-xl overflow-hidden border-2 border-white shadow-md hover:scale-110 transition-all"
+                            >
+                              <img src={order.screenshot_url} className="w-full h-full object-cover" />
+                            </button>
+                          ) : (
+                            <span className="text-slate-300 text-xs italic">No Proof</span>
+                          )}
+                        </td>
+                        <td className="py-8 px-6">
+                          <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                            order.status === 'completed' ? 'bg-emerald-50 text-emerald-600' :
+                            order.status === 'pending' ? 'bg-amber-50 text-amber-600' :
+                            'bg-rose-50 text-rose-600'
+                          }`}>
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="py-8 px-10">
+                          <div className="flex items-center justify-end gap-3">
+                            {order.status === 'pending' && (
+                              <>
+                                <button 
+                                  onClick={() => {
+                                    if (confirm("পেমেন্টটি কি সঠিক? নিশ্চিত করলে ইউজারের সাবস্ক্রিপশন/বই সক্রিয় হবে।")) {
+                                      approvePayment(order.id);
+                                      showNotify("Payment approved successfully!");
+                                    }
+                                  }}
+                                  className="p-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl shadow-emerald-600/5"
+                                  title="Approve"
+                                >
+                                  <CheckCircle2 className="w-5 h-5" />
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                    if (confirm("পেমেন্টটি রিজেক্ট করতে চান?")) {
+                                      rejectPayment(order.id);
+                                      showNotify("Payment rejected");
+                                    }
+                                  }}
+                                  className="p-3 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl shadow-rose-600/5"
+                                  title="Reject"
+                                >
+                                  <XCircle className="w-5 h-5" />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {orders.length === 0 && (
+                      <tr>
+                        <td colSpan={6} className="py-20 text-center text-slate-400 font-bold">
+                          কোনো পেমেন্ট রেকর্ড পাওয়া যায়নি
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </motion.div>
+          )}
+
           {activeTab === "appearance" && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}

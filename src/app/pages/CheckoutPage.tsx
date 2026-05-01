@@ -97,18 +97,29 @@ export function CheckoutPage() {
 
     setIsProcessing(true);
     try {
+      const paymentDetails = {
+        method: selectedPayment,
+        txnId: transactionId,
+        screenshot: screenshot || undefined
+      };
+
       if (planDetails) {
-        await subscribe(planDetails.name, planDetails.months);
+        await subscribe(planDetails.name, planDetails.months, paymentDetails);
       } else {
-        await purchaseCart();
+        await purchaseCart(paymentDetails);
       }
+      
+      const isManual = selectedPayment !== 'card';
+      
       setStep(3);
-      confetti({
-        particleCount: 150,
-        spread: 100,
-        origin: { y: 0.6 },
-        colors: ['#10b981', '#059669', '#34d399']
-      });
+      if (!isManual) {
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.6 },
+          colors: ['#10b981', '#059669', '#34d399']
+        });
+      }
     } catch (error) {
       console.error(error);
       alert("পেমেন্ট সম্পন্ন করতে সমস্যা হয়েছে।");
@@ -426,9 +437,11 @@ export function CheckoutPage() {
                 </div>
                 <h2 className="text-4xl md:text-5xl font-black text-emerald-950 mb-6 tracking-tight">পেমেন্ট সফল!</h2>
                 <p className="text-slate-500 font-medium text-lg mb-12">
-                  {planDetails
-                    ? `আপনার '${planDetails.name}' সাবস্ক্রিপশনটি এখন সক্রিয়। আপনি এখন বই প্রকাশ করতে পারবেন।`
-                    : "আপনার বই ক্রয় সম্পন্ন হয়েছে। এখন এটি আপনার লাইব্রেরিতে যুক্ত হয়েছে।"}
+                  {selectedPayment !== 'card' 
+                    ? "আপনার পেমেন্ট রিকোয়েস্টটি গ্রহণ করা হয়েছে। এডমিন ভেরিফাই করার পর আপনার সাবস্ক্রিপশন/বই সক্রিয় হবে।"
+                    : planDetails
+                      ? `আপনার '${planDetails.name}' সাবস্ক্রিপশনটি এখন সক্রিয়। আপনি এখন বই প্রকাশ করতে পারবেন।`
+                      : "আপনার বই ক্রয় সম্পন্ন হয়েছে। এখন এটি আপনার লাইব্রেরিতে যুক্ত হয়েছে।"}
                 </p>
                 <div className="space-y-6">
                   <button 

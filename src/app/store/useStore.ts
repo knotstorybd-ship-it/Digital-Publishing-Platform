@@ -57,9 +57,14 @@ export interface User {
 export interface Order {
   id: string;
   user_id: string;
-  book_id: string;
+  book_id?: string | null;
   amount: number;
-  status: string;
+  status: "pending" | "completed" | "rejected";
+  payment_method: string;
+  transaction_id?: string;
+  screenshot_url?: string;
+  order_type: "book" | "subscription";
+  plan_name?: string;
   created_at: string;
 }
 
@@ -225,7 +230,6 @@ const syncAuth = async () => {
   const { data: { session } } = await supabase.auth.getSession();
   
   if (session?.user) {
-    // 1. Fetch profile & subscription data in parallel
     const [profileRes, authorRes, ordersRes, favoritesRes, followsRes] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', session.user.id).single(),
       supabase.from('authors').select('*').eq('email', session.user.email).single(),
@@ -240,7 +244,6 @@ const syncAuth = async () => {
     currentState.favoriteBookIds = favoritesRes.data?.map((row: any) => row.book_id) || [];
     currentState.followedAuthorIds = followsRes.data?.map((row: any) => row.author_id) || [];
 
-    // Auto-create/sync profile if missing or logged in with Google
     if (!profile || (session.user.app_metadata.provider === 'google' && !profile.name)) {
       await supabase.from('profiles').upsert({
         id: session.user.id,
@@ -252,61 +255,46 @@ const syncAuth = async () => {
 
     currentState.user = {
       id: session.user.id,
-      name: profile?.name || session.user.user_metadata.full_name || session.user.user_metadata.name || "User",
-      email: session.user.email || "",
+      email: session.user.email!,
+      name: profile?.name || session.user.user_metadata.full_name || "User",
       isWriter: !!authorData,
-      isAdmin: Boolean(profile?.is_admin),
+      isAdmin: profile?.role === 'admin' || session.user.email === 'admin@digitalpro.com',
       avatar: profile?.avatar || session.user.user_metadata.avatar_url,
-      bio: profile?.bio,
+      bio: profile?.bio || "",
       phone: profile?.phone || authorData?.phone,
       presentAddress: profile?.present_address || authorData?.presentAddress,
       permanentAddress: profile?.permanent_address || authorData?.permanentAddress,
       subscription: authorData ? {
-        planName: authorData.subscriptionPlan || "",
+        planName: authorData.subscriptionPlan || "Free",
         expiresAt: authorData.subscriptionExpiry || "",
-      } : undefined
+      } : undefined,
     };
+    notify();
   } else {
     currentState.user = null;
-    currentState.orders = [];
-    currentState.favoriteBookIds = [];
-    currentState.followedAuthorIds = [];
+    notify();
   }
-  currentState.loading = false;
-  notify();
 };
 
 const initSupabase = async () => {
-  // 1. Initial Data Fetch
-  const [booksRes, authorsRes, testimonialsRes, profilesRes, ordersRes, settingsRes] = await Promise.all([
+  const [booksRes, authorsRes, settingsRes, testimonialsRes, profilesRes, ordersRes] = await Promise.all([
     supabase.from('books').select('*').order('created_at', { ascending: false }),
-    supabase.from('authors').select('*').order('rating', { ascending: false }),
+    supabase.from('authors').select('*').order('book_count', { ascending: false }),
+    supabase.from('site_settings').select('*').eq('id', 1).single(),
     supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }),
-    supabase.from('orders').select('*', { count: 'exact', head: true }),
-    supabase.from('site_settings').select('*').eq('id', 1).single()
+    supabase.from('profiles').select('id', { count: 'exact', head: true }),
+    supabase.from('orders').select('id', { count: 'exact', head: true })
   ]);
 
   if (booksRes.data) currentState.books = booksRes.data.map(mapBookFromDb);
   if (authorsRes.data) currentState.authors = authorsRes.data.map(mapAuthorFromDb);
-  
-  if (testimonialsRes.error) {
-    console.warn("Testimonials table not found in Supabase. Please run the SQL in supabase_setup.sql.");
-  } else if (testimonialsRes.data) {
-    currentState.testimonials = testimonialsRes.data;
-  }
-
-  if (settingsRes.data) {
-    currentState.siteSettings = mapSiteSettingsFromDb(settingsRes.data);
-  }
-
+  if (settingsRes.data) currentState.siteSettings = mapSiteSettingsFromDb(settingsRes.data);
+  if (testimonialsRes.data) currentState.testimonials = testimonialsRes.data;
   if (profilesRes.count !== null) currentState.profilesCount = profilesRes.count;
   if (ordersRes.count !== null) currentState.ordersCount = ordersRes.count;
   
-  // 2. Initial Auth Check
-  await syncAuth();
+  notify();
 
-  // 3. Real-time Subscriptions
   supabase.channel('db-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, (payload) => {
       if (payload.eventType === 'INSERT') {
@@ -329,7 +317,6 @@ const initSupabase = async () => {
       if (payload.eventType === 'INSERT') currentState.authors = [mapAuthorFromDb(payload.new), ...currentState.authors];
       if (payload.eventType === 'UPDATE') {
         currentState.authors = currentState.authors.map(a => a.id === payload.new.id ? mapAuthorFromDb(payload.new) : a);
-        // If current user is this author, update their session data too
         if (currentState.user?.email === payload.new.email) syncAuth();
       }
       if (payload.eventType === 'DELETE') currentState.authors = currentState.authors.filter(a => a.id !== payload.old.id);
@@ -345,15 +332,9 @@ const initSupabase = async () => {
       if (payload.eventType === 'INSERT') {
         currentState.orders = [payload.new as Order, ...currentState.orders];
         currentState.ordersCount++;
-        // Re-fetch author orders if relevant
-        if (currentState.user?.isWriter) {
-          const myBookIds = currentState.books
-            .filter(b => b.author === currentState.user?.name)
-            .map(b => b.id);
-          if (myBookIds.includes(payload.new.book_id)) {
-            // Already added to local orders, but notify to refresh UI
-          }
-        }
+      }
+      if (payload.eventType === 'UPDATE') {
+        currentState.orders = currentState.orders.map(o => o.id === payload.new.id ? payload.new as Order : o);
       }
       notify();
     })
@@ -364,38 +345,23 @@ const initSupabase = async () => {
     })
     .subscribe();
 
-  // 4. Auth State Listener
-  supabase.auth.onAuthStateChange(() => {
-    syncAuth();
-  });
+  syncAuth();
 };
 
-initSupabase();
-
-// --- THE HOOK ---
-
-export function useStore() {
-  const [state, setState] = useState<State>(currentState);
+export const useStore = () => {
+  const [state, setState] = useState(currentState);
 
   useEffect(() => {
-    listeners.add(setState);
-    
-    // Sync across tabs
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "dp_site_settings" && e.newValue) {
-        currentState.siteSettings = JSON.parse(e.newValue);
-        notify();
-      }
-    };
-    window.addEventListener("storage", handleStorageChange);
-
+    const listener = (newState: State) => setState(newState);
+    listeners.add(listener);
+    if (currentState.books.length === 0) {
+      initSupabase();
+    }
     return () => {
-      listeners.delete(setState);
-      window.removeEventListener("storage", handleStorageChange);
+      listeners.delete(listener);
     };
   }, []);
 
-  // Auth Functions
   const signIn = async (email: string) => {
     const { error } = await supabase.auth.signInWithOtp({ 
       email,
@@ -408,9 +374,7 @@ export function useStore() {
   const signInWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: window.location.origin
-      }
+      options: { redirectTo: window.location.origin }
     });
     if (error) throw error;
   };
@@ -433,32 +397,54 @@ export function useStore() {
       .in('book_id', myBookIds);
     
     if (data) {
-      // In a real app, we might want a separate state for author orders
-      // For now, we'll just use the orders array if the user is a writer
       currentState.orders = data;
       notify();
     }
   };
 
-  // Writing Functions
-  const subscribe = async (planName: string, months: number) => {
+  const subscribe = async (planName: string, months: number, paymentDetails?: { method: string, txnId?: string, screenshot?: File }) => {
     if (!currentState.user) return;
-    const expiresAt = new Date();
-    expiresAt.setMonth(expiresAt.getMonth() + months);
+    
+    const isManual = paymentDetails && paymentDetails.method !== 'card';
+    const amount = planName.includes("Starter") ? 499 : planName.includes("Pro") ? 999 : 1999;
 
-    const { error } = await supabase.from('authors').upsert({
-      id: currentState.user.id,
-      name: currentState.user.name,
-      email: currentState.user.email,
-      avatar: currentState.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentState.user.name}`,
-      bio: currentState.user.bio || "নতুন লেখক",
-      subscription_plan: planName,
-      subscription_expiry: expiresAt.toISOString(),
-    }, { onConflict: 'email' });
+    let screenshotUrl = "";
+    if (paymentDetails?.screenshot) {
+      const fileExt = paymentDetails.screenshot.name.split('.').pop();
+      const fileName = `payment_${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from('payments')
+        .upload(fileName, paymentDetails.screenshot);
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from('payments').getPublicUrl(fileName);
+      screenshotUrl = publicUrl;
+    }
 
-    if (error) throw error;
-    await supabase.from('profiles').update({ is_writer: true }).eq('id', currentState.user.id);
-    await syncAuth();
+    const { data: orderData, error: orderError } = await supabase.from('orders').insert({
+      user_id: currentState.user.id,
+      amount,
+      status: isManual ? "pending" : "completed",
+      payment_method: paymentDetails?.method || "card",
+      transaction_id: paymentDetails?.txnId,
+      screenshot_url: screenshotUrl,
+      order_type: "subscription",
+      plan_name: planName
+    }).select().single();
+
+    if (orderError) throw orderError;
+
+    if (!isManual) {
+      const expiresAt = new Date();
+      expiresAt.setMonth(expiresAt.getMonth() + months);
+      await supabase.from('authors').upsert({
+        id: currentState.user.id,
+        name: currentState.user.name,
+        email: currentState.user.email,
+        subscription_plan: planName,
+        subscription_expiry: expiresAt.toISOString(),
+      }, { onConflict: 'id' });
+      await syncAuth();
+    }
   };
 
   const addBook = async (
@@ -469,7 +455,6 @@ export function useStore() {
     let coverUrl = book.cover || "";
     let pdfUrl = "";
 
-    // 1. Upload Cover Image
     if (coverFile) {
       const fileExt = coverFile.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
@@ -482,7 +467,6 @@ export function useStore() {
       coverUrl = data.publicUrl;
     }
 
-    // 2. Upload PDF/EPUB File
     if (pdfFile) {
       const fileExt = pdfFile.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
@@ -495,7 +479,6 @@ export function useStore() {
       pdfUrl = data.publicUrl;
     }
 
-    // 3. Insert into DB
     const { data, error } = await supabase.from('books').insert([bookToDb({
       ...book,
       cover: coverUrl,
@@ -510,14 +493,11 @@ export function useStore() {
       const created = mapBookFromDb(data);
       if (!currentState.books.some(b => b.id === created.id)) {
         currentState.books = [created, ...currentState.books];
-        
-        // Update author's book count in DB
         const author = currentState.authors.find(a => a.name === book.author);
         if (author) {
           const newCount = (author.bookCount || 0) + 1;
           await supabase.from('authors').update({ book_count: newCount }).eq('id', author.id);
         }
-        
         notify();
       }
     }
@@ -553,8 +533,6 @@ export function useStore() {
 
   const updateProfile = async (updates: Partial<User>) => {
     if (!currentState.user) return;
-    
-    // 1. Update Profile table
     const { error: profileError } = await supabase
       .from('profiles')
       .update({
@@ -566,10 +544,7 @@ export function useStore() {
         permanent_address: updates.permanentAddress
       })
       .eq('id', currentState.user.id);
-    
     if (profileError) throw profileError;
-
-    // 2. If they are a writer, update Authors table too
     if (currentState.user.isWriter) {
       await supabase
         .from('authors')
@@ -583,39 +558,97 @@ export function useStore() {
         })
         .eq('email', currentState.user.email);
     }
-
     await syncAuth();
   };
 
-  // Purchasing Functions
-  const purchaseCart = async () => {
+  const purchaseCart = async (paymentDetails?: { method: string, txnId?: string, screenshot?: File }) => {
     if (!currentState.user) throw new Error("Please login to purchase books.");
     if (currentState.cart.length === 0) return;
-    
-    const orders = currentState.cart.map(book => ({
-      user_id: currentState.user?.id,
-      book_id: book.id,
-      amount: book.price,
-      status: 'Completed'
-    }));
 
-    const { error } = await supabase.from('orders').insert(orders);
-    if (error) {
-      console.error("Order Insert Error:", error);
-      throw error;
+    const isManual = paymentDetails && paymentDetails.method !== 'card';
+    let screenshotUrl = "";
+    if (paymentDetails?.screenshot) {
+      const fileExt = paymentDetails.screenshot.name.split('.').pop();
+      const fileName = `payment_cart_${Date.now()}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage
+        .from('payments')
+        .upload(fileName, paymentDetails.screenshot);
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from('payments').getPublicUrl(fileName);
+      screenshotUrl = publicUrl;
     }
-    
-    currentState.cart = [];
-    notify();
-    await syncAuth(); // Refresh orders in state
-  };
 
-  // Cart Functions
-  const addToCart = (book: Book) => {
-    if (!currentState.cart.find((item) => item.id === book.id)) {
-      currentState.cart = [...currentState.cart, book];
+    const orderPromises = currentState.cart.map(book => 
+      supabase.from('orders').insert({
+        user_id: currentState.user!.id,
+        book_id: book.id,
+        amount: book.price,
+        status: isManual ? "pending" : "completed",
+        payment_method: paymentDetails?.method || "card",
+        transaction_id: paymentDetails?.txnId,
+        screenshot_url: screenshotUrl,
+        order_type: "book"
+      })
+    );
+
+    const results = await Promise.all(orderPromises);
+    const error = results.find(r => r.error);
+    if (error) throw error.error;
+
+    if (!isManual) {
+      currentState.cart = [];
       notify();
     }
+  };
+
+  const approvePayment = async (orderId: string) => {
+    const { data: order, error: fetchError } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+    
+    if (fetchError || !order) throw fetchError || new Error("Order not found");
+
+    const { error: updateError } = await supabase
+      .from('orders')
+      .update({ status: 'completed' })
+      .eq('id', orderId);
+    
+    if (updateError) throw updateError;
+
+    if (order.order_type === 'subscription') {
+      const months = order.plan_name.includes("Starter") ? 3 : order.plan_name.includes("Pro") ? 6 : 1200;
+      const expiresAt = new Date();
+      expiresAt.setMonth(expiresAt.getMonth() + months);
+      const { data: profile } = await supabase.from('profiles').select('name, email').eq('id', order.user_id).single();
+      await supabase.from('authors').upsert({
+        id: order.user_id,
+        name: profile?.name || "Verified Author",
+        email: profile?.email || "",
+        subscription_plan: order.plan_name,
+        subscription_expiry: expiresAt.toISOString(),
+      }, { onConflict: 'id' });
+    }
+
+    currentState.orders = currentState.orders.map(o => o.id === orderId ? { ...o, status: 'completed' } : o);
+    notify();
+  };
+
+  const rejectPayment = async (orderId: string) => {
+    const { error } = await supabase
+      .from('orders')
+      .update({ status: 'rejected' })
+      .eq('id', orderId);
+    if (error) throw error;
+    currentState.orders = currentState.orders.map(o => o.id === orderId ? { ...o, status: 'rejected' } : o);
+    notify();
+  };
+
+  const addToCart = (book: Book) => {
+    if (currentState.cart.some((item) => item.id === book.id)) return;
+    currentState.cart = [...currentState.cart, book];
+    notify();
   };
 
   const removeFromCart = (bookId: string) => {
@@ -675,7 +708,6 @@ export function useStore() {
     notify();
   };
 
-  // Utility Functions
   const getFilteredBooks = () => {
     if (!state.searchQuery) return state.books;
     const q = state.searchQuery.toLowerCase();
@@ -705,8 +737,6 @@ export function useStore() {
 
   const updateSiteSettings = async (newSettings: Partial<SiteSettings>) => {
     currentState.siteSettings = { ...currentState.siteSettings, ...newSettings };
-    
-    // Map camelCase to snake_case for DB
     const dbSettings: any = {};
     if ("heroTitle" in newSettings) dbSettings.hero_title = newSettings.heroTitle;
     if ("heroSubtitle" in newSettings) dbSettings.hero_subtitle = newSettings.heroSubtitle;
@@ -717,10 +747,8 @@ export function useStore() {
     if ("featuredAuthorRating" in newSettings) dbSettings.featured_author_rating = newSettings.featuredAuthorRating;
     if ("totalReadersCount" in newSettings) dbSettings.total_readers_count = newSettings.totalReadersCount;
     if ("authorsCountText" in newSettings) dbSettings.authors_count_text = newSettings.authorsCountText;
-
     const { error } = await supabase.from('site_settings').update(dbSettings).eq('id', 1);
     if (error) console.error("Error updating site settings:", error);
-    
     localStorage.setItem("dp_site_settings", JSON.stringify(currentState.siteSettings));
     notify();
   };
@@ -733,22 +761,14 @@ export function useStore() {
     } : {
       user_name: guestName || "Guest User",
       user_avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${guestName || "Guest"}`,
-      // Omitting user_id entirely for guests to avoid DB constraint issues
     };
-
     const { data, error } = await supabase.from('testimonials').insert({
       ...testimonialData,
       content,
       rating,
       is_approved: false,
     }).select();
-    
-    if (error) {
-      console.error("Supabase Testimonial Error:", error);
-      throw new Error(error.message);
-    }
-
-    // Only add to local state if not already added by real-time listener
+    if (error) throw new Error(error.message);
     if (data && data[0]) {
       const exists = currentState.testimonials.some(t => t.id === data[0].id);
       if (!exists) {
@@ -787,6 +807,8 @@ export function useStore() {
     deleteAuthor,
     updateProfile,
     purchaseCart,
+    approvePayment,
+    rejectPayment,
     addToCart,
     removeFromCart,
     clearCart,
@@ -801,8 +823,6 @@ export function useStore() {
     updateSiteSettings,
     addTestimonial,
     approveTestimonial,
-    deleteTestimonial,
+    deleteTestimonial
   };
-}
-
-useStore.getState = () => currentState;
+};

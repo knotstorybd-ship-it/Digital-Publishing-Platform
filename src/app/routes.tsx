@@ -21,6 +21,9 @@ import {
 
 import { ErrorPage } from "./pages/ErrorPage";
 
+import { LibraryPage } from "./pages/LibraryPage";
+import { ReaderPage } from "./pages/ReaderPage";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -30,6 +33,7 @@ export const router = createBrowserRouter([
       { index: true, Component: HomePage },
       { path: "browse", Component: BrowsePage },
       { path: "book/:id", Component: BookDetailPage },
+      { path: "library", Component: LibraryPage },
       { path: "writer", Component: AuthorDashboardPage }, // Point to the premium Author dashboard
       { path: "join-writer", Component: WriterRegistrationPage },
       { path: "author-dashboard", element: <Navigate to="/writer" replace /> }, // Redirect old path
@@ -51,4 +55,8 @@ export const router = createBrowserRouter([
       { path: "*", Component: NotFoundPage },
     ],
   },
+  {
+    path: "reader/:id",
+    Component: ReaderPage
+  }
 ]);

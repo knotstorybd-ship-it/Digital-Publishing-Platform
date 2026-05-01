@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import heroMain from "../../images/Hero_image.png";
 import { useStore } from "../store/useStore";
+import { SEO } from "../components/SEO";
 
 export function HomePage() {
   const { books, addToCart, user, authors, siteSettings, testimonials, addTestimonial, profilesCount, loading } = useStore();
@@ -90,6 +91,10 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col bg-slate-50/30">
+      <SEO 
+        title="হোম" 
+        description={siteSettings.heroDescription} 
+      />
       
       {/* Hero Section */}
       <section className="relative min-h-[70vh] lg:min-h-[85vh] flex items-center pt-12 pb-6 lg:pt-16 lg:pb-12 bg-white">

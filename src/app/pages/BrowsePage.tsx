@@ -4,6 +4,7 @@ import { Search, Filter, SlidersHorizontal, BookOpen, Sparkles, TrendingUp, Grid
 import { useStore } from "../store/useStore";
 import { useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
+import { SEO } from "../components/SEO";
 
 const categories = ["সব", "উপন্যাস", "কবিতা", "ইতিহাস", "শিশু সাহিত্য", "ভয়ংকর", "রম্য"];
 
@@ -30,6 +31,10 @@ export function BrowsePage() {
 
   return (
     <div className="min-h-screen bg-[#fafbfc] pt-24 pb-20 selection:bg-emerald-100 selection:text-emerald-900">
+      <SEO 
+        title={`বইসমূহ - ${selectedCategory !== 'সব' ? selectedCategory : 'সব বিভাগ'}`}
+        description={`আমাদের প্ল্যাটফর্মের ${selectedCategory !== 'সব' ? selectedCategory : 'সকল'} ক্যাটাগরির সেরা বইগুলো খুঁজে নিন এবং ডিজিটাল মাধ্যমে পড়ুন।`}
+      />
       <div className="max-w-7xl mx-auto px-4">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-8">
