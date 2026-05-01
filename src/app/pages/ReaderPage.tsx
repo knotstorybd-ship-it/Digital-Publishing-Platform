@@ -124,7 +124,7 @@ export function ReaderPage() {
                </div>
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Navigation Footer */}
