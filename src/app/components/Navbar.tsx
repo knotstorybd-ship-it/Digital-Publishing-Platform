@@ -33,22 +33,6 @@ export function Navbar() {
     return () => window.removeEventListener("open-auth", handleOpenAuth);
   }, []);
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    const email = (e.currentTarget.elements.namedItem('email') as HTMLInputElement).value;
-    try {
-      await signIn(email);
-      setIsAuthOpen(false);
-    } catch (err: any) {
-      console.error(err);
-      if (err.message?.includes("rate limit") || err.message?.toLowerCase().includes("email")) {
-        setError("ইমেইল সার্ভারে সমস্যা হচ্ছে। দয়া করে গুগল দিয়ে লগইন করার চেষ্টা করুন।");
-      } else {
-        setError(`লগইন করতে সমস্যা হয়েছে (${err.message || 'Error'})। গুগল (Google) দিয়ে লগইন করুন।`);
-      }
-    }
-  };
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
@@ -277,27 +261,6 @@ export function Navbar() {
               গুগল দিয়ে লগইন
             </button>
 
-            <div className="flex items-center gap-4 mb-6">
-              <div className="h-px bg-slate-100 flex-1"></div>
-              <span className="text-xs font-black text-slate-300 uppercase tracking-widest">অথবা</span>
-              <div className="h-px bg-slate-100 flex-1"></div>
-            </div>
-
-            <form onSubmit={handleAuth} className="space-y-4">
-              <div>
-                <input 
-                  name="email"
-                  type="email" 
-                  placeholder="আপনার ইমেইল অ্যাড্রেস" 
-                  required
-                  className="w-full px-6 py-4 bg-slate-50 border-0 rounded-2xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-300"
-                />
-              </div>
-              {error && <p className="text-rose-500 text-xs font-bold px-2">{error}</p>}
-              <button className="w-full py-5 bg-emerald-600 text-white rounded-2xl font-black shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all">
-                ম্যাজিক লিংক পাঠান
-              </button>
-            </form>
 
             <p className="mt-8 text-center text-xs text-slate-400 font-medium">
               লগইন করার মাধ্যমে আপনি আমাদের <Link to="/terms" className="text-emerald-600 font-bold underline">শর্তাবলী</Link> মেনে নিচ্ছেন।
