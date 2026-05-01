@@ -104,9 +104,9 @@ export function Navbar() {
                     </Link>
                   </>
                 ) : (
-                  <Link to="/" className="flex items-center gap-2 text-xs font-black text-emerald-600 uppercase tracking-[0.2em] hover:opacity-80 transition-opacity">
+                  <Link to="/browse" className="flex items-center gap-2 text-xs font-black text-emerald-600 uppercase tracking-[0.2em] hover:opacity-80 transition-opacity">
                     <BookOpen className="w-4 h-4" />
-                    ওয়েবসাইট দেখুন
+                    বইসমূহ দেখুন
                   </Link>
                 )}
               </div>

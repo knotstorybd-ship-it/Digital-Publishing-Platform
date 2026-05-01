@@ -16,7 +16,12 @@ export function HomePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  // Removed automatic writer redirect to allow browsing the site
+  // Redirect logged-in writers to their dashboard
+  useEffect(() => {
+    if (user?.isWriter) {
+      navigate("/writer");
+    }
+  }, [user, navigate]);
 
   if (loading) {
     return (
