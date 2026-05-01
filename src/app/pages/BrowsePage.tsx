@@ -5,11 +5,12 @@ import { useStore } from "../store/useStore";
 import { useSearchParams } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { SEO } from "../components/SEO";
+import { BookCardSkeleton } from "../components/Skeleton";
 
 const categories = ["সব", "উপন্যাস", "কবিতা", "ইতিহাস", "শিশু সাহিত্য", "ভয়ংকর", "রম্য"];
 
 export function BrowsePage() {
-  const { books, searchQuery, setSearchQuery, getFilteredBooks } = useStore();
+  const { books, searchQuery, setSearchQuery, loading } = useStore();
   const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "সব");
   const [viewType, setViewType] = useState<"grid" | "list">("grid");
@@ -123,7 +124,13 @@ export function BrowsePage() {
           </div>
 
           <AnimatePresence mode="popLayout">
-            {filteredBooks.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+                {[...Array(8)].map((_, i) => (
+                  <BookCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : filteredBooks.length > 0 ? (
               <motion.div 
                 layout
                 className={`grid gap-8 ${viewType === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6' : 'grid-cols-1'}`}

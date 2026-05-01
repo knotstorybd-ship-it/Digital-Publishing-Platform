@@ -1,12 +1,10 @@
-import { motion } from "motion/react";
-import { useStore } from "../store/useStore";
-import { BookCard } from "../components/BookCard";
-import { BookOpen, Search, ArrowRight, Library, Bookmark, Clock, Star } from "lucide-react";
+import { Library, Bookmark, Clock, Star, BookOpen, Search, ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 import { useState, useMemo } from "react";
+import { BookCardSkeleton } from "../components/Skeleton";
 
 export function LibraryPage() {
-  const { user, books, orders } = useStore();
+  const { user, books, orders, loading } = useStore();
   const [search, setSearch] = useState("");
 
   const purchasedBooks = useMemo(() => {
@@ -24,7 +22,7 @@ export function LibraryPage() {
     b.author.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (!user) {
+  if (!user && !loading) {
     return (
       <div className="min-h-screen bg-[#fafbfc] flex items-center justify-center p-4 pt-24">
         <div className="text-center max-w-md">
@@ -90,7 +88,13 @@ export function LibraryPage() {
         </div>
 
         {/* Content */}
-        {purchasedBooks.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            {[...Array(5)].map((_, i) => (
+              <BookCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : purchasedBooks.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
             {filteredBooks.map((book, i) => (
               <motion.div
