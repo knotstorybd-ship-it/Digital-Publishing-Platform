@@ -32,7 +32,7 @@ import { useStore } from "../store/useStore";
 import { Link, useNavigate } from "react-router";
 
 export function AuthorDashboardPage() {
-  const { user, getMyBooks, updateProfile, signOut, books, orders, addBook, updateBook, deleteBook } = useStore();
+  const { user, getMyBooks, updateProfile, signOut, books, orders, addBook, updateBook, deleteBook, fetchAuthorOrders } = useStore();
   const [activeTab, setActiveTab] = useState("overview");
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -57,8 +57,25 @@ export function AuthorDashboardPage() {
   useEffect(() => {
     if (!user || !user.isWriter) {
       navigate("/join-writer");
+    } else {
+      fetchAuthorOrders();
     }
   }, [user, navigate]);
+
+  // Calculate 7 days real data for chart
+  const last7DaysSales = Array(7).fill(0).map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    const dateStr = d.toISOString().split('T')[0];
+    const daySales = mySales.filter(o => new Date(o.created_at).toISOString().split('T')[0] === dateStr);
+    const totalAmount = daySales.reduce((sum, o) => sum + o.amount, 0) * currentRoyaltyRate;
+    return { 
+      day: d.toLocaleDateString('bn-BD', { weekday: 'short' }), 
+      amount: totalAmount 
+    };
+  });
+  const maxDaySale = Math.max(...last7DaysSales.map(d => d.amount), 1);
+  const nextPaymentProgress = Math.min((totalRoyalty / 500) * 100, 100);
 
   if (!user || !user.isWriter) {
     return null;
@@ -293,22 +310,24 @@ export function AuthorDashboardPage() {
                     </div>
                     
                     <div className="bg-white rounded-[3rem] p-10 shadow-sm border border-emerald-100/30">
-                      <h3 className="text-2xl font-black text-emerald-950 mb-10">রয়্যালটি গ্রোথ</h3>
+                      <h3 className="text-2xl font-black text-emerald-950 mb-10">রয়্যালটি গ্রোথ (গত ৭ দিন)</h3>
                       <div className="h-64 flex items-end justify-between gap-4 px-4">
-                        {[40, 60, 35, 80, 55, 90, 45].map((h, i) => (
-                          <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
+                        {last7DaysSales.map((data, i) => {
+                          const h = (data.amount / maxDaySale) * 100;
+                          return (
+                          <div key={i} className="flex-1 flex flex-col items-center gap-4 group cursor-pointer">
                             <motion.div 
                               initial={{ height: 0 }}
-                              animate={{ height: `${h}%` }}
-                              className="w-full bg-emerald-50 group-hover:bg-emerald-600 rounded-2xl transition-all duration-300 relative shadow-sm"
+                              animate={{ height: `${Math.max(h, 5)}%` }}
+                              className={`w-full rounded-2xl transition-all duration-500 relative shadow-sm ${data.amount > 0 ? 'bg-emerald-600 group-hover:bg-emerald-500 shadow-emerald-600/30' : 'bg-emerald-50 group-hover:bg-emerald-100'}`}
                             >
-                              <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-950 text-white text-[10px] font-black px-3 py-1.5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                                ৳{(h * 120).toLocaleString()}
+                              <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-emerald-950 text-white text-[10px] font-black px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-y-1 whitespace-nowrap z-10 pointer-events-none shadow-xl shadow-emerald-950/20">
+                                ৳{data.amount.toLocaleString(undefined, {maximumFractionDigits: 0})}
                               </div>
                             </motion.div>
-                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter">W{i+1}</span>
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{data.day}</span>
                           </div>
-                        ))}
+                        )})}
                       </div>
                     </div>
                   </div>
@@ -405,38 +424,69 @@ export function AuthorDashboardPage() {
                   </div>
                   
                   <div className="grid md:grid-cols-2 gap-10 mb-16">
-                    <div className="bg-emerald-600 rounded-[3rem] p-10 text-white shadow-2xl shadow-emerald-600/20 relative overflow-hidden">
-                      <div className="absolute bottom-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mb-24 -mr-24"></div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-60 mb-4">মোট উপার্জন</p>
-                      <h3 className="text-6xl font-black mb-8 tracking-tighter">৳{totalRoyalty.toLocaleString()}</h3>
+                    <div className="bg-emerald-600 rounded-[3rem] p-10 text-white shadow-2xl shadow-emerald-600/20 relative overflow-hidden group">
+                      <div className="absolute bottom-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl -mb-24 -mr-24 group-hover:scale-150 transition-transform duration-700"></div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80 mb-4">মোট উপার্জন</p>
+                      <h3 className="text-5xl md:text-6xl font-black mb-8 tracking-tighter">৳{totalRoyalty.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</h3>
                       <div className="flex items-center gap-2 px-5 py-2 bg-white/10 rounded-full w-fit backdrop-blur-md">
                         <TrendingUp className="w-5 h-5 text-emerald-300" />
-                        <span className="text-sm font-black">+২৫.৫% গত মাসের তুলনায়</span>
+                        <span className="text-sm font-black">{mySales.length}টি বিক্রি থেকে আয়</span>
                       </div>
                     </div>
                     
-                    <div className="bg-white border-2 border-slate-100 rounded-[3rem] p-10 flex flex-col justify-center">
+                    <div className="bg-white border border-emerald-100 rounded-[3rem] p-10 flex flex-col justify-center shadow-sm">
                       <div className="flex items-center justify-between mb-8">
                         <div>
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">পরবর্তী পেমেন্ট</p>
-                          <h4 className="text-3xl font-black text-emerald-950">৳০.০০</h4>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">পরবর্তী সম্ভাব্য পেমেন্ট</p>
+                          <h4 className="text-3xl font-black text-emerald-950">৳{totalRoyalty.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</h4>
                         </div>
-                        <div className="p-5 bg-amber-50 text-amber-600 rounded-[1.5rem]">
-                          <Clock className="w-8 h-8" />
+                        <div className="p-5 bg-amber-50 text-amber-600 rounded-[1.5rem] shadow-inner">
+                          <DollarSign className="w-8 h-8" />
                         </div>
                       </div>
-                      <div className="h-2 bg-slate-50 rounded-full overflow-hidden">
-                        <div className="h-full bg-emerald-600 w-1/3"></div>
+                      <div className="h-3 bg-slate-50 rounded-full overflow-hidden shadow-inner">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${nextPaymentProgress}%` }}
+                          className="h-full bg-emerald-500 relative"
+                        >
+                          <div className="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]"></div>
+                        </motion.div>
                       </div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">পেমেন্ট থ্রেশহোল্ড: ৳৫০০</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-4">পেমেন্ট থ্রেশহোল্ড: ৳৫০০ (আপনার অগ্রগতি: {nextPaymentProgress.toFixed(0)}%)</p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <h4 className="text-xl font-black text-emerald-950 px-4">পেমেন্ট হিস্ট্রি</h4>
-                    <div className="text-center py-20 bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-200">
-                      <p className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">এখনও কোনো পেমেন্ট রেকর্ড নেই</p>
-                    </div>
+                    <h4 className="text-xl font-black text-emerald-950 px-4">সাম্প্রতিক সেলস হিস্ট্রি</h4>
+                    {mySales.length > 0 ? (
+                      <div className="bg-white rounded-[2.5rem] border border-emerald-50 overflow-hidden shadow-sm">
+                        {mySales.slice(0, 5).map((order, i) => {
+                          const book = books.find(b => b.id === order.book_id);
+                          return (
+                            <div key={order.id} className={`flex items-center justify-between p-6 ${i !== mySales.slice(0,5).length - 1 ? 'border-b border-slate-50' : ''} hover:bg-emerald-50/50 transition-colors`}>
+                              <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600">
+                                  <BookCopy className="w-5 h-5" />
+                                </div>
+                                <div>
+                                  <p className="font-black text-emerald-950 text-sm">{book?.title || 'Unknown Book'}</p>
+                                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{new Date(order.created_at).toLocaleString()}</p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-black text-emerald-600">৳{(order.amount * currentRoyaltyRate).toFixed(2)}</p>
+                                <p className="text-[9px] font-black text-emerald-900/40 uppercase tracking-widest">রয়্যালটি আয়</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="text-center py-20 bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-200">
+                        <p className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">এখনও কোনো সেলস রেকর্ড নেই</p>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               )}
