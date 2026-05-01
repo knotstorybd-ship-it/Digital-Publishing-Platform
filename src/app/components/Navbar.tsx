@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useLocation } from "react-router";
 import { BookOpen, Search, User, Menu, X, ShoppingCart, TrendingUp, ArrowRight, Star } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect } from "react";
@@ -17,6 +17,9 @@ export function Navbar() {
   // Search States
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const showCart = !isWriterMode && (cart.length > 0 || location.pathname === '/checkout');
 
   const filteredResults = searchQuery.length > 0 ? {
     books: books.filter(b => b.title.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 4),
@@ -237,7 +240,7 @@ export function Navbar() {
 
               {/* Action Area */}
               <div className="flex items-center gap-6 pl-8 border-l border-emerald-50">
-                {!isWriterMode && (
+                {showCart && (
                   <Link to="/checkout" className="p-3 bg-slate-50 hover:bg-emerald-600 rounded-2xl transition-all relative group/cart hover:-translate-y-1">
                     <ShoppingCart className="w-5 h-5 text-emerald-950 group-hover:text-white transition-colors" />
                     {cart.length > 0 && (
@@ -345,14 +348,17 @@ export function Navbar() {
                 <Link to="/join-writer" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>লেখক হন</Link>
                 <Link to="/about" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>আমাদের সম্পর্কে</Link>
                 <Link to="/contact" className="block text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>যোগাযোগ</Link>
-                <Link to="/checkout" className="flex items-center justify-between text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>
-                  <span>কার্ট</span>
-                  {cart.length > 0 && (
-                    <span className="text-sm bg-emerald-600 text-white px-4 py-1 rounded-full flex items-center justify-center">
-                      {cart.length}
-                    </span>
-                  )}
-                </Link>
+                
+                {showCart && (
+                  <Link to="/checkout" className="flex items-center justify-between text-2xl font-black text-emerald-950" onClick={() => setIsMenuOpen(false)}>
+                    <span>কার্ট</span>
+                    {cart.length > 0 && (
+                      <span className="text-sm bg-emerald-600 text-white px-4 py-1 rounded-full flex items-center justify-center">
+                        {cart.length}
+                      </span>
+                    )}
+                  </Link>
+                )}
                 
                 {user && (
                   <>
