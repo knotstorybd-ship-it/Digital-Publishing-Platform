@@ -10,8 +10,23 @@ export function AuthorPage() {
   const { getAuthorByName, books, followedAuthorIds, toggleAuthorFollow, user } = useStore();
   const [activeTab, setActiveTab] = useState("books");
   
-  const author = getAuthorByName(decodeURIComponent(name || ""));
-  const authorBooks = books.filter(b => b.author === author?.name);
+  let author = getAuthorByName(decodeURIComponent(name || ""));
+  const authorName = author?.name || decodeURIComponent(name || "");
+  const authorBooks = books.filter(b => b.author === authorName);
+  
+  if (!author && authorBooks.length > 0) {
+    author = {
+      id: `generated-${authorName}`,
+      name: authorName,
+      email: "",
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${authorName}`,
+      bio: "আমি ডিজিটাল প্রকাশনীর একজন লেখক।",
+      bookCount: authorBooks.length,
+      rating: 4.8,
+      joinDate: new Date().toISOString()
+    };
+  }
+
   const isFollowed = author ? followedAuthorIds.includes(author.id) : false;
 
   if (!author) {

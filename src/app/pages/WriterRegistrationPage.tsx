@@ -150,8 +150,8 @@ export function WriterRegistrationPage() {
         });
 
         if (authError) {
-          if (authError.message.includes("rate limit")) {
-            throw new Error("ইমেইল পাঠানোর লিমিট শেষ হয়ে গেছে। দয়া করে একটু পর আবার চেষ্টা করুন অথবা আপনার বর্তমান অ্যাকাউন্ট দিয়ে লগইন করুন।");
+          if (authError.message.includes("rate limit") || authError.message.toLowerCase().includes("email")) {
+            throw new Error("ইমেইল কনফার্মেশন সার্ভারে সমস্যা হচ্ছে। দয়া করে গুগল (Google) দিয়ে লগইন করুন।");
           }
           throw authError;
         }

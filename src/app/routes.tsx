@@ -38,6 +38,7 @@ export const router = createBrowserRouter([
       { path: "join-writer", Component: WriterRegistrationPage },
       { path: "author-dashboard", element: <Navigate to="/writer" replace /> }, // Redirect old path
       { path: "checkout", Component: CheckoutPage },
+      { path: "author/dashboard", element: <Navigate to="/writer" replace /> },
       { path: "author/:name", Component: AuthorPage },
       { path: "admin", Component: AdminDashboardPage },
       { path: "about", Component: AboutPage },

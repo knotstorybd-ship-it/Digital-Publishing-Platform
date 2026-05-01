@@ -623,18 +623,18 @@ export function AuthorDashboardPage() {
                     >
                       বাতিল
                     </button>
-                    <button 
-                      type="submit" 
-                      disabled={isUploading}
-                      className="flex-[2] py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      {isUploading ? (
-                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      ) : (
-                        <CheckCircle2 className="w-6 h-6" />
-                      )}
-                      {isUploading ? "আপলোড হচ্ছে..." : (editingBook ? "আপডেট করুন" : "প্রকাশ করুন")}
-                    </button>
+                      <button 
+                        type="submit" 
+                        disabled={isUploading || isSubmitting}
+                        className="flex-[2] py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                      >
+                        {(isUploading || isSubmitting) ? (
+                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          <CheckCircle2 className="w-6 h-6" />
+                        )}
+                        {(isUploading || isSubmitting) ? "প্রসেসিং হচ্ছে..." : (editingBook ? "আপডেট করুন" : "প্রকাশ করুন")}
+                      </button>
                   </div>
                 </form>
               </div>

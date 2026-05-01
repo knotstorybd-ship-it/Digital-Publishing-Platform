@@ -110,7 +110,7 @@ export function BrowsePage() {
             <div className="flex items-center gap-3">
               <TrendingUp className="w-5 h-5 text-emerald-600" />
               <span className="text-sm font-black text-emerald-950 uppercase tracking-widest">
-                {filteredBooks.length}টি বই পাওয়া গেছে
+                {loading ? "খোঁজ করা হচ্ছে..." : `${filteredBooks.length}টি বই পাওয়া গেছে`}
               </span>
             </div>
             <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">

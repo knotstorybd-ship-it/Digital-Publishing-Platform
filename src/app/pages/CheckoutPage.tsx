@@ -8,16 +8,18 @@ const paymentMethods = [
   {
     id: "bkash",
     name: "বিকাশ (bKash)",
-    icon: "https://www.logo.wine/a/logo/BKash/BKash-Icon-Logo.wine.svg",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/BKash_Logo.svg/1024px-BKash_Logo.svg.png",
     color: "bg-[#D12053]",
-    description: "সবচেয়ে জনপ্রিয় ও নিরাপদ মোবাইল পেমেন্ট"
+    description: "সবচেয়ে জনপ্রিয় ও নিরাপদ মোবাইল পেমেন্ট",
+    active: true
   },
   {
     id: "nagad",
     name: "নগদ (Nagad)",
-    icon: "https://vms.nagad.com.bd:8000/media/logos/Nagad-Logo.png",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Nagad_Logo_2024.png/1024px-Nagad_Logo_2024.png",
     color: "bg-[#F7941D]",
-    description: "দ্রুত ও সহজ পেমেন্ট প্রক্রিয়া"
+    description: "দ্রুত ও সহজ পেমেন্ট প্রক্রিয়া",
+    active: false
   }
 ];
 
@@ -209,7 +211,13 @@ export function CheckoutPage() {
                       <span className="text-4xl font-black">৳{totalAmount}</span>
                     </div>
                   </div>
-                  <button onClick={() => setStep(2)} className="w-full py-5 bg-emerald-500 text-white rounded-2xl font-black shadow-xl shadow-emerald-500/20 hover:bg-emerald-400 transition-all flex items-center justify-center gap-3">
+                  <button onClick={() => {
+                    if (!user) {
+                      window.dispatchEvent(new CustomEvent("open-auth"));
+                    } else {
+                      setStep(2);
+                    }
+                  }} className="w-full py-5 bg-emerald-500 text-white rounded-2xl font-black shadow-xl shadow-emerald-500/20 hover:bg-emerald-400 transition-all flex items-center justify-center gap-3">
                     পেমেন্ট করুন <ArrowRight className="w-5 h-5" />
                   </button>
                 </div>
@@ -230,15 +238,26 @@ export function CheckoutPage() {
                   {paymentMethods.map(method => (
                     <div 
                       key={method.id}
-                      onClick={() => setPaymentMethod(method.id)}
-                      className={`relative p-8 rounded-[2.5rem] cursor-pointer transition-all border-2 ${paymentMethod === method.id ? 'bg-white border-emerald-500 shadow-2xl' : 'bg-white/50 border-slate-100 hover:border-emerald-200'}`}
+                      onClick={() => method.active !== false && setPaymentMethod(method.id)}
+                      className={`relative p-8 rounded-[2.5rem] transition-all border-2 ${
+                        method.active === false 
+                          ? 'bg-slate-50 border-slate-100 opacity-60 cursor-not-allowed'
+                          : paymentMethod === method.id 
+                            ? 'bg-white border-emerald-500 shadow-2xl cursor-pointer' 
+                            : 'bg-white/50 border-slate-100 hover:border-emerald-200 cursor-pointer'
+                      }`}
                     >
+                      {method.active === false && (
+                        <div className="absolute top-4 right-4 bg-slate-200 text-slate-500 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+                          শীঘ্রই আসছে
+                        </div>
+                      )}
                       <div className={`w-12 h-12 ${method.color} rounded-xl flex items-center justify-center mb-6`}>
                         <img src={method.icon} className="w-8 h-8 object-contain" />
                       </div>
                       <h4 className="font-black text-emerald-950 text-lg mb-2">{method.name}</h4>
                       <p className="text-xs font-bold text-slate-400">{method.description}</p>
-                      {paymentMethod === method.id && (
+                      {paymentMethod === method.id && method.active !== false && (
                         <div className="absolute top-6 right-6 w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center">
                           <Check className="w-4 h-4" />
                         </div>
@@ -257,7 +276,7 @@ export function CheckoutPage() {
                       <ol className="space-y-4 text-slate-500 font-bold text-sm">
                         <li className="flex gap-3"><span className="text-emerald-600">১.</span> আপনার {paymentMethod === 'bkash' ? 'বিকাশ' : 'নগদ'} অ্যাপে যান বা ইউএসএসডি কোড ডায়াল করুন।</li>
                         <li className="flex gap-3"><span className="text-emerald-600">২.</span> 'Send Money' অপশনটি বেছে নিন।</li>
-                        <li className="flex gap-3"><span className="text-emerald-600">৩.</span> এই নাম্বারে টাকা পাঠান: <span className="text-emerald-950 font-black">০১৭০০০০০০০০</span></li>
+                        <li className="flex gap-3"><span className="text-emerald-600">৩.</span> এই নাম্বারে টাকা পাঠান: <span className="text-emerald-950 font-black">০১৮৬৮৫১৯৬৮৫ (01868519685)</span></li>
                         <li className="flex gap-3"><span className="text-emerald-600">৪.</span> পেমেন্ট সফল হলে নিচের ফর্মে ট্রানজ্যাকশন আইডি (TrxID) দিন।</li>
                       </ol>
                     </div>

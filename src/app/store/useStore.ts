@@ -105,6 +105,8 @@ type State = {
   searchQuery: string;
   favoriteBookIds: string[];
   followedAuthorIds: string[];
+  reviews: any[];
+  payoutRequests: any[];
 };
 
 const mapBookFromDb = (row: any): Book => ({
@@ -215,6 +217,8 @@ let currentState: State = {
   searchQuery: "",
   favoriteBookIds: [],
   followedAuthorIds: [],
+  reviews: [],
+  payoutRequests: [],
 };
 
 const listeners = new Set<(state: State) => void>();
@@ -246,6 +250,15 @@ const syncAuth = async () => {
     const profile = profileRes.data;
     const authorData = authorRes.data ? mapAuthorFromDb(authorRes.data) : null;
     if (ordersRes.data) currentState.orders = ordersRes.data;
+    
+    const [reviewsRes, payoutsRes] = await Promise.all([
+      supabase.from('reviews').select('*').order('created_at', { ascending: false }),
+      supabase.from('payout_requests').select('*').order('created_at', { ascending: false })
+    ]);
+
+    if (reviewsRes.data) currentState.reviews = reviewsRes.data;
+    if (payoutsRes.data) currentState.payoutRequests = payoutsRes.data;
+
     currentState.favoriteBookIds = favoritesRes.data?.map((row: any) => row.book_id) || [];
     currentState.followedAuthorIds = followsRes.data?.map((row: any) => row.author_id) || [];
 
@@ -353,6 +366,15 @@ const initSupabase = async () => {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, (payload) => {
       if (payload.eventType === 'INSERT') currentState.profilesCount++;
       if (payload.eventType === 'DELETE') currentState.profilesCount--;
+      notify();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'reviews' }, (payload) => {
+      if (payload.eventType === 'INSERT') currentState.reviews = [payload.new, ...currentState.reviews];
+      notify();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'payout_requests' }, (payload) => {
+      if (payload.eventType === 'INSERT') currentState.payoutRequests = [payload.new, ...currentState.payoutRequests];
+      if (payload.eventType === 'UPDATE') currentState.payoutRequests = currentState.payoutRequests.map(p => p.id === payload.new.id ? payload.new : p);
       notify();
     })
     .subscribe();
