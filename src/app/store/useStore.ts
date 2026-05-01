@@ -301,6 +301,15 @@ const initSupabase = async () => {
   if (_initialized) return;
   _initialized = true;
   setLoading(true);
+  
+  // Safety timeout: never stay loading for more than 10 seconds
+  const loadingTimeout = setTimeout(() => {
+    if (currentState.loading) {
+      console.warn('Loading timeout reached, forcing load complete.');
+      setLoading(false);
+    }
+  }, 10000);
+  
   try {
     const [booksRes, authorsRes, settingsRes, testimonialsRes, profilesRes, ordersRes] = await Promise.all([
       supabase.from('books').select('*').order('created_at', { ascending: false }),
@@ -318,10 +327,11 @@ const initSupabase = async () => {
     if (profilesRes.count !== null) currentState.profilesCount = profilesRes.count;
     if (ordersRes.count !== null) currentState.ordersCount = ordersRes.count;
     
-    await syncAuth();
+    try { await syncAuth(); } catch (authErr) { console.warn('Auth sync failed:', authErr); }
   } catch (error) {
     console.error("Initialization error:", error);
   } finally {
+    clearTimeout(loadingTimeout);
     setLoading(false);
   }
 
@@ -390,22 +400,25 @@ const setupAuthListener = () => {
   if (_authListenerSet) return;
   _authListenerSet = true;
   
-  supabase.auth.onAuthStateChange(async (event, session) => {
-    console.log('[Auth Event]', event, session?.user?.email);
+  supabase.auth.onAuthStateChange(async (event, _session) => {
+    console.log('[Auth Event]', event);
     
-    if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-      // User just logged in (e.g. Google OAuth redirect) or token refreshed
-      await syncAuth();
-    }
-    
-    if (event === 'SIGNED_OUT') {
-      currentState.user = null;
-      currentState.orders = [];
-      currentState.favoriteBookIds = [];
-      currentState.followedAuthorIds = [];
-      currentState.reviews = [];
-      currentState.payoutRequests = [];
-      notify();
+    try {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        await syncAuth();
+      }
+      
+      if (event === 'SIGNED_OUT') {
+        currentState.user = null;
+        currentState.orders = [];
+        currentState.favoriteBookIds = [];
+        currentState.followedAuthorIds = [];
+        currentState.reviews = [];
+        currentState.payoutRequests = [];
+        notify();
+      }
+    } catch (err) {
+      console.warn('[Auth Event Error]', err);
     }
   });
 };
