@@ -224,6 +224,11 @@ const notify = () => {
   listeners.forEach((listener) => listener({ ...currentState }));
 };
 
+const setLoading = (loading: boolean) => {
+  currentState.loading = loading;
+  notify();
+};
+
 // --- CORE SYNC LOGIC ---
 
 const syncAuth = async () => {
@@ -277,23 +282,30 @@ const syncAuth = async () => {
 };
 
 const initSupabase = async () => {
-  const [booksRes, authorsRes, settingsRes, testimonialsRes, profilesRes, ordersRes] = await Promise.all([
-    supabase.from('books').select('*').order('created_at', { ascending: false }),
-    supabase.from('authors').select('*').order('book_count', { ascending: false }),
-    supabase.from('site_settings').select('*').eq('id', 1).single(),
-    supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
-    supabase.from('profiles').select('id', { count: 'exact', head: true }),
-    supabase.from('orders').select('id', { count: 'exact', head: true })
-  ]);
+  setLoading(true);
+  try {
+    const [booksRes, authorsRes, settingsRes, testimonialsRes, profilesRes, ordersRes] = await Promise.all([
+      supabase.from('books').select('*').order('created_at', { ascending: false }),
+      supabase.from('authors').select('*').order('book_count', { ascending: false }),
+      supabase.from('site_settings').select('*').eq('id', 1).single(),
+      supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
+      supabase.from('profiles').select('id', { count: 'exact', head: true }),
+      supabase.from('orders').select('id', { count: 'exact', head: true })
+    ]);
 
-  if (booksRes.data) currentState.books = booksRes.data.map(mapBookFromDb);
-  if (authorsRes.data) currentState.authors = authorsRes.data.map(mapAuthorFromDb);
-  if (settingsRes.data) currentState.siteSettings = mapSiteSettingsFromDb(settingsRes.data);
-  if (testimonialsRes.data) currentState.testimonials = testimonialsRes.data;
-  if (profilesRes.count !== null) currentState.profilesCount = profilesRes.count;
-  if (ordersRes.count !== null) currentState.ordersCount = ordersRes.count;
-  
-  notify();
+    if (booksRes.data) currentState.books = booksRes.data.map(mapBookFromDb);
+    if (authorsRes.data) currentState.authors = authorsRes.data.map(mapAuthorFromDb);
+    if (settingsRes.data) currentState.siteSettings = mapSiteSettingsFromDb(settingsRes.data);
+    if (testimonialsRes.data) currentState.testimonials = testimonialsRes.data;
+    if (profilesRes.count !== null) currentState.profilesCount = profilesRes.count;
+    if (ordersRes.count !== null) currentState.ordersCount = ordersRes.count;
+    
+    await syncAuth();
+  } catch (error) {
+    console.error("Initialization error:", error);
+  } finally {
+    setLoading(false);
+  }
 
   supabase.channel('db-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, (payload) => {
@@ -344,8 +356,6 @@ const initSupabase = async () => {
       notify();
     })
     .subscribe();
-
-  syncAuth();
 };
 
 export const useStore = () => {
