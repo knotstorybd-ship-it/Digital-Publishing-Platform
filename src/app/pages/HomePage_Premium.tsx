@@ -16,12 +16,8 @@ export function HomePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  // Redirect logged-in writers to their dashboard
-  useEffect(() => {
-    if (user?.isWriter) {
-      navigate("/writer");
-    }
-  }, [user, navigate]);
+  // Replaced automatic redirect with dynamic CTAs below so writers can browse the homepage
+  // without getting stuck in a redirect loop.
 
   if (loading) {
     return (
@@ -93,10 +89,10 @@ export function HomePage() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
               <Link 
-                to="/join-writer" 
+                to={user?.isWriter ? "/writer" : "/join-writer"} 
                 className="group relative px-8 py-5 bg-emerald-600 text-white rounded-2xl font-black text-lg shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 overflow-hidden w-full sm:w-auto"
               >
-                <span className="relative z-10">{siteSettings.heroCtaText}</span>
+                <span className="relative z-10">{user?.isWriter ? "ড্যাশবোর্ডে প্রবেশ করুন" : siteSettings.heroCtaText}</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/0 via-white/20 to-emerald-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
               </Link>
@@ -485,10 +481,10 @@ export function HomePage() {
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                 <Link 
-                  to="/join-writer" 
+                  to={user?.isWriter ? "/writer" : "/join-writer"} 
                   className="group px-12 py-6 bg-white text-emerald-950 rounded-3xl font-black text-xl shadow-2xl hover:scale-105 transition-all flex items-center gap-3"
                 >
-                  লেখক হিসেবে যোগ দিন
+                  {user?.isWriter ? "ড্যাশবোর্ডে প্রবেশ করুন" : "লেখক হিসেবে যোগ দিন"}
                   <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link 
