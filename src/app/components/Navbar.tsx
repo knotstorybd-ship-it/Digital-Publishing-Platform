@@ -19,6 +19,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isWriterMode = !!(user?.isWriter && user?.subscription);
   const showCart = !isWriterMode && (cart.length > 0 || location.pathname === '/checkout');
 
   const filteredResults = searchQuery.length > 0 ? {
@@ -72,7 +73,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isWriterMode = user?.isWriter && user?.subscription;
 
   return (
     <>
