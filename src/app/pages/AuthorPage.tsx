@@ -114,7 +114,17 @@ export function AuthorPage() {
 
               <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
                 <button 
-                  onClick={() => toggleAuthorFollow(author.id).catch(() => window.dispatchEvent(new CustomEvent("open-auth")))}
+                  onClick={async () => {
+                    if (!user) {
+                      window.dispatchEvent(new CustomEvent("open-auth"));
+                      return;
+                    }
+                    try {
+                      await toggleAuthorFollow(author.id);
+                    } catch (err: any) {
+                      alert("ডেটাবেস এরর: " + (err.message || "ফলো করতে সমস্যা হয়েছে"));
+                    }
+                  }}
                   className={`px-10 py-4 rounded-2xl font-black shadow-xl transition-all flex items-center gap-3 ${
                     isFollowed 
                       ? 'bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600' 

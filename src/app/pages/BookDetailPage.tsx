@@ -102,7 +102,18 @@ export function BookDetailPage() {
                   </button>
                 )}
                 <button 
-                  onClick={() => book && toggleFavoriteBook(book.id).catch(() => window.dispatchEvent(new CustomEvent("open-auth")))}
+                  onClick={async () => {
+                    if (!book) return;
+                    if (!user) {
+                      window.dispatchEvent(new CustomEvent("open-auth"));
+                      return;
+                    }
+                    try {
+                      await toggleFavoriteBook(book.id);
+                    } catch (err: any) {
+                      alert("ডেটাবেস এরর: " + (err.message || "অ্যাকশন সম্পন্ন করা যায়নি"));
+                    }
+                  }}
                   className={`flex-1 p-6 rounded-[2rem] border-2 transition-all flex items-center justify-center ${isWishlisted ? 'bg-rose-50 border-rose-100 text-rose-500 shadow-lg shadow-rose-500/10' : 'bg-white border-slate-100 text-slate-300 hover:border-emerald-200 hover:text-emerald-600'}`}
                 >
                   <Heart className={`w-6 h-6 ${isWishlisted ? 'fill-rose-500' : ''}`} />
