@@ -32,7 +32,9 @@ import {
   Lock,
   ArrowLeft,
   LogOut,
-  Quote
+  Quote,
+  CreditCard,
+  XCircle
 } from "lucide-react";
 import { useStore, Author, Book } from "../store/useStore";
 import { useNavigate } from "react-router";
@@ -42,7 +44,7 @@ export function AdminDashboardPage() {
   const { 
     books, deleteBook, addBook, authors, updateAuthor, deleteAuthor, updateBook, orders,
     siteSettings, updateSiteSettings, testimonials, approveTestimonial, deleteTestimonial,
-    user, signIn, signInWithGoogle, signOut
+    user, signIn, signInWithGoogle, signOut, approvePayment, rejectPayment
   } = useStore();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditAuthorModal, setShowEditAuthorModal] = useState(false);
@@ -72,11 +74,7 @@ export function AdminDashboardPage() {
   if (!isAdminAuthenticated) {
     return (
       <div className="min-h-screen bg-[#fafbfc] flex items-center justify-center p-4 selection:bg-emerald-100">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full bg-white rounded-[3.5rem] p-12 shadow-2xl border border-emerald-50"
-        >
+        <div className="max-w-md w-full bg-white rounded-[3.5rem] p-12 shadow-2xl border border-emerald-50">
           <div className="text-center mb-10">
             <div className="w-20 h-20 bg-emerald-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
               <Lock className="w-10 h-10 text-emerald-600" />
@@ -110,13 +108,9 @@ export function AdminDashboardPage() {
             </div>
 
             {loginError && (
-              <motion.p 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="text-red-500 text-sm font-bold text-center"
-              >
+              <p className="text-red-500 text-sm font-bold text-center">
                 {loginError}
-              </motion.p>
+              </p>
             )}
 
             <button 
@@ -136,7 +130,7 @@ export function AdminDashboardPage() {
               হোমপেজে ফিরে যান
             </button>
           </form>
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -158,7 +152,6 @@ export function AdminDashboardPage() {
     a.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     a.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
 
   const stats = [
     { label: "Total Revenue", value: `৳${totalSales.toLocaleString()}`, icon: DollarSign, trend: "+১২.৫%", isUp: true, color: "emerald" },
@@ -200,21 +193,14 @@ export function AdminDashboardPage() {
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col md:flex-row">
       
       {/* Premium Notification Toast */}
-      <AnimatePresence>
-        {notification && (
-          <motion.div 
-            initial={{ opacity: 0, y: -50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 50, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className={`fixed top-0 left-1/2 -translate-x-1/2 z-[200] px-8 py-4 rounded-2xl shadow-2xl font-bold flex items-center gap-3 border ${
-              notification.type === 'success' ? 'bg-emerald-600 text-white border-emerald-400' : 'bg-rose-600 text-white border-rose-400'
-            }`}
-          >
-            {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <X className="w-5 h-5" />}
-            {notification.message}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {notification && (
+        <div className={`fixed top-0 left-1/2 -translate-x-1/2 z-[200] px-8 py-4 rounded-2xl shadow-2xl font-bold flex items-center gap-3 border transition-all ${
+          notification.type === 'success' ? 'bg-emerald-600 text-white border-emerald-400' : 'bg-rose-600 text-white border-rose-400'
+        } translate-y-12`}>
+          {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <X className="w-5 h-5" />}
+          {notification.message}
+        </div>
+      )}
 
       <aside className="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col shadow-2xl z-20">
         <div className="p-10 border-b border-slate-100">
@@ -282,7 +268,6 @@ export function AdminDashboardPage() {
         </div>
       </aside>
 
-      {/* Main content Area */}
       <main className="flex-1 p-8 md:p-12 overflow-y-auto">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
           <div>
@@ -308,914 +293,746 @@ export function AdminDashboardPage() {
           </div>
         </header>
 
-        <AnimatePresence mode="wait">
-          
-          {/* Overview Tab */}
-          {activeTab === "overview" && (
-            <motion.div 
-              key="overview"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-10"
-            >
-              {/* Stats Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {stats.map((stat, i) => (
-                  <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="flex justify-between items-start mb-6 relative z-10">
-                      <div className={`p-4 bg-${stat.color}-50 text-${stat.color}-600 rounded-2xl`}>
-                        <stat.icon className="w-6 h-6" />
-                      </div>
-                      <div className={`flex items-center gap-1 text-xs font-black ${stat.isUp ? "text-emerald-600" : "text-rose-600"}`}>
-                        {stat.isUp ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                        {stat.trend}
-                      </div>
+        {/* Overview Tab */}
+        {activeTab === "overview" && (
+          <div className="space-y-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {stats.map((stat, i) => (
+                <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="flex justify-between items-start mb-6 relative z-10">
+                    <div className={`p-4 bg-${stat.color}-50 text-${stat.color}-600 rounded-2xl`}>
+                      <stat.icon className="w-6 h-6" />
                     </div>
-                    <div className="relative z-10">
-                      <div className="text-3xl font-black text-emerald-950 mb-2 tracking-tight">{stat.value}</div>
-                      <div className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
+                    <div className={`flex items-center gap-1 text-xs font-black ${stat.isUp ? "text-emerald-600" : "text-rose-600"}`}>
+                      {stat.isUp ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                      {stat.trend}
                     </div>
                   </div>
-                ))}
-              </div>
-
-              {/* Activity and Charts Preview */}
-              <div className="grid lg:grid-cols-3 gap-10">
-                <div className="lg:col-span-2 bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100">
-                  <div className="flex items-center justify-between mb-10">
-                    <div>
-                      <h3 className="text-2xl font-black text-emerald-950">Financial Performance</h3>
-                      <p className="text-sm font-bold text-slate-400">Transaction monitoring and trends</p>
-                    </div>
-                    <button className="flex items-center gap-2 px-6 py-3 bg-slate-50 rounded-xl text-xs font-black text-slate-500 uppercase tracking-widest hover:bg-slate-100 transition-all">
-                      <Download className="w-4 h-4" />
-                      Export Data
-                    </button>
-                  </div>
-                  
-                  {/* Mock Chart Area */}
-                  <div className="h-80 flex items-end justify-between gap-6 px-4">
-                    {[65, 45, 85, 55, 95, 75, 80, 60, 90, 70, 85, 100].map((h, i) => (
-                      <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
-                        <motion.div 
-                          initial={{ height: 0 }}
-                          animate={{ height: `${h}%` }}
-                          transition={{ delay: i * 0.05, duration: 1 }}
-                          className="w-full bg-emerald-50 group-hover:bg-emerald-600 rounded-2xl relative transition-all duration-300"
-                        >
-                          <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-950 text-white text-[10px] font-black px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                            ৳{(h * 1500).toLocaleString()}
-                          </div>
-                        </motion.div>
-                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter">M{i+1}</span>
-                      </div>
-                    ))}
+                  <div className="relative z-10">
+                    <div className="text-3xl font-black text-emerald-950 mb-2 tracking-tight">{stat.value}</div>
+                    <div className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
                   </div>
                 </div>
-                
-                <div className="bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100">
-                  <div className="flex items-center justify-between mb-10">
-                    <h3 className="text-2xl font-black text-emerald-950">Recent Logs</h3>
-                    <button className="text-emerald-600 font-black text-xs uppercase tracking-widest hover:underline">See All</button>
+              ))}
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-10">
+              <div className="lg:col-span-2 bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100">
+                <div className="flex items-center justify-between mb-10">
+                  <div>
+                    <h3 className="text-2xl font-black text-emerald-950">Financial Performance</h3>
+                    <p className="text-sm font-bold text-slate-400">Transaction monitoring and trends</p>
                   </div>
-                  <div className="space-y-8">
-                    {orders.slice(0, 5).map((order) => {
-                      const book = books.find(b => b.id === order.book_id);
-                      return (
-                        <div key={order.id} className="flex items-start gap-4">
-                          <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 flex-shrink-0">
-                            <TrendingUp className="w-6 h-6" />
+                  <button className="flex items-center gap-2 px-6 py-3 bg-slate-50 rounded-xl text-xs font-black text-slate-500 uppercase tracking-widest hover:bg-slate-100 transition-all">
+                    <Download className="w-4 h-4" />
+                    Export Data
+                  </button>
+                </div>
+                
+                <div className="h-80 flex items-end justify-between gap-6 px-4">
+                  {[65, 45, 85, 55, 95, 75, 80, 60, 90, 70, 85, 100].map((h, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
+                      <div 
+                        style={{ height: `${h}%` }}
+                        className="w-full bg-emerald-50 group-hover:bg-emerald-600 rounded-2xl relative transition-all duration-300"
+                      >
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-emerald-950 text-white text-[10px] font-black px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          ৳{(h * 1500).toLocaleString()}
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter">M{i+1}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100">
+                <div className="flex items-center justify-between mb-10">
+                  <h3 className="text-2xl font-black text-emerald-950">Recent Logs</h3>
+                  <button className="text-emerald-600 font-black text-xs uppercase tracking-widest hover:underline">See All</button>
+                </div>
+                <div className="space-y-8">
+                  {orders.slice(0, 5).map((order) => {
+                    const book = books.find(b => b.id === order.book_id);
+                    return (
+                      <div key={order.id} className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 flex-shrink-0">
+                          <TrendingUp className="w-6 h-6" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-emerald-950 truncate">New order for "{book?.title}"</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">৳{order.amount}</span>
+                            <span className="text-[10px] font-bold text-slate-300">•</span>
+                            <span className="text-[10px] font-bold text-slate-300">{new Date(order.created_at).toLocaleTimeString()}</span>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-emerald-950 truncate">New order for "{book?.title}"</p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">৳{order.amount}</span>
-                              <span className="text-[10px] font-bold text-slate-300">•</span>
-                              <span className="text-[10px] font-bold text-slate-300">{new Date(order.created_at).toLocaleTimeString()}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {orders.length === 0 && (
+                    <div className="text-center py-20">
+                      <Archive className="w-12 h-12 text-slate-200 mx-auto mb-4" />
+                      <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No recent transactions</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Books Management Tab */}
+        {activeTab === "books" && (
+          <div className="bg-white rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
+            <div className="p-10 border-b border-slate-50 flex flex-col md:flex-row justify-between items-center gap-8 bg-slate-50/30">
+              <div>
+                <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Content Repository</h3>
+                <p className="text-sm font-bold text-slate-400">Total volume: {books.length} publications</p>
+              </div>
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                <div className="relative flex-1 md:w-96">
+                  <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-600/30" />
+                  <input 
+                    type="text" 
+                    placeholder="Filter by title, author or ISBN..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-16 pr-8 py-5 bg-white border border-slate-200 rounded-[2rem] text-sm font-bold focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none transition-all shadow-sm"
+                  />
+                </div>
+                <button className="p-5 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-emerald-600 transition-all shadow-sm">
+                  <Filter className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-slate-50/50 text-emerald-900/30 text-[10px] uppercase tracking-[0.3em] font-black">
+                    <th className="px-10 py-8">Publication Details</th>
+                    <th className="px-10 py-8">Lifecycle State</th>
+                    <th className="px-10 py-8">Marketability</th>
+                    <th className="px-10 py-8">Unit Price</th>
+                    <th className="px-10 py-8 text-right">Operations</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {filteredBooks.map((book) => (
+                    <tr key={book.id} className="group hover:bg-emerald-50/30 transition-all duration-300">
+                      <td className="px-10 py-8">
+                        <div className="flex items-center gap-6">
+                          <div className="relative">
+                            <img src={book.cover} className="w-14 h-20 object-cover rounded-xl shadow-xl group-hover:scale-105 transition-transform" />
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center border-4 border-white">
+                              <CheckCircle2 className="w-3 h-3" />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="font-black text-emerald-950 text-lg mb-1">{book.title}</div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-black text-emerald-600/40 uppercase tracking-widest">{book.author}</span>
+                              <span className="text-[10px] font-bold text-slate-200">•</span>
+                              <span className="text-[10px] font-black text-emerald-600/40 uppercase tracking-widest">{book.category}</span>
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
-                    {orders.length === 0 && (
-                      <div className="text-center py-20">
-                        <Archive className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No recent transactions</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Books Management Tab */}
-          {activeTab === "books" && (
-            <motion.div 
-              key="books"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              className="bg-white rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden"
-            >
-              <div className="p-10 border-b border-slate-50 flex flex-col md:flex-row justify-between items-center gap-8 bg-slate-50/30">
-                <div>
-                  <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Content Repository</h3>
-                  <p className="text-sm font-bold text-slate-400">Total volume: {books.length} publications</p>
-                </div>
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                  <div className="relative flex-1 md:w-96">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-600/30" />
-                    <input 
-                      type="text" 
-                      placeholder="Filter by title, author or ISBN..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-16 pr-8 py-5 bg-white border border-slate-200 rounded-[2rem] text-sm font-bold focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none transition-all shadow-sm"
-                    />
-                  </div>
-                  <button className="p-5 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-emerald-600 transition-all shadow-sm">
-                    <Filter className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="bg-slate-50/50 text-emerald-900/30 text-[10px] uppercase tracking-[0.3em] font-black">
-                      <th className="px-10 py-8">Publication Details</th>
-                      <th className="px-10 py-8">Lifecycle State</th>
-                      <th className="px-10 py-8">Marketability</th>
-                      <th className="px-10 py-8">Unit Price</th>
-                      <th className="px-10 py-8 text-right">Operations</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {filteredBooks.map((book) => (
-                      <tr key={book.id} className="group hover:bg-emerald-50/30 transition-all duration-300">
-                        <td className="px-10 py-8">
-                          <div className="flex items-center gap-6">
-                            <div className="relative">
-                              <img src={book.cover} className="w-14 h-20 object-cover rounded-xl shadow-xl group-hover:scale-105 transition-transform" />
-                              <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center border-4 border-white">
-                                <CheckCircle2 className="w-3 h-3" />
-                              </div>
-                            </div>
-                            <div>
-                              <div className="font-black text-emerald-950 text-lg mb-1">{book.title}</div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-black text-emerald-600/40 uppercase tracking-widest">{book.author}</span>
-                                <span className="text-[10px] font-bold text-slate-200">•</span>
-                                <span className="text-[10px] font-black text-emerald-600/40 uppercase tracking-widest">{book.category}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-10 py-8">
-                          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${
-                            book.status === "Published" ? "bg-emerald-50 text-emerald-600" : 
-                            book.status === "Draft" ? "bg-amber-50 text-amber-600" : "bg-slate-100 text-slate-500"
-                          }`}>
-                            <div className={`w-1.5 h-1.5 rounded-full ${
-                              book.status === "Published" ? "bg-emerald-600" : 
-                              book.status === "Draft" ? "bg-amber-600" : "bg-slate-500"
-                            }`}></div>
-                            {book.status}
-                          </div>
-                        </td>
-                        <td className="px-10 py-8">
+                      </td>
+                      <td className="px-10 py-8">
+                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                          book.status === "Published" ? "bg-emerald-50 text-emerald-600" : 
+                          book.status === "Draft" ? "bg-amber-50 text-amber-600" : "bg-slate-100 text-slate-500"
+                        }`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${
+                            book.status === "Published" ? "bg-emerald-600" : 
+                            book.status === "Draft" ? "bg-amber-600" : "bg-slate-500"
+                          }`}></div>
+                          {book.status}
+                        </div>
+                      </td>
+                      <td className="px-10 py-8">
+                        <button 
+                          onClick={() => toggleFeatured(book)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest ${
+                            book.isFeatured 
+                              ? "bg-amber-100 text-amber-600 shadow-sm scale-105" 
+                              : "bg-slate-50 text-slate-300 hover:text-slate-400"
+                          }`}
+                        >
+                          <Zap className={`w-3.5 h-3.5 ${book.isFeatured ? "fill-amber-600" : ""}`} />
+                          {book.isFeatured ? "Featured" : "Regular"}
+                        </button>
+                      </td>
+                      <td className="px-10 py-8 font-black text-emerald-950 text-lg">৳{book.price}</td>
+                      <td className="px-10 py-8 text-right">
+                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
                           <button 
-                            onClick={() => toggleFeatured(book)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest ${
-                              book.isFeatured 
-                                ? "bg-amber-100 text-amber-600 shadow-sm scale-105" 
-                                : "bg-slate-50 text-slate-300 hover:text-slate-400"
-                            }`}
+                            onClick={() => handleEditBook(book)}
+                            className="p-3 bg-white hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
                           >
-                            <Zap className={`w-3.5 h-3.5 ${book.isFeatured ? "fill-amber-600" : ""}`} />
-                            {book.isFeatured ? "Featured" : "Regular"}
+                            <Edit3 className="w-5 h-5" />
                           </button>
-                        </td>
-                        <td className="px-10 py-8 font-black text-emerald-950 text-lg">৳{book.price}</td>
-                        <td className="px-10 py-8 text-right">
-                          <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                            <button 
-                              onClick={() => handleEditBook(book)}
-                              className="p-3 bg-white hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
-                            >
-                              <Edit3 className="w-5 h-5" />
-                            </button>
-                            <button 
-                              onClick={() => handleDeleteBook(book.id)}
-                              className="p-3 bg-white hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Author Network Tab */}
-          {activeTab === "authors" && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden"
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
-                <div>
-                  <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Author Network</h3>
-                  <p className="text-sm font-bold text-slate-400">Collaborators: {authors.length} verified creators</p>
-                </div>
-                <div className="flex items-center gap-4 w-full md:w-auto">
-                  <div className="relative flex-1 md:w-96">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-600/30" />
-                    <input 
-                      type="text" 
-                      placeholder="Search authors by name, ID or tier..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-16 pr-8 py-5 bg-white border border-slate-200 rounded-[2rem] text-sm font-bold focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none transition-all shadow-sm"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="bg-slate-50/50 text-emerald-900/30 text-[10px] uppercase tracking-[0.3em] font-black">
-                      <th className="px-10 py-8">Author Identity</th>
-                      <th className="px-10 py-8">Service Tier</th>
-                      <th className="px-10 py-8">Access Expiration</th>
-                      <th className="px-10 py-8">Inventory</th>
-                      <th className="px-10 py-8 text-right">Operations</th>
+                          <button 
+                            onClick={() => handleDeleteBook(book.id)}
+                            className="p-3 bg-white hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {filteredAuthors.map((author) => (
-                      <tr key={author.id} className="group hover:bg-emerald-50/30 transition-all duration-300">
-                        <td className="px-10 py-8">
-                          <div className="flex items-center gap-6">
-                            <div className="relative">
-                              <img src={author.avatar} className="w-14 h-14 rounded-2xl object-cover shadow-xl group-hover:rotate-6 transition-transform" />
-                              <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-4 border-white rounded-full"></div>
-                            </div>
-                            <div>
-                              <div className="font-black text-emerald-950 text-lg mb-0.5">{author.name}</div>
-                              <div className="text-[10px] font-black text-emerald-600/40 uppercase tracking-[0.15em]">{author.email}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-10 py-8">
-                          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${
-                            author.subscriptionPlan === "প্ল্যান ৩" 
-                              ? "bg-amber-100 text-amber-700" 
-                              : "bg-emerald-100 text-emerald-700"
-                          }`}>
-                            <Star className={`w-3 h-3 ${author.subscriptionPlan === "প্ল্যান ৩" ? "fill-current" : ""}`} />
-                            {author.subscriptionPlan}
-                          </div>
-                        </td>
-                        <td className="px-10 py-8">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
-                              <Calendar className="w-5 h-5" />
-                            </div>
-                            <div>
-                              <div className="text-sm font-black text-emerald-950">{author.subscriptionExpiry}</div>
-                              <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Valid Term</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-10 py-8">
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-emerald-950">{author.bookCount}</span>
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Titles</span>
-                          </div>
-                        </td>
-                        <td className="px-10 py-8 text-right">
-                          <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                            <button 
-                              onClick={() => handleEditAuthor(author)}
-                              className="p-3 bg-white hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
-                            >
-                              <Edit3 className="w-5 h-5" />
-                            </button>
-                            <button 
-                              onClick={() => handleDeleteAuthor(author.id)}
-                              className="p-3 bg-white hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          )}
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
-          {/* Site Appearance Tab */}
-          {activeTab === "payments" && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
-              <div className="flex items-center justify-between mb-2 px-4">
-                <div>
-                  <h2 className="text-3xl font-black text-emerald-950 mb-2">পেমেন্ট ভেরিফিকেশন</h2>
-                  <p className="text-slate-400 font-bold text-sm">ম্যানুয়াল পেমেন্ট রিকোয়েস্টগুলো যাচাই করুন</p>
+        {/* Author Network Tab */}
+        {activeTab === "authors" && (
+          <div className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
+              <div>
+                <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Author Network</h3>
+                <p className="text-sm font-bold text-slate-400">Collaborators: {authors.length} verified creators</p>
+              </div>
+              <div className="flex items-center gap-4 w-full md:w-auto">
+                <div className="relative flex-1 md:w-96">
+                  <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-600/30" />
+                  <input 
+                    type="text" 
+                    placeholder="Search authors by name, ID or tier..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-16 pr-8 py-5 bg-white border border-slate-200 rounded-[2rem] text-sm font-bold focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none transition-all shadow-sm"
+                  />
                 </div>
               </div>
+            </div>
 
-              <div className="bg-white rounded-[3.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-slate-50/50">
-                      <th className="py-8 px-10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অর্ডার ও তারিখ</th>
-                      <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ব্যবহারকারী ও পেমেন্ট</th>
-                      <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ট্রানজেকশন আইডি</th>
-                      <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">স্ক্রিনশট</th>
-                      <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অবস্থা</th>
-                      <th className="py-8 px-10 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অ্যাকশন</th>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-slate-50/50 text-emerald-900/30 text-[10px] uppercase tracking-[0.3em] font-black">
+                    <th className="px-10 py-8">Author Identity</th>
+                    <th className="px-10 py-8">Service Tier</th>
+                    <th className="px-10 py-8">Access Expiration</th>
+                    <th className="px-10 py-8">Inventory</th>
+                    <th className="px-10 py-8 text-right">Operations</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {filteredAuthors.map((author) => (
+                    <tr key={author.id} className="group hover:bg-emerald-50/30 transition-all duration-300">
+                      <td className="px-10 py-8">
+                        <div className="flex items-center gap-6">
+                          <div className="relative">
+                            <img src={author.avatar} className="w-14 h-14 rounded-2xl object-cover shadow-xl group-hover:rotate-6 transition-transform" />
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-4 border-white rounded-full"></div>
+                          </div>
+                          <div>
+                            <div className="font-black text-emerald-950 text-lg mb-0.5">{author.name}</div>
+                            <div className="text-[10px] font-black text-emerald-600/40 uppercase tracking-[0.15em]">{author.email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-10 py-8">
+                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                          author.subscriptionPlan === "প্ল্যান ৩" 
+                            ? "bg-amber-100 text-amber-700" 
+                            : "bg-emerald-100 text-emerald-700"
+                        }`}>
+                          <Star className={`w-3 h-3 ${author.subscriptionPlan === "প্ল্যান ৩" ? "fill-current" : ""}`} />
+                          {author.subscriptionPlan}
+                        </div>
+                      </td>
+                      <td className="px-10 py-8">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                            <Calendar className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-black text-emerald-950">{author.subscriptionExpiry}</div>
+                            <div className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Valid Term</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-10 py-8">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-2xl font-black text-emerald-950">{author.bookCount}</span>
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Titles</span>
+                        </div>
+                      </td>
+                      <td className="px-10 py-8 text-right">
+                        <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                          <button 
+                            onClick={() => handleEditAuthor(author)}
+                            className="p-3 bg-white hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
+                          >
+                            <Edit3 className="w-5 h-5" />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteAuthor(author.id)}
+                            className="p-3 bg-white hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {orders.map((order) => (
-                      <tr key={order.id} className="group hover:bg-slate-50/50 transition-all">
-                        <td className="py-8 px-10">
-                          <div className="flex flex-col">
-                            <span className="font-black text-emerald-950 mb-1">
-                              {order.order_type === 'subscription' ? `Subscription: ${order.plan_name}` : "Book Purchase"}
-                            </span>
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                              {new Date(order.created_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="py-8 px-6">
-                          <div className="flex flex-col">
-                            <span className="font-bold text-slate-600">{order.user_id}</span>
-                            <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-1">
-                              {order.payment_method} - ৳{order.amount}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="py-8 px-6">
-                          <code className="px-3 py-1 bg-slate-100 rounded-lg text-xs font-black text-slate-600">
-                            {order.transaction_id || "N/A"}
-                          </code>
-                        </td>
-                        <td className="py-8 px-6">
-                          {order.screenshot_url ? (
-                            <button 
-                              onClick={() => window.open(order.screenshot_url, '_blank')}
-                              className="w-12 h-12 rounded-xl overflow-hidden border-2 border-white shadow-md hover:scale-110 transition-all"
-                            >
-                              <img src={order.screenshot_url} className="w-full h-full object-cover" />
-                            </button>
-                          ) : (
-                            <span className="text-slate-300 text-xs italic">No Proof</span>
-                          )}
-                        </td>
-                        <td className="py-8 px-6">
-                          <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${
-                            order.status === 'completed' ? 'bg-emerald-50 text-emerald-600' :
-                            order.status === 'pending' ? 'bg-amber-50 text-amber-600' :
-                            'bg-rose-50 text-rose-600'
-                          }`}>
-                            {order.status}
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Payments Tab */}
+        {activeTab === "payments" && (
+          <div className="space-y-10">
+            <div className="flex items-center justify-between mb-2 px-4">
+              <div>
+                <h2 className="text-3xl font-black text-emerald-950 mb-2">পেমেন্ট ভেরিফিকেশন</h2>
+                <p className="text-slate-400 font-bold text-sm">ম্যানুয়াল পেমেন্ট রিকোয়েস্টগুলো যাচাই করুন</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-[3.5rem] shadow-sm border border-slate-100 overflow-hidden">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50/50">
+                    <th className="py-8 px-10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অর্ডার ও তারিখ</th>
+                    <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ব্যবহারকারী ও পেমেন্ট</th>
+                    <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ট্রানজেকশন আইডি</th>
+                    <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">স্ক্রিনশট</th>
+                    <th className="py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অবস্থা</th>
+                    <th className="py-8 px-10 text-right text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">অ্যাকশন</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {orders.map((order) => (
+                    <tr key={order.id} className="group hover:bg-slate-50/50 transition-all">
+                      <td className="py-8 px-10">
+                        <div className="flex flex-col">
+                          <span className="font-black text-emerald-950 mb-1">
+                            {order.order_type === 'subscription' ? `Subscription: ${order.plan_name}` : "Book Purchase"}
                           </span>
-                        </td>
-                        <td className="py-8 px-10">
-                          <div className="flex items-center justify-end gap-3">
-                            {order.status === 'pending' && (
-                              <>
-                                <button 
-                                  onClick={() => {
-                                    if (confirm("পেমেন্টটি কি সঠিক? নিশ্চিত করলে ইউজারের সাবস্ক্রিপশন/বই সক্রিয় হবে।")) {
-                                      approvePayment(order.id);
-                                      showNotify("Payment approved successfully!");
-                                    }
-                                  }}
-                                  className="p-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl shadow-emerald-600/5"
-                                  title="Approve"
-                                >
-                                  <CheckCircle2 className="w-5 h-5" />
-                                </button>
-                                <button 
-                                  onClick={() => {
-                                    if (confirm("পেমেন্টটি রিজেক্ট করতে চান?")) {
-                                      rejectPayment(order.id);
-                                      showNotify("Payment rejected");
-                                    }
-                                  }}
-                                  className="p-3 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl shadow-rose-600/5"
-                                  title="Reject"
-                                >
-                                  <XCircle className="w-5 h-5" />
-                                </button>
-                              </>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                    {orders.length === 0 && (
-                      <tr>
-                        <td colSpan={6} className="py-20 text-center text-slate-400 font-bold">
-                          কোনো পেমেন্ট রেকর্ড পাওয়া যায়নি
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          )}
-
-          {activeTab === "appearance" && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100"
-            >
-              <div className="mb-12">
-                <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Site Appearance</h3>
-                <p className="text-sm font-bold text-slate-400">Modify hero section, CTA text, and other site-wide information</p>
-              </div>
-
-              <div className="space-y-10">
-                <div className="grid md:grid-cols-2 gap-10">
-                  {/* Hero Settings */}
-                  <div className="space-y-6">
-                    <h4 className="text-sm font-black text-emerald-600 uppercase tracking-widest px-4 border-l-4 border-emerald-500">Hero Section</h4>
-                    
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Hero Title (Top Line)</label>
-                      <input 
-                        value={siteSettings.heroTitle} 
-                        onChange={(e) => updateSiteSettings({ heroTitle: e.target.value })}
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Hero Subtitle (Colored Line)</label>
-                      <input 
-                        value={siteSettings.heroSubtitle} 
-                        onChange={(e) => updateSiteSettings({ heroSubtitle: e.target.value })}
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Hero Description</label>
-                      <textarea 
-                        value={siteSettings.heroDescription} 
-                        onChange={(e) => updateSiteSettings({ heroDescription: e.target.value })}
-                        rows={3} 
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-[2rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none resize-none" 
-                      />
-                    </div>
-                  </div>
-
-                  {/* CTA Settings */}
-                  <div className="space-y-6">
-                    <h4 className="text-sm font-black text-emerald-600 uppercase tracking-widest px-4 border-l-4 border-emerald-500">Call to Actions</h4>
-                    
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Primary CTA Text</label>
-                      <input 
-                        value={siteSettings.heroCtaText} 
-                        onChange={(e) => updateSiteSettings({ heroCtaText: e.target.value })}
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Secondary CTA Text</label>
-                      <input 
-                        value={siteSettings.heroSecondaryCtaText} 
-                        onChange={(e) => updateSiteSettings({ heroSecondaryCtaText: e.target.value })}
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
-                      />
-                    </div>
-                  </div>
-
-                  {/* Social Proof Settings */}
-                  <div className="space-y-6">
-                    <h4 className="text-sm font-black text-emerald-600 uppercase tracking-widest px-4 border-l-4 border-emerald-500">Social Proof (Floating Pills)</h4>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Featured Author</label>
-                        <input 
-                          value={siteSettings.featuredAuthorName} 
-                          onChange={(e) => updateSiteSettings({ featuredAuthorName: e.target.value })}
-                          className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Rating</label>
-                        <input 
-                          value={siteSettings.featuredAuthorRating} 
-                          onChange={(e) => updateSiteSettings({ featuredAuthorRating: e.target.value })}
-                          className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Total Readers Count</label>
-                      <input 
-                        value={siteSettings.totalReadersCount} 
-                        onChange={(e) => updateSiteSettings({ totalReadersCount: e.target.value })}
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Authors Subtext</label>
-                      <input 
-                        value={siteSettings.authorsCountText} 
-                        onChange={(e) => updateSiteSettings({ authorsCountText: e.target.value })}
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-end pt-10 border-t border-slate-50">
-                  <div className="px-12 py-6 bg-emerald-50 text-emerald-600 rounded-[2rem] font-black flex items-center gap-3 text-lg border border-emerald-100">
-                    Auto-saved to Browser
-                    <CheckCircle2 className="w-6 h-6" />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-          
-          {activeTab === "testimonials" && (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden"
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
-                <div>
-                  <h3 className="text-4xl font-black text-emerald-950 mb-2 tracking-tight">Testimonial Management</h3>
-                  <p className="text-sm font-bold text-slate-400">Review and approve user feedback for the homepage</p>
-                </div>
-                <div className="flex items-center gap-4 bg-slate-50 p-3 rounded-3xl">
-                  <div className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-sm shadow-xl shadow-emerald-600/20">
-                    {testimonials.length} Total
-                  </div>
-                  <div className="px-6 py-3 bg-white text-slate-500 rounded-2xl font-black text-sm shadow-sm">
-                    {testimonials.filter(t => !t.is_approved).length} Pending
-                  </div>
-                </div>
-              </div>
-
-              <div className="overflow-x-auto -mx-12 px-12">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b-2 border-slate-50">
-                      <th className="text-left py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">User Info</th>
-                      <th className="text-left py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Testimonial Content</th>
-                      <th className="text-left py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Rating</th>
-                      <th className="text-left py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</th>
-                      <th className="text-right py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {testimonials.map((t) => (
-                      <tr key={t.id} className="border-b border-slate-50 group hover:bg-slate-50/50 transition-all">
-                        <td className="py-8 px-6">
-                          <div className="flex items-center gap-4">
-                            <img src={t.user_avatar} className="w-12 h-12 rounded-2xl object-cover shadow-xl group-hover:scale-110 transition-transform" />
-                            <div>
-                              <div className="font-black text-emerald-950 text-lg">{t.user_name}</div>
-                              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{new Date(t.created_at).toLocaleDateString()}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-8 px-6 max-w-md">
-                          <p className="text-slate-600 font-medium italic leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all cursor-pointer">
-                            "{t.content}"
-                          </p>
-                        </td>
-                        <td className="py-8 px-6">
-                          <div className="flex gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star key={i} className={`w-3.5 h-3.5 ${i < t.rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
-                            ))}
-                          </div>
-                        </td>
-                        <td className="py-8 px-6">
-                          {t.is_approved ? (
-                            <span className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Approved</span>
-                          ) : (
-                            <span className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Pending</span>
-                          )}
-                        </td>
-                        <td className="py-8 px-6">
-                          <div className="flex items-center justify-end gap-3">
-                            {!t.is_approved && (
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            {new Date(order.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-8 px-6">
+                        <div className="flex flex-col">
+                          <span className="font-bold text-slate-600">{order.user_id}</span>
+                          <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-1">
+                            {order.payment_method} - ৳{order.amount}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-8 px-6">
+                        <code className="px-3 py-1 bg-slate-100 rounded-lg text-xs font-black text-slate-600">
+                          {order.transaction_id || "N/A"}
+                        </code>
+                      </td>
+                      <td className="py-8 px-6">
+                        {order.screenshot_url ? (
+                          <button 
+                            onClick={() => window.open(order.screenshot_url, '_blank')}
+                            className="w-12 h-12 rounded-xl overflow-hidden border-2 border-white shadow-md hover:scale-110 transition-all"
+                          >
+                            <img src={order.screenshot_url} className="w-full h-full object-cover" />
+                          </button>
+                        ) : (
+                          <span className="text-slate-300 text-xs italic">No Proof</span>
+                        )}
+                      </td>
+                      <td className="py-8 px-6">
+                        <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                          order.status === 'completed' ? 'bg-emerald-50 text-emerald-600' :
+                          order.status === 'pending' ? 'bg-amber-50 text-amber-600' :
+                          'bg-rose-50 text-rose-600'
+                        }`}>
+                          {order.status}
+                        </span>
+                      </td>
+                      <td className="py-8 px-10">
+                        <div className="flex items-center justify-end gap-3">
+                          {order.status === 'pending' && (
+                            <>
                               <button 
                                 onClick={() => {
-                                  approveTestimonial(t.id);
-                                  showNotify("Testimonial approved!");
+                                  if (confirm("পেমেন্টটি কি সঠিক? নিশ্চিত করলে ইউজারের সাবস্ক্রিপশন/বই সক্রিয় হবে।")) {
+                                    approvePayment(order.id);
+                                    showNotify("Payment approved successfully!");
+                                  }
                                 }}
                                 className="p-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl shadow-emerald-600/5"
                                 title="Approve"
                               >
                                 <CheckCircle2 className="w-5 h-5" />
                               </button>
-                            )}
-                            <button 
-                              onClick={() => {
-                                if (confirm("Delete this testimonial?")) {
-                                  deleteTestimonial(t.id);
-                                  showNotify("Testimonial deleted");
-                                }
-                              }}
-                              className="p-3 bg-white hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
-                              title="Delete"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                    {testimonials.length === 0 && (
-                      <tr>
-                        <td colSpan={5} className="py-20 text-center">
-                          <div className="flex flex-col items-center gap-4">
-                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
-                              <Quote className="w-8 h-8 text-slate-200" />
-                            </div>
-                            <p className="text-slate-400 font-bold">কোনো মতামত পাওয়া যায়নি</p>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          )}
-
-        </AnimatePresence>
-      </main>
-
-      {/* Professional Modals */}
-      <AnimatePresence>
-        {(showAddModal || showEditBookModal) && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-12">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => { setShowAddModal(false); setShowEditBookModal(false); }}
-              className="absolute inset-0 bg-emerald-950/60 backdrop-blur-md"
-            ></motion.div>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 50 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 50 }}
-              className="relative w-full max-w-4xl bg-white rounded-[4rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col md:flex-row"
-            >
-              <div className="w-full md:w-80 bg-emerald-950 p-12 text-white flex flex-col justify-between overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] -mr-32 -mt-32 opacity-20"></div>
-                <div className="relative z-10">
-                  <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-md">
-                    <BookCopy className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-3xl font-black mb-4 leading-tight">{showAddModal ? "Establish New Publication" : "Modify Content Meta"}</h3>
-                  <p className="text-emerald-100/50 font-medium">Ensure all bibliographic data is accurate and categorized correctly for optimal platform discovery.</p>
-                </div>
-                <div className="relative z-10 pt-10 border-t border-white/10">
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500 mb-4">Guidelines</p>
-                  <ul className="space-y-4">
-                    {[
-                      "High-resolution cover (3:4)",
-                      "Search-friendly title",
-                      "Correct retail pricing",
-                      "Appropriate taxonomy"
-                    ].map(g => (
-                      <li key={g} className="flex items-center gap-3 text-xs font-bold text-emerald-100/70">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                        {g}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="flex-1 p-12 md:p-20 overflow-y-auto max-h-[90vh]">
-                <form 
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.currentTarget);
-                    const bookData = {
-                      title: formData.get("title") as string,
-                      author: formData.get("author") as string,
-                      price: Number(formData.get("price")),
-                      category: formData.get("category") as string,
-                      status: (formData.get("status") as any) || "Published",
-                      isFeatured: formData.get("isFeatured") === "on",
-                      cover: (formData.get("cover") as string) || "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
-                      description: formData.get("desc") as string,
-                    };
-                    
-                    if (showAddModal) {
-                      addBook(bookData);
-                      showNotify("New book published successfully");
-                    } else if (selectedBook) {
-                      updateBook(selectedBook.id, bookData);
-                      showNotify("Publication updated");
-                    }
-                    setShowAddModal(false);
-                    setShowEditBookModal(false);
-                  }}
-                  className="space-y-10"
-                >
-                  <div className="grid md:grid-cols-2 gap-10">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Publication Title</label>
-                      <input name="title" required defaultValue={selectedBook?.title} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="Enter book title" />
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Author Assignment</label>
-                      <input name="author" required defaultValue={selectedBook?.author} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="Primary author" />
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Taxonomy Category</label>
-                      <select name="category" defaultValue={selectedBook?.category} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none">
-                        <option>উপন্যাস</option>
-                        <option>কবিতা</option>
-                        <option>ইতিহাস</option>
-                        <option>শিশু সাহিত্য</option>
-                        <option>ভয়ংকর</option>
-                        <option>রম্য</option>
-                        <option>অন্যান্য</option>
-                      </select>
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Base Retail Price (৳)</label>
-                      <input name="price" type="number" required defaultValue={selectedBook?.price} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="0.00" />
-                    </div>
-                    <div className="col-span-full space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Cover Asset URL</label>
-                      <input name="cover" defaultValue={selectedBook?.cover} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="https://..." />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Synopsis & Metadata</label>
-                    <textarea name="desc" rows={5} defaultValue={selectedBook?.description} placeholder="Provide a brief summary for readers..." className="w-full px-8 py-5 bg-slate-50 border-0 rounded-[2.5rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none resize-none"></textarea>
-                  </div>
-
-                  <div className="flex items-center justify-between p-8 bg-emerald-50 rounded-[2.5rem]">
-                    <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-                        <Zap className={`w-6 h-6 ${selectedBook?.isFeatured ? "text-amber-500 fill-amber-500" : "text-slate-300"}`} />
-                      </div>
-                      <div>
-                        <div className="font-black text-emerald-950">Elevate to Featured</div>
-                        <div className="text-[10px] font-bold text-emerald-600/60 uppercase tracking-widest">Priority landing page placement</div>
-                      </div>
-                    </div>
-                    <input type="checkbox" name="isFeatured" defaultChecked={selectedBook?.isFeatured} className="w-8 h-8 rounded-xl text-emerald-600 focus:ring-emerald-500 border-emerald-100" />
-                  </div>
-
-                  <div className="flex gap-4 pt-10">
-                    <button 
-                      type="button" 
-                      onClick={() => { setShowAddModal(false); setShowEditBookModal(false); }}
-                      className="flex-1 py-5 bg-slate-50 text-slate-500 rounded-3xl font-black hover:bg-slate-100 transition-all"
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-105 transition-all text-lg">
-                      Confirm & Sync Changes
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
+                              <button 
+                                onClick={() => {
+                                  if (confirm("পেমেন্টটি রিজেক্ট করতে চান?")) {
+                                    rejectPayment(order.id);
+                                    showNotify("Payment rejected");
+                                  }
+                                }}
+                                className="p-3 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl shadow-rose-600/5"
+                                title="Reject"
+                              >
+                                <XCircle className="w-5 h-5" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {orders.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="py-20 text-center text-slate-400 font-bold">
+                        কোনো পেমেন্ট রেকর্ড পাওয়া যায়নি
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
-      </AnimatePresence>
 
-      {/* Edit Author Modal */}
-      <AnimatePresence>
-        {showEditAuthorModal && selectedAuthor && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-12">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowEditAuthorModal(false)}
-              className="absolute inset-0 bg-emerald-950/60 backdrop-blur-md"
-            ></motion.div>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 50 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 50 }}
-              className="relative w-full max-w-3xl bg-white rounded-[4rem] shadow-2xl overflow-hidden"
-            >
-              <div className="p-12 md:p-16 flex flex-col md:flex-row items-center gap-12 bg-emerald-50/50 border-b border-emerald-100">
-                <div className="relative">
-                  <img src={selectedAuthor.avatar} className="w-32 h-32 rounded-[3rem] object-cover shadow-2xl border-4 border-white" />
-                  <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center text-white border-4 border-emerald-50">
-                    <ShieldCheck className="w-5 h-5" />
+        {/* Appearance Tab */}
+        {activeTab === "appearance" && (
+          <div className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
+            <div className="mb-12">
+              <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Site Appearance</h3>
+              <p className="text-sm font-bold text-slate-400">Modify hero section, CTA text, and other site-wide information</p>
+            </div>
+
+            <div className="space-y-10">
+              <div className="grid md:grid-cols-2 gap-10">
+                <div className="space-y-6">
+                  <h4 className="text-sm font-black text-emerald-600 uppercase tracking-widest px-4 border-l-4 border-emerald-500">Hero Section</h4>
+                  
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Hero Title (Top Line)</label>
+                    <input 
+                      value={siteSettings.heroTitle} 
+                      onChange={(e) => updateSiteSettings({ heroTitle: e.target.value })}
+                      className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Hero Subtitle (Colored Line)</label>
+                    <input 
+                      value={siteSettings.heroSubtitle} 
+                      onChange={(e) => updateSiteSettings({ heroSubtitle: e.target.value })}
+                      className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Hero Description</label>
+                    <textarea 
+                      value={siteSettings.heroDescription} 
+                      onChange={(e) => updateSiteSettings({ heroDescription: e.target.value })}
+                      rows={3} 
+                      className="w-full px-8 py-5 bg-slate-50 border-0 rounded-[2rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none resize-none" 
+                    />
                   </div>
                 </div>
-                <div className="text-center md:text-left">
-                  <h3 className="text-4xl font-black text-emerald-950 mb-2 tracking-tight">{selectedAuthor.name}</h3>
-                  <div className="flex items-center justify-center md:justify-start gap-4">
-                    <span className="flex items-center gap-2 text-sm font-bold text-emerald-600">
-                      <Mail className="w-4 h-4" />
-                      {selectedAuthor.email}
-                    </span>
-                    <span className="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Verified Contributor</span>
+
+                <div className="space-y-6">
+                  <h4 className="text-sm font-black text-emerald-600 uppercase tracking-widest px-4 border-l-4 border-emerald-500">Call to Actions</h4>
+                  
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Primary CTA Text</label>
+                    <input 
+                      value={siteSettings.heroCtaText} 
+                      onChange={(e) => updateSiteSettings({ heroCtaText: e.target.value })}
+                      className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest ml-4">Secondary CTA Text</label>
+                    <input 
+                      value={siteSettings.heroSecondaryCtaText} 
+                      onChange={(e) => updateSiteSettings({ heroSecondaryCtaText: e.target.value })}
+                      className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" 
+                    />
                   </div>
                 </div>
               </div>
 
+              <div className="flex justify-end pt-10 border-t border-slate-50">
+                <div className="px-12 py-6 bg-emerald-50 text-emerald-600 rounded-[2rem] font-black flex items-center gap-3 text-lg border border-emerald-100">
+                  Auto-saved to Browser
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Testimonials Tab */}
+        {activeTab === "testimonials" && (
+          <div className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
+              <div>
+                <h3 className="text-4xl font-black text-emerald-950 mb-2 tracking-tight">Testimonial Management</h3>
+                <p className="text-sm font-bold text-slate-400">Review and approve user feedback for the homepage</p>
+              </div>
+              <div className="flex items-center gap-4 bg-slate-50 p-3 rounded-3xl">
+                <div className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-sm shadow-xl shadow-emerald-600/20">
+                  {testimonials.length} Total
+                </div>
+                <div className="px-6 py-3 bg-white text-slate-500 rounded-2xl font-black text-sm shadow-sm">
+                  {testimonials.filter(t => !t.is_approved).length} Pending
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto -mx-12 px-12">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b-2 border-slate-50">
+                    <th className="text-left py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">User Info</th>
+                    <th className="text-left py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Testimonial Content</th>
+                    <th className="text-left py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Rating</th>
+                    <th className="text-left py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Status</th>
+                    <th className="text-right py-8 px-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {testimonials.map((t) => (
+                    <tr key={t.id} className="border-b border-slate-50 group hover:bg-slate-50/50 transition-all">
+                      <td className="py-8 px-6">
+                        <div className="flex items-center gap-4">
+                          <img src={t.user_avatar} className="w-12 h-12 rounded-2xl object-cover shadow-xl group-hover:scale-110 transition-transform" />
+                          <div>
+                            <div className="font-black text-emerald-950 text-lg">{t.user_name}</div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{new Date(t.created_at).toLocaleDateString()}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-8 px-6 max-w-md">
+                        <p className="text-slate-600 font-medium italic leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all cursor-pointer">
+                          "{t.content}"
+                        </p>
+                      </td>
+                      <td className="py-8 px-6">
+                        <div className="flex gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className={`w-3.5 h-3.5 ${i < t.rating ? "fill-amber-400 text-amber-400" : "text-slate-200"}`} />
+                          ))}
+                        </div>
+                      </td>
+                      <td className="py-8 px-6">
+                        {t.is_approved ? (
+                          <span className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Approved</span>
+                        ) : (
+                          <span className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-[10px] font-black uppercase tracking-widest">Pending</span>
+                        )}
+                      </td>
+                      <td className="py-8 px-6">
+                        <div className="flex items-center justify-end gap-3">
+                          {!t.is_approved && (
+                            <button 
+                              onClick={() => {
+                                approveTestimonial(t.id);
+                                showNotify("Testimonial approved!");
+                              }}
+                              className="p-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl shadow-emerald-600/5"
+                              title="Approve"
+                            >
+                              <CheckCircle2 className="w-5 h-5" />
+                            </button>
+                          )}
+                          <button 
+                            onClick={() => {
+                              if (confirm("Delete this testimonial?")) {
+                                deleteTestimonial(t.id);
+                                showNotify("Testimonial deleted");
+                              }
+                            }}
+                            className="p-3 bg-white hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {testimonials.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-20 text-center">
+                        <div className="flex flex-col items-center gap-4">
+                          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                            <Quote className="w-8 h-8 text-slate-200" />
+                          </div>
+                          <p className="text-slate-400 font-bold">কোনো মতামত পাওয়া যায়নি</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      {/* Modals */}
+      {(showAddModal || showEditBookModal) && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-12">
+          <div 
+            onClick={() => { setShowAddModal(false); setShowEditBookModal(false); }}
+            className="absolute inset-0 bg-emerald-950/60 backdrop-blur-md"
+          ></div>
+          <div className="relative w-full max-w-4xl bg-white rounded-[4rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col md:flex-row">
+            <div className="w-full md:w-80 bg-emerald-950 p-12 text-white flex flex-col justify-between overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] -mr-32 -mt-32 opacity-20"></div>
+              <div className="relative z-10">
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-md">
+                  <BookCopy className="w-8 h-8" />
+                </div>
+                <h3 className="text-3xl font-black mb-4 leading-tight">{showAddModal ? "Establish New Publication" : "Modify Content Meta"}</h3>
+                <p className="text-emerald-100/50 font-medium">Ensure all bibliographic data is accurate and categorized correctly for optimal platform discovery.</p>
+              </div>
+            </div>
+
+            <div className="flex-1 p-12 md:p-20 overflow-y-auto max-h-[90vh]">
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
                   const formData = new FormData(e.currentTarget);
-                  updateAuthor(selectedAuthor.id, {
-                    subscriptionPlan: formData.get("plan") as string,
-                    subscriptionExpiry: formData.get("expiry") as string,
-                    bookCount: Number(formData.get("books")),
-                  });
-                  showNotify("Author privileges updated successfully");
-                  setShowEditAuthorModal(false);
+                  const bookData = {
+                    title: formData.get("title") as string,
+                    author: formData.get("author") as string,
+                    price: Number(formData.get("price")),
+                    category: formData.get("category") as string,
+                    status: (formData.get("status") as any) || "Published",
+                    isFeatured: formData.get("isFeatured") === "on",
+                    cover: (formData.get("cover") as string) || "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
+                    description: formData.get("desc") as string,
+                  };
+                  
+                  if (showAddModal) {
+                    addBook(bookData);
+                    showNotify("New book published successfully");
+                  } else if (selectedBook) {
+                    updateBook(selectedBook.id, bookData);
+                    showNotify("Publication updated");
+                  }
+                  setShowAddModal(false);
+                  setShowEditBookModal(false);
                 }}
-                className="p-12 md:p-20 space-y-10"
+                className="space-y-10"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="grid md:grid-cols-2 gap-10">
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Membership Level</label>
-                    <select name="plan" defaultValue={selectedAuthor.subscriptionPlan} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none appearance-none">
-                      <option>প্ল্যান ১</option>
-                      <option>প্ল্যান ২</option>
-                      <option>প্ল্যান ৩</option>
-                    </select>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Publication Title</label>
+                    <input name="title" required defaultValue={selectedBook?.title} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="Enter book title" />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Expiry Date</label>
-                    <div className="relative">
-                      <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-600/30" />
-                      <input name="expiry" type="date" defaultValue={selectedAuthor.subscriptionExpiry} className="w-full pl-16 pr-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" />
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Approved Publications</label>
-                    <input name="books" type="number" defaultValue={selectedAuthor.bookCount} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" />
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Platform Permissions</label>
-                    <div className="px-8 py-5 bg-emerald-600 text-white rounded-3xl font-black text-center text-sm shadow-xl shadow-emerald-600/20">Active Access</div>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Author Assignment</label>
+                    <input name="author" required defaultValue={selectedBook?.author} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="Primary author" />
                   </div>
                 </div>
-
+                
                 <div className="flex gap-4 pt-10">
                   <button 
                     type="button" 
-                    onClick={() => setShowEditAuthorModal(false)}
+                    onClick={() => { setShowAddModal(false); setShowEditBookModal(false); }}
                     className="flex-1 py-5 bg-slate-50 text-slate-500 rounded-3xl font-black hover:bg-slate-100 transition-all"
                   >
                     Cancel
                   </button>
                   <button type="submit" className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-105 transition-all text-lg">
-                    Save Privileges
+                    Confirm & Sync Changes
                   </button>
                 </div>
               </form>
-            </motion.div>
+            </div>
           </div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
+
+      {/* Edit Author Modal */}
+      {showEditAuthorModal && selectedAuthor && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-12">
+          <div 
+            onClick={() => setShowEditAuthorModal(false)}
+            className="absolute inset-0 bg-emerald-950/60 backdrop-blur-md"
+          ></div>
+          <div className="relative w-full max-w-3xl bg-white rounded-[4rem] shadow-2xl overflow-hidden">
+            <div className="p-12 md:p-16 flex flex-col md:flex-row items-center gap-12 bg-emerald-50/50 border-b border-emerald-100">
+              <div className="relative">
+                <img src={selectedAuthor.avatar} className="w-32 h-32 rounded-[3rem] object-cover shadow-2xl border-4 border-white" />
+                <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center text-white border-4 border-emerald-50">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="text-center md:text-left">
+                <h3 className="text-4xl font-black text-emerald-950 mb-2 tracking-tight">{selectedAuthor.name}</h3>
+                <div className="flex items-center justify-center md:justify-start gap-4">
+                  <span className="flex items-center gap-2 text-sm font-bold text-emerald-600">
+                    <Mail className="w-4 h-4" />
+                    {selectedAuthor.email}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                updateAuthor(selectedAuthor.id, {
+                  subscriptionPlan: formData.get("plan") as string,
+                  subscriptionExpiry: formData.get("expiry") as string,
+                  bookCount: Number(formData.get("books")),
+                });
+                showNotify("Author privileges updated successfully");
+                setShowEditAuthorModal(false);
+              }}
+              className="p-12 md:p-20 space-y-10"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Membership Level</label>
+                  <select name="plan" defaultValue={selectedAuthor.subscriptionPlan} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none appearance-none">
+                    <option>প্ল্যান ১</option>
+                    <option>প্ল্যান ২</option>
+                    <option>প্ল্যান ৩</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex gap-4 pt-10">
+                <button 
+                  type="button" 
+                  onClick={() => setShowEditAuthorModal(false)}
+                  className="flex-1 py-5 bg-slate-50 text-slate-500 rounded-3xl font-black hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-105 transition-all text-lg">
+                  Save Privileges
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -2426,3 +2426,185 @@ C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useSto
       at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12086:10)
       at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9172:18)
       at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13445:12
+[2m2:54:29 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\pages\ReaderPage.tsx: Expected corresponding JSX closing tag for <div>. (127:8)
+
+[0m [90m 125 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 126 |[39m           )}
+[31m[1m>[22m[39m[90m 127 |[39m         [33m<[39m[33m/[39m[33mmotion[39m[33m.[39mdiv[33m>[39m
+ [90m     |[39m         [31m[1m^[22m[39m
+ [90m 128 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 129 |[39m
+ [90m 130 |[39m       {[90m/* Navigation Footer */[39m}[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/pages/ReaderPage.tsx[39m:127:8
+[33m  125|              </div>
+  126|            )}
+  127|          </motion.div>
+     |          ^
+  128|        </div>
+  129|  [39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8144|    initial-value: 0;
+8145|  }
+8146|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8147|  :root {
+8148|    --font-size: 16px;[39m
+[2m2:54:30 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\pages\ReaderPage.tsx: Expected corresponding JSX closing tag for <div>. (127:8)
+
+[0m [90m 125 |[31m             [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 126 |[31m           )}
+[31m[1m>[22m[31m[90m 127 |[31m         [33m<[31m[33m/[31m[33mmotion[31m[33m.[31mdiv[33m>[31m
+ [90m     |[31m         [31m[1m^[22m[31m
+ [90m 128 |[31m       [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 129 |[31m
+ [90m 130 |[31m       {[90m/* Navigation Footer */[31m}[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/pages/ReaderPage.tsx[39m:127:8
+[33m  125|              </div>
+  126|            )}
+  127|          </motion.div>
+     |          ^
+  128|        </div>
+  129|  [39m
+      at constructor (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6599:19)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4727:16)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4698:32)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4698:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4749:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4759:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10831:21)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9775:39
+      at TypeScriptParserMixin.tryParse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6907:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9775:18)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10800:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12426:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10800:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12493:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11675:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11331:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9786:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10784:23)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12421:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13142:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12798:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12767:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12747:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13316:61)
+      at TypeScriptParserMixin.parseBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13309:10)
+      at TypeScriptParserMixin.parseBlock (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13297:10)
+      at TypeScriptParserMixin.parseFunctionBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12100:24)
+      at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12086:10)
+      at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9172:18)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13445:12
+[2m2:55:55 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\pages\ReaderPage.tsx: Expected corresponding JSX closing tag for <div>. (127:8)
+
+[0m [90m 125 |[39m             [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 126 |[39m           )}
+[31m[1m>[22m[39m[90m 127 |[39m         [33m<[39m[33m/[39m[33mmotion[39m[33m.[39mdiv[33m>[39m
+ [90m     |[39m         [31m[1m^[22m[39m
+ [90m 128 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 129 |[39m
+ [90m 130 |[39m       {[90m/* Navigation Footer */[39m}[0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/pages/ReaderPage.tsx[39m:127:8
+[33m  125|              </div>
+  126|            )}
+  127|          </motion.div>
+     |          ^
+  128|        </div>
+  129|  [39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8148|    initial-value: 0;
+8149|  }
+8150|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8151|  :root {
+8152|    --font-size: 16px;[39m
+[2m2:55:55 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\pages\ReaderPage.tsx: Expected corresponding JSX closing tag for <div>. (127:8)
+
+[0m [90m 125 |[31m             [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 126 |[31m           )}
+[31m[1m>[22m[31m[90m 127 |[31m         [33m<[31m[33m/[31m[33mmotion[31m[33m.[31mdiv[33m>[31m
+ [90m     |[31m         [31m[1m^[22m[31m
+ [90m 128 |[31m       [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 129 |[31m
+ [90m 130 |[31m       {[90m/* Navigation Footer */[31m}[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/pages/ReaderPage.tsx[39m:127:8
+[33m  125|              </div>
+  126|            )}
+  127|          </motion.div>
+     |          ^
+  128|        </div>
+  129|  [39m
+      at constructor (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6599:19)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4727:16)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4698:32)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4698:32)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4749:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4759:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10831:21)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9775:39
+      at TypeScriptParserMixin.tryParse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6907:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9775:18)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10800:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12426:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10800:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12493:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11675:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11331:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9786:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10784:23)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12421:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13142:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12798:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12767:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12747:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13316:61)
+      at TypeScriptParserMixin.parseBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13309:10)
+      at TypeScriptParserMixin.parseBlock (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13297:10)
+      at TypeScriptParserMixin.parseFunctionBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12100:24)
+      at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12086:10)
+      at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9172:18)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13445:12

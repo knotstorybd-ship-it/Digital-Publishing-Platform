@@ -1,6 +1,7 @@
 import { Library, Bookmark, Clock, Star, BookOpen, Search, ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 import { useState, useMemo } from "react";
+import { useStore } from "../store/useStore";
 import { BookCardSkeleton } from "../components/Skeleton";
 
 export function LibraryPage() {
@@ -68,7 +69,7 @@ export function LibraryPage() {
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">পঠিত বই</p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Search Bar */}
           <div className="relative max-w-2xl">
@@ -98,62 +99,44 @@ export function LibraryPage() {
                 className="opacity-100"
               >
                 <div className="group relative">
-                  <BookCard {...book} />
-                  <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Link 
-                      to={`/reader/${book.id}`}
-                      className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-xl hover:bg-emerald-600 hover:text-white transition-all"
-                    >
-                      <BookOpen className="w-6 h-6" />
-                    </Link>
+                  <div className="relative aspect-[3/4] rounded-[2rem] overflow-hidden shadow-2xl shadow-emerald-950/10 mb-6 group-hover:-translate-y-2 transition-all duration-500">
+                    <img src={book.cover} className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                      <Link 
+                        to={`/reader/${book.id}`}
+                        className="w-full py-4 bg-white text-emerald-950 rounded-2xl font-black text-center shadow-2xl hover:bg-emerald-50 transition-all flex items-center justify-center gap-2"
+                      >
+                        <BookOpen className="w-5 h-5" /> এখনই পড়ুন
+                      </Link>
+                    </div>
+                  </div>
+                  
+                  <div className="px-2">
+                    <h3 className="text-lg font-black text-emerald-950 mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">{book.title}</h3>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">{book.author}</p>
+                    <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-emerald-500 rounded-full w-0 group-hover:w-[15%] transition-all duration-1000"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
-            {filteredBooks.length === 0 && search && (
-              <div className="col-span-full py-32 text-center bg-white rounded-[4rem] border border-dashed border-slate-200">
-                <Search className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-                <p className="text-slate-400 font-bold italic">আপনার সংগ্রহে এই নামে কোনো বই পাওয়া যায়নি</p>
-              </div>
-            )}
           </div>
         ) : (
-          <div className="py-32 text-center bg-white rounded-[4rem] border border-dashed border-slate-200">
-            <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-slate-200">
-              <BookOpen className="w-12 h-12" />
+          <div className="text-center py-40">
+            <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-emerald-900/5">
+              <Bookmark className="w-10 h-10 text-slate-200" />
             </div>
-            <h3 className="text-2xl font-black text-emerald-950 mb-4">আপনার সংগ্রহ এখনো খালি</h3>
-            <p className="text-slate-500 font-medium mb-12 max-w-sm mx-auto italic">
-              পছন্দের বইগুলো সংগ্রহ করুন এবং আপনার ডিজিটাল লাইব্রেরি গড়ে তুলুন।
-            </p>
+            <h3 className="text-2xl font-black text-emerald-950 mb-4">কোনো বই খুঁজে পাওয়া যায়নি</h3>
+            <p className="text-slate-500 font-medium mb-10">আপনার সংগ্রহে যোগ করতে আমাদের কালেকশন ঘুরে দেখুন।</p>
             <Link 
-              to="/browse" 
-              className="inline-flex items-center gap-3 px-10 py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all group"
+              to="/browse"
+              className="inline-flex items-center gap-3 px-10 py-5 bg-emerald-600 text-white rounded-[1.5rem] font-black hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-600/20"
             >
-              বইয়ের দুনিয়া দেখুন
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              বই কিনুন <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
         )}
-
-        {/* Quick Access Stats */}
-        <div className="mt-24 grid md:grid-cols-3 gap-8">
-          {[
-            { icon: Bookmark, title: "বুকমার্কস", count: "০", color: "bg-blue-50 text-blue-600" },
-            { icon: Clock, title: "পড়া হচ্ছে", count: "০", color: "bg-amber-50 text-amber-600" },
-            { icon: Star, title: "রিভিউ করেছেন", count: "০", color: "bg-emerald-50 text-emerald-600" }
-          ].map((stat, i) => (
-            <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 flex items-center gap-6 group hover:border-emerald-200 transition-all">
-              <div className={`w-16 h-16 ${stat.color} rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110`}>
-                <stat.icon className="w-8 h-8" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{stat.title}</p>
-                <p className="text-3xl font-black text-emerald-950 leading-none">{stat.count}</p>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
