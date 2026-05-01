@@ -1,39 +1,62 @@
 import { useState, useMemo } from "react";
-import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, User, ShieldCheck, Zap, Building, Smartphone, Wallet } from "lucide-react";
+import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, User, ShieldCheck, Zap, Building, Smartphone, Wallet, UploadCloud } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
 
-import { BkashPaymentModal } from "../components/BkashPaymentModal";
-
 const paymentMethods = [
   {
-    id: "dpay",
-    name: "DP Pay Sandbox",
-    icon: CreditCard,
-    color: "bg-emerald-600",
-    brand: "Sandbox Gateway",
-    note: "Free test gateway with OTP verification",
+    id: "bkash",
+    name: "bKash",
+    icon: Smartphone,
+    color: "bg-[#D8006E]",
+    brand: "bKash",
+    note: "ম্যানুয়াল পেমেন্ট",
+    instructions: "01XXXXXXXXXX নম্বরে Send Money করুন। রেফারেন্সে \"DigPro\" লিখুন। পেমেন্টের পর Transaction ID নিচে দিন।"
   },
   {
-    id: "wallet",
-    name: "Mobile Wallet Sandbox",
+    id: "nagad",
+    name: "Nagad",
     icon: Smartphone,
-    color: "bg-[#D12053]",
-    brand: "Wallet Sandbox",
-    note: "Works without merchant approval or paid setup",
+    color: "bg-[#FF6600]",
+    brand: "Nagad",
+    note: "ম্যানুয়াল পেমেন্ট",
+    instructions: "01XXXXXXXXXX নম্বরে Send Money করুন। রেফারেন্সে \"DigPro\" লিখুন। পেমেন্টের পর Transaction ID নিচে দিন।"
   },
+  {
+    id: "card",
+    name: "কার্ড পেমেন্ট",
+    icon: CreditCard,
+    color: "bg-emerald-600",
+    brand: "Card",
+    note: "অটোমেটেড",
+    instructions: "কার্ডের মাধ্যমে পেমেন্ট করতে আপনার কার্ডের তথ্য প্রদান করুন।"
+  },
+  {
+    id: "bank",
+    name: "Bank Transfer",
+    icon: Building,
+    color: "bg-[#2C3E50]",
+    brand: "Bank",
+    note: "ম্যানুয়াল পেমেন্ট",
+    instructions: "ব্যাংক: Dutch-Bangla Bank | একাউন্ট: XXXXXX | রাউটিং: XXXXXX। ট্রান্সফারের পর Transaction ID দিন।"
+  }
 ];
 
 export function CheckoutPage() {
   const { cart, removeFromCart, clearCart, subscribe, purchaseCart, user } = useStore();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [selectedPayment, setSelectedPayment] = useState("dpay");
+  const [selectedPayment, setSelectedPayment] = useState("bkash");
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isBkashModalOpen, setIsBkashModalOpen] = useState(false);
+
+  // Manual payment form states
+  const [transactionId, setTransactionId] = useState("");
+  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [txnError, setTxnError] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
 
   const planId = searchParams.get("plan");
 
@@ -58,9 +81,18 @@ export function CheckoutPage() {
   const selectedGateway = paymentMethods.find((method) => method.id === selectedPayment) || paymentMethods[0];
 
   const handlePayment = async () => {
-    if (selectedPayment) {
-      setIsBkashModalOpen(true);
-      return;
+    // Form Validation for manual methods
+    if (selectedPayment !== 'card') {
+      let valid = true;
+      if (!transactionId.trim()) {
+        setTxnError(true);
+        valid = false;
+      }
+      if (!screenshot) {
+        setUploadError(true);
+        valid = false;
+      }
+      if (!valid) return;
     }
 
     setIsProcessing(true);
@@ -80,29 +112,6 @@ export function CheckoutPage() {
     } catch (error) {
       console.error(error);
       alert("পেমেন্ট সম্পন্ন করতে সমস্যা হয়েছে।");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleBkashSuccess = async (txId: string) => {
-    setIsProcessing(true);
-    try {
-      if (planDetails) {
-        await subscribe(planDetails.name, planDetails.months);
-      } else {
-        await purchaseCart();
-      }
-      setStep(3);
-      confetti({
-        particleCount: 150,
-        spread: 100,
-        origin: { y: 0.6 },
-        colors: ['#10b981', '#059669', '#34d399']
-      });
-    } catch (error) {
-      console.error(error);
-      alert("পেমেন্ট ভেরিফিকেশন করতে সমস্যা হয়েছে।");
     } finally {
       setIsProcessing(false);
     }
@@ -246,23 +255,22 @@ export function CheckoutPage() {
                       পেমেন্ট পদ্ধতি
                     </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                       {paymentMethods.map((method) => (
                         <button
                           key={method.id}
                           onClick={() => setSelectedPayment(method.id)}
                           className={`
-                            relative p-8 rounded-[2rem] border-2 transition-all duration-300 flex flex-col items-center gap-4
+                            relative p-6 rounded-[2rem] border-2 transition-all duration-300 flex flex-col items-center gap-3
                             ${selectedPayment === method.id ? 'border-emerald-600 bg-emerald-50/50 shadow-lg shadow-emerald-600/5' : 'border-slate-100 hover:border-emerald-200'}
                           `}
                         >
-                          <div className={`w-14 h-14 ${method.color} rounded-2xl flex items-center justify-center text-white shadow-lg`}>
-                            <method.icon className="w-7 h-7" />
+                          <div className={`w-12 h-12 ${method.color} rounded-xl flex items-center justify-center text-white shadow-md`}>
+                            <method.icon className="w-6 h-6" />
                           </div>
-                          <span className="font-black text-emerald-950">{method.brand}</span>
-                          <span className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">{method.note}</span>
+                          <span className="font-black text-emerald-950 text-sm">{method.name}</span>
                           {selectedPayment === method.id && (
-                            <div className="absolute top-4 right-4 w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center scale-110 shadow-lg animate-in zoom-in">
+                            <div className="absolute top-3 right-3 w-5 h-5 bg-emerald-600 text-white rounded-full flex items-center justify-center scale-110 shadow-lg animate-in zoom-in">
                               <Check className="w-3 h-3" />
                             </div>
                           )}
@@ -270,25 +278,74 @@ export function CheckoutPage() {
                       ))}
                     </div>
 
-                    <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 mb-10 space-y-6">
+                    <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 mb-10 space-y-8">
                       <div className="flex items-start gap-4">
                         <div className={`w-12 h-12 ${selectedGateway.color} rounded-2xl flex items-center justify-center text-white shadow-lg shrink-0`}>
                           <selectedGateway.icon className="w-6 h-6" />
                         </div>
                         <div>
                           <h3 className="font-black text-emerald-950">{selectedGateway.name}</h3>
-                          <p className="text-sm text-slate-500 font-medium leading-relaxed mt-1">
-                            This free sandbox gateway opens a secure payment modal. Use OTP 123456 there; the app records the transaction before activating the plan or purchase.
-                          </p>
+                          <p className="text-sm text-slate-600 font-medium leading-relaxed mt-2" dangerouslySetInnerHTML={{ __html: selectedGateway.instructions }}></p>
                         </div>
                       </div>
+
                       {selectedPayment !== 'card' ? (
-                        <div className="hidden">
-                          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950/40 ml-4">আপনার {selectedPayment === 'bkash' ? 'বিকাশ' : 'নগদ'} নম্বর</label>
-                          <input type="tel" placeholder="01XXXXXXXXX" className="w-full px-8 py-5 bg-white border-0 rounded-2xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" />
+                        <div className="space-y-6 pt-4 border-t border-slate-200/60">
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-emerald-950/40 ml-4">ট্রানজেকশন আইডি</label>
+                            <input 
+                              type="text" 
+                              placeholder="যেমন: 8BD9K2X1Q5"
+                              value={transactionId}
+                              onChange={(e) => {
+                                setTransactionId(e.target.value);
+                                setTxnError(false);
+                              }}
+                              className={`w-full px-8 py-5 bg-white border-2 rounded-2xl font-bold outline-none transition-all ${txnError ? 'border-rose-500 focus:ring-4 focus:ring-rose-50' : 'border-transparent focus:border-emerald-200 focus:ring-4 focus:ring-emerald-50'}`} 
+                            />
+                            {txnError && <p className="text-[10px] text-rose-500 font-bold uppercase tracking-widest ml-4">ট্রানজেকশন আইডি আবশ্যক</p>}
+                          </div>
+
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-emerald-950/40 ml-4">পেমেন্ট স্ক্রিনশট</label>
+                            <div className={`relative border-2 border-dashed rounded-[2rem] p-8 text-center transition-all ${uploadError ? 'border-rose-500 bg-rose-50' : 'border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50'}`}>
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={(e) => {
+                                  if(e.target.files?.[0]) {
+                                    setScreenshot(e.target.files[0]);
+                                    setUploadError(false);
+                                  }
+                                }} 
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                              />
+                              {screenshot ? (
+                                <div className="flex flex-col items-center gap-3">
+                                  <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md">
+                                    <img src={URL.createObjectURL(screenshot)} className="w-full h-full object-cover" />
+                                  </div>
+                                  <div>
+                                    <p className="font-bold text-emerald-950 text-sm">{screenshot.name}</p>
+                                    <p className="text-xs text-slate-400 font-bold mt-0.5">{(screenshot.size / 1024).toFixed(1)} KB</p>
+                                  </div>
+                                  <button type="button" onClick={(e) => { e.preventDefault(); setScreenshot(null); }} className="px-4 py-2 bg-white text-rose-500 rounded-full shadow-sm font-black text-[10px] uppercase tracking-widest mt-2 hover:bg-rose-50">রিমুভ করুন</button>
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-center gap-3">
+                                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm text-emerald-600 mb-2">
+                                    <UploadCloud className="w-6 h-6" />
+                                  </div>
+                                  <p className="font-bold text-emerald-950 text-sm">ক্লিক করুন বা ফাইল টেনে আনুন</p>
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40">PNG, JPG, JPEG — সর্বোচ্চ ৫ MB</p>
+                                </div>
+                              )}
+                            </div>
+                            {uploadError && <p className="text-[10px] text-rose-500 font-bold uppercase tracking-widest ml-4">পেমেন্ট স্ক্রিনশট আপলোড করা আবশ্যক</p>}
+                          </div>
                         </div>
                       ) : (
-                        <div className="space-y-6">
+                        <div className="space-y-6 pt-4 border-t border-slate-200/60">
                           <div className="space-y-4">
                             <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950/40 ml-4">কার্ড নম্বর</label>
                             <input type="text" placeholder="XXXX XXXX XXXX XXXX" className="w-full px-8 py-5 bg-white border-0 rounded-2xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" />
@@ -386,16 +443,6 @@ export function CheckoutPage() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        <BkashPaymentModal 
-          isOpen={isBkashModalOpen}
-          onClose={() => setIsBkashModalOpen(false)}
-          amount={total}
-          orderId={planDetails?.name || "Cart-Purchase"}
-          userId={user?.id || ""}
-          gateway={selectedGateway.name}
-          onSuccess={handleBkashSuccess}
-        />
       </div>
     </div>
   );
