@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
-import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, User, ShieldCheck, Zap, Building, Smartphone } from "lucide-react";
+import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, User, ShieldCheck, Zap, Building, Smartphone, Wallet } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
 import { motion, AnimatePresence } from "motion/react";
+import confetti from "canvas-confetti";
 
 import { BkashPaymentModal } from "../components/BkashPaymentModal";
 
@@ -70,6 +71,12 @@ export function CheckoutPage() {
         await purchaseCart();
       }
       setStep(3);
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#10b981', '#059669', '#34d399']
+      });
     } catch (error) {
       console.error(error);
       alert("পেমেন্ট সম্পন্ন করতে সমস্যা হয়েছে।");
@@ -87,6 +94,12 @@ export function CheckoutPage() {
         await purchaseCart();
       }
       setStep(3);
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#10b981', '#059669', '#34d399']
+      });
     } catch (error) {
       console.error(error);
       alert("পেমেন্ট ভেরিফিকেশন করতে সমস্যা হয়েছে।");

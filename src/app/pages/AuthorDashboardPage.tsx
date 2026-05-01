@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import confetti from "canvas-confetti";
 import { 
   User, 
   BookOpen, 
@@ -98,6 +99,12 @@ export function AuthorDashboardPage() {
       }
       setShowUploadModal(false);
       setEditingBook(null);
+      confetti({
+        particleCount: 150,
+        spread: 100,
+        origin: { y: 0.6 },
+        colors: ['#10b981', '#059669', '#34d399']
+      });
       alert("বইটি সফলভাবে প্রকাশ করা হয়েছে!");
     } catch (error: any) {
       console.error("Upload Error:", error);

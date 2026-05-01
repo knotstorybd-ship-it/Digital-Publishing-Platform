@@ -97,9 +97,6 @@ export function WriterRegistrationPage() {
     name: "",
     email: "",
     password: "",
-    phone: "",
-    presentAddress: "",
-    permanentAddress: "",
     bio: "",
     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.floor(Math.random() * 1000)}`
   });
@@ -174,7 +171,6 @@ export function WriterRegistrationPage() {
         email: formData.email,
         avatar: formData.avatar,
         bio: formData.bio || "নতুন লেখক",
-        phone: formData.phone,
         subscription_plan: selectedPlan.name,
         subscription_expiry: expiresAt.toISOString(),
         book_count: 0,
@@ -412,42 +408,7 @@ export function WriterRegistrationPage() {
                     </div>
                   )}
 
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">মোবাইল নম্বর</label>
-                    <div className="relative group">
-                      <Smartphone className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-600 transition-colors" />
-                      <input
-                        type="text"
-                        placeholder="+৮৮০ ১XXXX XXXXXX"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="w-full pl-16 pr-8 py-5 bg-slate-50 border-0 rounded-[1.5rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-8">
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">বর্তমান ঠিকানা</label>
-                      <textarea
-                        rows={2}
-                        placeholder="বাড়ি, রাস্তা, থানা, জেলা"
-                        value={formData.presentAddress}
-                        onChange={(e) => setFormData({...formData, presentAddress: e.target.value})}
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-[1.5rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none transition-all resize-none"
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">স্থায়ী ঠিকানা</label>
-                      <textarea
-                        rows={2}
-                        placeholder="গ্রাম, পোস্ট, থানা, জেলা"
-                        value={formData.permanentAddress}
-                        onChange={(e) => setFormData({...formData, permanentAddress: e.target.value})}
-                        className="w-full px-8 py-5 bg-slate-50 border-0 rounded-[1.5rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none transition-all resize-none"
-                      />
-                    </div>
-                  </div>
+                  {/* Address and Phone removed for a simpler, faster onboarding */}
 
                   <div className="flex gap-4 pt-6">
                     <button

@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 -- B. Authors Table (Writer details)
 CREATE TABLE IF NOT EXISTS public.authors (
-    id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+    id UUID PRIMARY KEY,
+    auth_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     avatar TEXT,
@@ -52,6 +53,9 @@ CREATE TABLE IF NOT EXISTS public.authors (
     subscription_expiry TIMESTAMP WITH TIME ZONE,
     join_date TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+ALTER TABLE public.authors DROP CONSTRAINT IF EXISTS authors_id_fkey;
+ALTER TABLE public.authors ADD COLUMN IF NOT EXISTS auth_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
 
 -- C. Books Table
 CREATE TABLE IF NOT EXISTS public.books (
@@ -166,13 +170,13 @@ INSERT INTO public.site_settings (
     1, 
     'নতুন যুগের নতুন লেখকদের জন্য', 
     'আধুনিক প্রকাশনা', 
-    'ডিজিটাল প্রকাশনার আধুনিক দিগন্ত। আপনার প্রতিভাকে পৌঁছে দেই লক্ষাধিক পাঠকের কাছে, স্বচ্ছ রয়্যালটি ব্যবস্থাপনায়।', 
+    'ডিজিটাল প্রকাশনার আধুনিক দিগন্ত। আপনার প্রতিভাকে পাঠকের কাছে পৌঁছে দিতে সহজ প্রকাশনা, পাঠক সংযোগ ও স্বচ্ছ রয়্যালটি ব্যবস্থাপনা।', 
     'লেখা শুরু করুন', 
     'লাইব্রেরি দেখুন', 
-    'আরিফ রহমান', 
-    '৪.৯', 
-    '৫০,০০০+', 
-    '১০,০০০+ লেখক যুক্ত আছেন'
+    'সম্পাদকীয় টিম', 
+    'নতুন', 
+    '০+', 
+    'লেখক নিবন্ধন চলছে'
 ) ON CONFLICT (id) DO NOTHING;
 
 -- ==========================================================
@@ -213,7 +217,11 @@ DROP POLICY IF EXISTS "Authors are viewable by everyone" ON public.authors;
 CREATE POLICY "Authors are viewable by everyone" ON public.authors FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Users can update own author profile" ON public.authors;
-CREATE POLICY "Users can update own author profile" ON public.authors FOR ALL USING (auth.uid() = id);
+CREATE POLICY "Users can update own author profile" ON public.authors FOR ALL USING (
+    auth.uid() = id OR auth.uid() = auth_user_id
+) WITH CHECK (
+    auth.uid() = id OR auth.uid() = auth_user_id
+);
 
 -- C. Books
 DROP POLICY IF EXISTS "Books are viewable by everyone" ON public.books;
@@ -240,7 +248,7 @@ CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT USING (
         SELECT 1
         FROM public.books b
         JOIN public.authors a ON a.name = b.author
-        WHERE b.id = orders.book_id AND a.id = auth.uid()
+        WHERE b.id = orders.book_id AND (a.id = auth.uid() OR a.auth_user_id = auth.uid())
     )
     OR EXISTS (
         SELECT 1 FROM public.profiles admin_profile

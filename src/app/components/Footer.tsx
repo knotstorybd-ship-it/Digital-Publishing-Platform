@@ -1,4 +1,4 @@
-import { BookOpen, Mail, Phone, Facebook, Youtube } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { Link } from "react-router";
 import { Logo } from "./Logo";
 
@@ -12,7 +12,7 @@ export function Footer() {
               <Logo isDark={true} />
             </div>
             <p className="text-sm text-white/80">
-              বাংলাদেশের #১ ডিজিটাল বুক প্ল্যাটফর্ম
+              বাংলা লেখক ও পাঠকদের জন্য আধুনিক ডিজিটাল প্রকাশনা প্ল্যাটফর্ম
             </p>
           </div>
 
@@ -25,19 +25,19 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/writer" className="hover:text-secondary transition-colors">
+                <Link to="/join-writer" className="hover:text-secondary transition-colors">
                   লেখক হন
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary transition-colors">
+                <Link to="/about" className="hover:text-secondary transition-colors">
                   আমাদের সম্পর্কে
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary transition-colors">
+                <Link to="/contact" className="hover:text-secondary transition-colors">
                   যোগাযোগ
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -46,24 +46,24 @@ export function Footer() {
             <h3 className="font-bold mb-4">বিভাগসমূহ</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="hover:text-secondary transition-colors">
+                <Link to="/browse?category=উপন্যাস" className="hover:text-secondary transition-colors">
                   উপন্যাস
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary transition-colors">
+                <Link to="/browse?category=কবিতা" className="hover:text-secondary transition-colors">
                   কবিতা
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary transition-colors">
+                <Link to="/browse?category=ইতিহাস" className="hover:text-secondary transition-colors">
                   ইতিহাস
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary transition-colors">
+                <Link to="/browse?category=শিশু সাহিত্য" className="hover:text-secondary transition-colors">
                   শিশু সাহিত্য
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -80,15 +80,21 @@ export function Footer() {
                 +8801868519685
               </li>
             </ul>
-            <div className="flex items-center gap-4 mt-4">
-              <a href="#" className="hover:text-secondary transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="hover:text-secondary transition-colors">
-                <Youtube className="w-5 h-5" />
-              </a>
+            <div className="mt-4 text-xs text-white/60 font-medium">
+              সোশ্যাল লিংক শীঘ্রই যুক্ত হবে
             </div>
           </div>
+        </div>
+
+        <div className="border-t border-white/10 mt-8 pt-8 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs font-bold text-white/70">
+          <Link to="/support" className="hover:text-white">সাপোর্ট</Link>
+          <Link to="/terms" className="hover:text-white">Terms</Link>
+          <Link to="/privacy" className="hover:text-white">Privacy</Link>
+          <Link to="/refund-policy" className="hover:text-white">Refund Policy</Link>
+          <Link to="/copyright-policy" className="hover:text-white">Copyright Policy</Link>
+          <Link to="/writer-agreement" className="hover:text-white">Writer Agreement</Link>
+          <Link to="/publishing-policy" className="hover:text-white">প্রকাশনা নীতিমালা</Link>
+          <Link to="/payment-terms" className="hover:text-white">Payment Terms</Link>
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-8 text-center text-sm text-white/80">
