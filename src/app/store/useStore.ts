@@ -309,10 +309,21 @@ const initSupabase = async () => {
   // 3. Real-time Subscriptions
   supabase.channel('db-changes')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, (payload) => {
-      if (payload.eventType === 'INSERT') currentState.books = [mapBookFromDb(payload.new), ...currentState.books];
-      if (payload.eventType === 'UPDATE') currentState.books = currentState.books.map(b => b.id === payload.new.id ? mapBookFromDb(payload.new) : b);
-      if (payload.eventType === 'DELETE') currentState.books = currentState.books.filter(b => b.id !== payload.old.id);
-      notify();
+      if (payload.eventType === 'INSERT') {
+        const newBook = mapBookFromDb(payload.new);
+        if (!currentState.books.some(b => b.id === newBook.id)) {
+          currentState.books = [newBook, ...currentState.books];
+          notify();
+        }
+      }
+      if (payload.eventType === 'UPDATE') {
+        currentState.books = currentState.books.map(b => b.id === payload.new.id ? mapBookFromDb(payload.new) : b);
+        notify();
+      }
+      if (payload.eventType === 'DELETE') {
+        currentState.books = currentState.books.filter(b => b.id !== payload.old.id);
+        notify();
+      }
     })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'authors' }, (payload) => {
       if (payload.eventType === 'INSERT') currentState.authors = [mapAuthorFromDb(payload.new), ...currentState.authors];
