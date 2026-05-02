@@ -19,7 +19,7 @@ export function HomePage() {
   const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
   const navigate = useNavigate();
 
-  const approvedTestimonials = testimonials.filter(t => t.is_approved);
+  const approvedTestimonials = testimonials.filter(t => t.is_approved === true || String(t.is_approved) === 'true');
 
   useEffect(() => {
     if (approvedTestimonials.length <= 1) return;
