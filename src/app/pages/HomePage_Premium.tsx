@@ -22,12 +22,18 @@ export function HomePage() {
   const approvedTestimonials = testimonials.filter(t => t.is_approved === true || String(t.is_approved) === 'true');
 
   useEffect(() => {
+    if (activeTestimonialIndex >= approvedTestimonials.length && approvedTestimonials.length > 0) {
+      setActiveTestimonialIndex(0);
+    }
+  }, [approvedTestimonials.length, activeTestimonialIndex]);
+
+  useEffect(() => {
     if (approvedTestimonials.length <= 1) return;
-    const interval = setInterval(() => {
+    const timer = setTimeout(() => {
       setActiveTestimonialIndex((prev) => (prev + 1) % approvedTestimonials.length);
     }, 6000); // Rotate every 6 seconds
-    return () => clearInterval(interval);
-  }, [approvedTestimonials.length]);
+    return () => clearTimeout(timer);
+  }, [activeTestimonialIndex, approvedTestimonials.length]);
 
   const faqs = [
     {
