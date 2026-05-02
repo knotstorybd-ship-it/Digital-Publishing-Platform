@@ -195,11 +195,11 @@ const authorToDb = (author: Partial<Author>) => {
 
 let currentState: State = {
   user: null,
-  books: [],
-  authors: [],
+  books: JSON.parse(localStorage.getItem("dp_books") || "[]"),
+  authors: JSON.parse(localStorage.getItem("dp_authors") || "[]"),
   cart: JSON.parse(localStorage.getItem("dp_cart") || "[]"),
   orders: [],
-  testimonials: [],
+  testimonials: JSON.parse(localStorage.getItem("dp_testimonials") || "[]"),
   siteSettings: JSON.parse(localStorage.getItem("dp_site_settings") || JSON.stringify({
     heroTitle: "নতুন যুগের নতুন লেখকদের জন্য",
     heroSubtitle: "আধুনিক প্রকাশনা",
@@ -211,7 +211,7 @@ let currentState: State = {
     totalReadersCount: "৫০,০০০+",
     authorsCountText: "১০,০০০+ লেখক যুক্ত আছেন",
   })),
-  loading: true,
+  loading: false,
   profilesCount: 0,
   ordersCount: 0,
   searchQuery: "",
@@ -225,6 +225,10 @@ const listeners = new Set<(state: State) => void>();
 
 const notify = () => {
   localStorage.setItem("dp_cart", JSON.stringify(currentState.cart));
+  localStorage.setItem("dp_books", JSON.stringify(currentState.books));
+  localStorage.setItem("dp_authors", JSON.stringify(currentState.authors));
+  localStorage.setItem("dp_testimonials", JSON.stringify(currentState.testimonials));
+  localStorage.setItem("dp_site_settings", JSON.stringify(currentState.siteSettings));
   listeners.forEach((listener) => listener({ ...currentState }));
 };
 

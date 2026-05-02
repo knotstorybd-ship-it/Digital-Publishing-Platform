@@ -44,13 +44,7 @@ export function HomePage() {
     }
   ];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-16 h-16 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+
 
   const popularBooks = [...books].sort((a, b) => b.rating - a.rating).slice(0, 4);
   const approvedTestimonials = testimonials.filter(t => t.is_approved);
