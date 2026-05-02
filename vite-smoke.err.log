@@ -3059,3 +3059,77 @@ C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useSto
    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 8174|  :root {
 8175|    --font-size: 16px;[39m
+[2m6:56:05 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\pages\HomePage_Premium.tsx: Identifier 'approvedTestimonials' has already been declared. (62:8)
+
+[0m [90m 60 |[31m
+ [90m 61 |[31m   [36mconst[31m popularBooks [33m=[31m [[33m...[31mbooks][33m.[31msort((a[33m,[31m b) [33m=>[31m b[33m.[31mrating [33m-[31m a[33m.[31mrating)[33m.[31mslice([35m0[31m[33m,[31m [35m4[31m)[33m;[31m
+[31m[1m>[22m[31m[90m 62 |[31m   [36mconst[31m approvedTestimonials [33m=[31m testimonials[33m.[31mfilter(t [33m=>[31m t[33m.[31mis_approved)[33m;[31m
+ [90m    |[31m         [31m[1m^[22m[31m
+ [90m 63 |[31m
+ [90m 64 |[31m   [36mconst[31m hasSubmitted [33m=[31m user 
+ [90m 65 |[31m     [33m?[31m testimonials[33m.[31msome(t [33m=>[31m t[33m.[31muser_id [33m===[31m user[33m.[31mid)[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/pages/HomePage_Premium.tsx[39m:62:8
+[33m  60 |  
+  61 |    const popularBooks = [...books].sort((a, b) => b.rating - a.rating).slice(0, 4);
+  62 |    const approvedTestimonials = testimonials.filter(t => t.is_approved);
+     |          ^
+  63 |  
+  64 |    const hasSubmitted = user [39m
+      at constructor (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6599:19)
+      at TypeScriptScopeHandler.checkRedeclarationInScope (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:1619:19)
+      at TypeScriptScopeHandler.declareName (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:1585:12)
+      at TypeScriptScopeHandler.declareName (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4880:11)
+      at TypeScriptParserMixin.declareNameFromIdentifier (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:7567:16)
+      at TypeScriptParserMixin.checkIdentifier (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:7563:12)
+      at TypeScriptParserMixin.checkLVal (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:7500:12)
+      at TypeScriptParserMixin.parseVarId (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13412:10)
+      at TypeScriptParserMixin.parseVarId (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9752:11)
+      at TypeScriptParserMixin.parseVar (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13383:12)
+      at TypeScriptParserMixin.parseVarStatement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13230:10)
+      at TypeScriptParserMixin.parseVarStatement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9408:31)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12851:23)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12767:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12747:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13316:61)
+      at TypeScriptParserMixin.parseBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13309:10)
+      at TypeScriptParserMixin.parseBlock (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13297:10)
+      at TypeScriptParserMixin.parseFunctionBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12100:24)
+      at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12086:10)
+      at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9172:18)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13445:12
+      at TypeScriptParserMixin.withSmartMixTopicForbiddingContext (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12403:14)
+      at TypeScriptParserMixin.parseFunction (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13444:10)
+      at TypeScriptParserMixin.parseFunctionStatement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13125:17)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12791:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12767:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12747:17)
+      at TypeScriptParserMixin.parseExportDeclaration (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13934:17)
+      at TypeScriptParserMixin.parseExportDeclaration (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9629:85)
+      at TypeScriptParserMixin.maybeParseExportDeclaration (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13893:31)
+      at TypeScriptParserMixin.parseExport (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13812:29)
+      at TypeScriptParserMixin.parseExport (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9385:20)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12878:27)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12767:17)
+      at TypeScriptParserMixin.parseModuleItem (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12744:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13316:36)
+      at TypeScriptParserMixin.parseBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13309:10)
+      at TypeScriptParserMixin.parseProgram (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12622:10)
+      at TypeScriptParserMixin.parseTopLevel (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12612:25)
+      at TypeScriptParserMixin.parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:14488:25)
+      at TypeScriptParserMixin.parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10126:18)
+      at parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:14522:38)
+      at parser (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8187|    initial-value: 0;
+8188|  }
+8189|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8190|  :root {
+8191|    --font-size: 16px;[39m
