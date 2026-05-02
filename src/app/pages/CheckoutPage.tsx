@@ -107,9 +107,9 @@ export function CheckoutPage() {
   const totalAmount = selectedPlan ? selectedPlan.price : cartTotal;
   const isPlanPurchase = !!selectedPlan;
 
-  // Redirect writers to dashboard if they are trying to buy a plan they already have access to
+  // Redirect writers to dashboard if they already have access — but not admins
   useEffect(() => {
-    if (user?.isWriter && planId) {
+    if (user?.isWriter && planId && !user?.isAdmin) {
       navigate('/writer');
     }
   }, [user, planId, navigate]);

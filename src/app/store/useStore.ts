@@ -569,7 +569,7 @@ export const useStore = () => {
         subscription_plan: planName,
         subscription_expiry: expiresAt.toISOString(),
       }, { onConflict: 'id' });
-      await syncAuth();
+      try { await syncAuth(); } catch (e) { console.warn('syncAuth skipped', e); }
     }
   };
 
@@ -718,7 +718,7 @@ export const useStore = () => {
     );
     await Promise.all(orderPromises);
     clearCart();
-    await syncAuth();
+    try { await syncAuth(); } catch (e) { console.warn('syncAuth skipped', e); }
   };
 
   const addOrder = async (order: any) => {
