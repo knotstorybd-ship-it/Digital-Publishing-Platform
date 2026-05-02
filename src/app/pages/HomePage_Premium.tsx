@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Link, useNavigate } from "react-router";
 import { 
   BookOpen, Zap, TrendingUp, ArrowRight, Star, Shield, Users, Quote, Edit3, Sparkles, ShoppingBag, 
