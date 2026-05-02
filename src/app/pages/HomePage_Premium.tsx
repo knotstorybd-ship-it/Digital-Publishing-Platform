@@ -65,7 +65,6 @@ export function HomePage() {
 
 
   const popularBooks = [...books].sort((a, b) => b.rating - a.rating).slice(0, 4);
-  const approvedTestimonials = testimonials.filter(t => t.is_approved);
 
   const hasSubmitted = user 
     ? testimonials.some(t => t.user_id === user.id)
