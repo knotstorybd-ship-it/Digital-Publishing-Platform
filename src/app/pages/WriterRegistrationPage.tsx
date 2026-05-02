@@ -109,6 +109,10 @@ export function WriterRegistrationPage() {
   // Sync auth data
   useEffect(() => {
     if (user) {
+      if (user.isWriter) {
+        navigate('/writer');
+        return;
+      }
       setFormData(prev => ({
         ...prev,
         name: user.name || prev.name,
@@ -118,7 +122,7 @@ export function WriterRegistrationPage() {
       }));
       if (step === 2) setStep(3);
     }
-  }, [user]);
+  }, [user, navigate]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();

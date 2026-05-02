@@ -107,6 +107,13 @@ export function CheckoutPage() {
   const totalAmount = selectedPlan ? selectedPlan.price : cartTotal;
   const isPlanPurchase = !!selectedPlan;
 
+  // Redirect writers to dashboard if they are trying to buy a plan they already have access to
+  useEffect(() => {
+    if (user?.isWriter && planId) {
+      navigate('/writer');
+    }
+  }, [user, planId, navigate]);
+
   const handleCheckout = async () => {
     if (!user) {
       window.dispatchEvent(new CustomEvent("open-auth"));
