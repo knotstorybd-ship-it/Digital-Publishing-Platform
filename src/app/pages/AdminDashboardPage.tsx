@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { 
   LayoutDashboard, 
   BookCopy, 
@@ -54,21 +54,33 @@ export function AdminDashboardPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
   
-  // Admin Login State
-  const isAdminAuthenticated = Boolean(user?.isAdmin);
+  // Admin Login State - standalone, no Supabase required
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(
+    () => sessionStorage.getItem("dp_admin_auth") === "true"
+  );
   const [adminUsername, setAdminUsername] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleAdminLogin = async (e: React.FormEvent) => {
+  const ADMIN_USERNAME = "admin";
+  const ADMIN_PASSWORD = "dp@2026";
+
+  const handleAdminLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (adminUsername.includes("@")) {
-      await signIn(adminUsername);
+    if (adminUsername === ADMIN_USERNAME && adminPassword === ADMIN_PASSWORD) {
+      setIsAdminAuthenticated(true);
+      sessionStorage.setItem("dp_admin_auth", "true");
       setLoginError("");
     } else {
-      setLoginError("ভুল ইউজারনেম অথবা পাসওয়ার্ড!");
+      setLoginError("Wrong username or password!");
     }
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdminAuthenticated(false);
+    sessionStorage.removeItem("dp_admin_auth");
   };
 
   if (!isAdminAuthenticated) {
@@ -96,15 +108,24 @@ export function AdminDashboardPage() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-black text-emerald-950 ml-2 uppercase tracking-widest">পাসওয়ার্ড</label>
-              <input 
-                type="password"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                className="w-full px-8 py-5 bg-slate-50 border-none rounded-[1.5rem] focus:ring-4 focus:ring-emerald-100 transition-all font-bold"
-                placeholder="পাসওয়ার্ড দিন"
-                required
-              />
+              <label className="text-sm font-black text-emerald-950 ml-2 uppercase tracking-widest">পাসওয়ার্ড</label>
+              <div className="relative">
+                <input 
+                  type={showPassword ? "text" : "password"}
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  className="w-full px-8 py-5 bg-slate-50 border-none rounded-[1.5rem] focus:ring-4 focus:ring-emerald-100 transition-all font-bold pr-20"
+                  placeholder="পাসওয়ার্ড দিন"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-600 transition-colors font-bold text-xs uppercase tracking-widest"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
             </div>
 
             {loginError && (
@@ -258,7 +279,7 @@ export function AdminDashboardPage() {
               View System Logs
             </button>
             <button 
-              onClick={() => signOut()}
+              onClick={() => handleAdminLogout()}
               className="w-full py-3 bg-rose-50 border border-rose-100 rounded-xl text-xs font-black text-rose-600 hover:bg-rose-100 transition-colors flex items-center justify-center gap-2"
             >
               <LogOut className="w-3.5 h-3.5" />
