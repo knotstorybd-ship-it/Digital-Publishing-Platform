@@ -681,15 +681,19 @@ export const useStore = () => {
         order_type: "book"
       })
     );
+    await Promise.all(orderPromises);
+    clearCart();
+    await syncAuth();
+  };
 
-    const results = await Promise.all(orderPromises);
-    const error = results.find(r => r.error);
-    if (error) throw error.error;
-
-    if (!isManual) {
-      currentState.cart = [];
+  const addOrder = async (order: any) => {
+    const { data, error } = await supabase.from('orders').insert(order).select().single();
+    if (error) throw error;
+    if (data) {
+      currentState.orders = [data, ...currentState.orders];
       notify();
     }
+    return data;
   };
 
   const approvePayment = async (orderId: string) => {
@@ -920,6 +924,7 @@ export const useStore = () => {
     deleteAuthor,
     updateProfile,
     purchaseCart,
+    addOrder,
     approvePayment,
     rejectPayment,
     addToCart,

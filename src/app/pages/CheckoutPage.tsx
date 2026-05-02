@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, ShieldCheck, Zap, Building, UploadCloud, Mail, X, Calendar, Hash } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
@@ -139,7 +139,8 @@ export function CheckoutPage() {
           status: 'pending',
           payment_method: paymentMethod,
           transaction_id: trxId,
-          type: 'subscription'
+          order_type: 'subscription',
+          plan_name: selectedPlan.name
         });
       } else {
         for (const book of cart) {
@@ -150,7 +151,7 @@ export function CheckoutPage() {
             status: 'pending',
             payment_method: paymentMethod,
             transaction_id: trxId,
-            type: 'book'
+            order_type: 'book'
           });
         }
         clearCart();
