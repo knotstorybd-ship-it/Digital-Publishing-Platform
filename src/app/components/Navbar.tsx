@@ -11,6 +11,8 @@ export function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
   const [error, setError] = useState("");
   
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -42,6 +44,21 @@ export function Navbar() {
     } catch (error) {
       console.error(error);
       setIsGoogleLoading(false);
+    }
+  };
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!emailInput.trim()) return;
+    setIsEmailLoading(true);
+    setError("");
+    try {
+      await signIn(emailInput.trim());
+      setIsAuthOpen(false);
+    } catch (err: any) {
+      setError(err.message || "লগইন করতে সমস্যা হয়েছে।");
+    } finally {
+      setIsEmailLoading(false);
     }
   };
 
@@ -265,6 +282,33 @@ export function Navbar() {
               গুগল দিয়ে লগইন
             </button>
 
+
+            <div className="flex items-center gap-4 my-6">
+              <div className="flex-1 h-px bg-slate-100"></div>
+              <span className="text-xs font-black text-slate-300 uppercase tracking-widest">অথবা</span>
+              <div className="flex-1 h-px bg-slate-100"></div>
+            </div>
+
+            <form onSubmit={handleEmailLogin} className="space-y-4">
+              <input
+                type="email"
+                placeholder="আপনার ইমেইল দিন..."
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                className="w-full px-6 py-4 bg-slate-50 border-0 rounded-2xl font-bold text-emerald-950 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
+                required
+              />
+              {error && <p className="text-rose-500 text-xs font-bold px-2">{error}</p>}
+              <button
+                type="submit"
+                disabled={isEmailLoading}
+                className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/20 disabled:opacity-50"
+              >
+                {isEmailLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : "ইমেইলে লগইন লিঙ্ক পাঠান"}
+              </button>
+            </form>
 
             <p className="mt-8 text-center text-xs text-slate-400 font-medium">
               লগইন করার মাধ্যমে আপনি আমাদের <Link to="/terms" className="text-emerald-600 font-bold underline">শর্তাবলী</Link> মেনে নিচ্ছেন।
