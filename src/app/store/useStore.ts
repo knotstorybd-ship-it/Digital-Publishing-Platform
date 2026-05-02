@@ -194,7 +194,12 @@ const authorToDb = (author: Partial<Author>) => {
 };
 
 let currentState: State = {
-  user: null,
+  user: (() => {
+    try {
+      const cached = localStorage.getItem("dp_user");
+      return cached ? JSON.parse(cached) : null;
+    } catch { return null; }
+  })(),
   books: JSON.parse(localStorage.getItem("dp_books") || "[]"),
   authors: JSON.parse(localStorage.getItem("dp_authors") || "[]"),
   cart: JSON.parse(localStorage.getItem("dp_cart") || "[]"),
@@ -229,6 +234,11 @@ const notify = () => {
   localStorage.setItem("dp_authors", JSON.stringify(currentState.authors));
   localStorage.setItem("dp_testimonials", JSON.stringify(currentState.testimonials));
   localStorage.setItem("dp_site_settings", JSON.stringify(currentState.siteSettings));
+  if (currentState.user) {
+    localStorage.setItem("dp_user", JSON.stringify(currentState.user));
+  } else {
+    localStorage.removeItem("dp_user");
+  }
   listeners.forEach((listener) => listener({ ...currentState }));
 };
 

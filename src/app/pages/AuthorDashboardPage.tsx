@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import confetti from "canvas-confetti";
 import { 
   User, 
