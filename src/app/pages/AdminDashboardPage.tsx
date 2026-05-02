@@ -880,9 +880,14 @@ export function AdminDashboardPage() {
                         <div className="flex items-center justify-end gap-3">
                           {!t.is_approved && (
                             <button 
-                              onClick={() => {
-                                approveTestimonial(t.id);
-                                showNotify("Testimonial approved!");
+                              onClick={async () => {
+                                try {
+                                  await approveTestimonial(t.id);
+                                  showNotify("Testimonial approved!");
+                                } catch (err: any) {
+                                  console.error(err);
+                                  showNotify(`Error: ${err.message || 'Failed to approve'}`, 'error');
+                                }
                               }}
                               className="p-3 bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-xl shadow-emerald-600/5"
                               title="Approve"
@@ -891,10 +896,15 @@ export function AdminDashboardPage() {
                             </button>
                           )}
                           <button 
-                            onClick={() => {
+                            onClick={async () => {
                               if (confirm("Delete this testimonial?")) {
-                                deleteTestimonial(t.id);
-                                showNotify("Testimonial deleted");
+                                try {
+                                  await deleteTestimonial(t.id);
+                                  showNotify("Testimonial deleted");
+                                } catch (err: any) {
+                                  console.error(err);
+                                  showNotify(`Error: ${err.message || 'Failed to delete'}`, 'error');
+                                }
                               }
                             }}
                             className="p-3 bg-white hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-xl border border-slate-100"

@@ -268,6 +268,12 @@ CREATE POLICY "Anyone can view approved testimonials" ON public.testimonials FOR
 DROP POLICY IF EXISTS "Anyone can insert testimonials" ON public.testimonials;
 CREATE POLICY "Anyone can insert testimonials" ON public.testimonials FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Anyone can update testimonials" ON public.testimonials;
+CREATE POLICY "Anyone can update testimonials" ON public.testimonials FOR UPDATE USING (true);
+
+DROP POLICY IF EXISTS "Anyone can delete testimonials" ON public.testimonials;
+CREATE POLICY "Anyone can delete testimonials" ON public.testimonials FOR DELETE USING (true);
+
 -- F. Site Settings
 DROP POLICY IF EXISTS "Public can view site settings" ON public.site_settings;
 CREATE POLICY "Public can view site settings" ON public.site_settings FOR SELECT USING (true);
