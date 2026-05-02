@@ -232,6 +232,8 @@ CREATE POLICY "Users can update own author profile" ON public.authors FOR ALL US
 );
 
 -- C. Books
+ALTER TABLE public.books ADD COLUMN IF NOT EXISTS author_id UUID REFERENCES auth.users(id) ON DELETE SET NULL;
+
 DROP POLICY IF EXISTS "Books are viewable by everyone" ON public.books;
 CREATE POLICY "Books are viewable by everyone" ON public.books FOR SELECT USING (true);
 
@@ -242,6 +244,14 @@ DROP POLICY IF EXISTS "Admins can manage all books" ON public.books;
 CREATE POLICY "Admins can manage all books" ON public.books FOR ALL USING (true);
 
 -- D. Orders
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS payment_method TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS transaction_id TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS screenshot_url TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS order_type TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS plan_name TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS user_name TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS user_email TEXT;
+
 DROP POLICY IF EXISTS "Users can view own orders" ON public.orders;
 CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT USING (true);
 
