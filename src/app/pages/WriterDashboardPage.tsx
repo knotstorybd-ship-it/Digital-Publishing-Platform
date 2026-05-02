@@ -46,7 +46,7 @@ const plans = [
 ];
 
 export function WriterDashboardPage() {
-  const { user, books, orders, addBook, subscribe, logout, fetchAuthorOrders } = useStore();
+  const { user, books, orders, addBook, subscribe, signOut, fetchAuthorOrders } = useStore();
   const isWriter = user?.isWriter && user?.subscription;
   const [activeTab, setActiveTab] = useState<"plans" | "upload" | "my-books" | "stats">(isWriter ? "stats" : "plans");
 
@@ -269,7 +269,7 @@ export function WriterDashboardPage() {
           </Link>
 
           <button 
-            onClick={() => logout()}
+            onClick={() => signOut()}
             className="w-full flex items-center justify-center gap-3 px-6 py-4 text-slate-400 hover:text-destructive hover:bg-destructive/5 rounded-2xl font-bold transition-all"
           >
             <LogOut className="w-5 h-5" />

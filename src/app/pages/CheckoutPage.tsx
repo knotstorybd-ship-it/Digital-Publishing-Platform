@@ -51,7 +51,7 @@ export function CheckoutPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const planId = searchParams.get("plan");
-  const { cart, removeFromCart, user, addOrder, clearCart } = useStore();
+  const { cart, removeFromCart, user, clearCart, purchaseCart, subscribe } = useStore();
   
   const selectedPlan = useMemo(() => plans.find(p => p.id === planId), [planId]);
   const [step, setStep] = useState(1);
@@ -132,29 +132,20 @@ export function CheckoutPage() {
       const dateStr = now.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
       if (isPlanPurchase) {
-        await addOrder({
-          user_id: user.id,
-          book_id: "plan_" + selectedPlan.id,
-          amount: selectedPlan.price,
-          status: 'pending',
-          payment_method: paymentMethod,
-          transaction_id: trxId,
-          order_type: 'subscription',
-          plan_name: selectedPlan.name
+        let months = 3;
+        if (selectedPlan.id === 'plan2') months = 6;
+        if (selectedPlan.id === 'plan3') months = 1200; // lifetime
+        await subscribe(selectedPlan.name, months, {
+          method: paymentMethod,
+          txnId: trxId,
+          screenshot: screenshot || undefined
         });
       } else {
-        for (const book of cart) {
-          await addOrder({
-            user_id: user.id,
-            book_id: book.id,
-            amount: book.price,
-            status: 'pending',
-            payment_method: paymentMethod,
-            transaction_id: trxId,
-            order_type: 'book'
-          });
-        }
-        clearCart();
+        await purchaseCart({
+          method: paymentMethod,
+          txnId: trxId,
+          screenshot: screenshot || undefined
+        });
       }
 
       const details = {
