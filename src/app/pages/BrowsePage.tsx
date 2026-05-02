@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { BookCard } from "../components/BookCard";
 import { Search, Filter, SlidersHorizontal, BookOpen, Sparkles, TrendingUp, Grid, List } from "lucide-react";
 import { useStore } from "../store/useStore";
@@ -66,19 +66,19 @@ export function BrowsePage() {
         </div>
 
         {/* Search & Filters */}
-        <div className="bg-white rounded-[3rem] p-8 md:p-10 shadow-sm border border-slate-100 mb-12">
+        <div className="bg-white rounded-[2rem] md:rounded-[3rem] p-4 md:p-10 shadow-sm border border-slate-100 mb-12">
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="flex-1 relative group">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-600 transition-colors" />
+              <Search className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5 text-slate-300 group-focus-within:text-emerald-600 transition-colors" />
               <input
                 type="text"
                 placeholder="বইয়ের নাম, লেখকের নাম বা কি-ওয়ার্ড দিয়ে খুঁজুন..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-16 pr-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-300"
+                className="w-full pl-11 md:pl-16 pr-4 md:pr-8 py-3.5 md:py-5 bg-slate-50 border-0 rounded-2xl md:rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none transition-all placeholder:text-slate-300"
               />
             </div>
-            <button className="px-10 py-5 bg-emerald-950 text-white rounded-3xl font-black shadow-xl shadow-emerald-950/10 hover:bg-emerald-900 transition-all flex items-center gap-3 justify-center">
+            <button className="px-5 md:px-10 py-3.5 md:py-5 bg-emerald-950 text-white rounded-2xl md:rounded-3xl font-black shadow-xl shadow-emerald-950/10 hover:bg-emerald-900 transition-all flex items-center gap-3 justify-center">
               <SlidersHorizontal className="w-5 h-5" />
               অ্যাডভান্সড ফিল্টার
             </button>
@@ -127,7 +127,7 @@ export function BrowsePage() {
               </div>
             ) : filteredBooks.length > 0 ? (
               <div 
-                className={`grid gap-8 ${viewType === 'grid' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6' : 'grid-cols-1'}`}
+                className={`grid gap-4 md:gap-8 ${viewType === 'grid' ? 'grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6' : 'grid-cols-1 sm:grid-cols-2'}`}
               >
                 {filteredBooks.map((book) => (
                   <div
@@ -163,3 +163,4 @@ export function BrowsePage() {
     </div>
   );
 }
+

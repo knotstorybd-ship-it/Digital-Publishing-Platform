@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router";
 import { BookOpen, Search, User, Menu, X, ShoppingCart, TrendingUp, ArrowRight, Star, Library } from "lucide-react";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { useStore } from "../store/useStore";
 import { Logo } from "./Logo";
 
@@ -241,10 +242,10 @@ export function Navbar() {
               ) : (
                 <button 
                   onClick={() => setIsAuthOpen(true)}
-                  className="flex items-center gap-3 px-8 py-3.5 bg-emerald-950 text-white rounded-2xl font-black text-sm shadow-xl shadow-emerald-950/20 hover:bg-black transition-all"
+                  className="flex items-center gap-3 px-5 py-3 sm:px-8 sm:py-3.5 bg-emerald-950 text-white rounded-2xl font-black text-sm shadow-xl shadow-emerald-950/20 hover:bg-black transition-all"
                 >
                   <User className="w-4 h-4" />
-                  লগইন
+                  <span className="hidden sm:inline">লগইন</span>
                 </button>
               )}
 
@@ -259,25 +260,72 @@ export function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="lg:hidden fixed inset-0 top-24 bg-white z-[100] p-6 shadow-2xl">
-            <div className="space-y-6">
-              <Link to="/browse" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50 text-xl font-black text-emerald-950">
-                <BookOpen className="text-emerald-600" /> সব বই
-              </Link>
-              {user && (
-                <Link to="/library" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-4 rounded-3xl bg-slate-50 text-xl font-black text-emerald-950">
-                  <Library className="text-emerald-600" /> আমার লাইব্রেরি
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-2xl border-t border-slate-100 overflow-y-auto"
+              style={{ maxHeight: 'calc(100vh - 80px)' }}
+            >
+              <div className="p-6 space-y-4">
+                {/* Mobile Search Bar */}
+                <div className="flex items-center gap-3 px-6 py-4 bg-slate-50 border-2 border-transparent focus-within:border-emerald-500/50 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-50 rounded-2xl transition-all duration-300">
+                  <Search className="w-5 h-5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="বই খুঁজুন..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="bg-transparent border-0 p-0 text-base font-bold text-emerald-950 focus:ring-0 w-full placeholder:text-slate-300 placeholder:italic"
+                  />
+                </div>
+
+                <div className="h-px bg-slate-100 my-4"></div>
+
+                <Link to="/browse" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 text-lg font-black text-emerald-950 hover:bg-emerald-50 transition-colors">
+                  <BookOpen className="text-emerald-600 w-6 h-6" /> সব বই
                 </Link>
-              )}
-              {!isWriterMode && (
-                <Link to="/join-writer" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-4 rounded-3xl bg-emerald-600 text-xl font-black text-white shadow-xl shadow-emerald-600/20">
-                  <TrendingUp /> লেখক হোন
-                </Link>
-              )}
-            </div>
-          </div>
-        )}
+                {user ? (
+                  <>
+                    <Link to="/library" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 text-lg font-black text-emerald-950 hover:bg-emerald-50 transition-colors">
+                      <Library className="text-emerald-600 w-6 h-6" /> আমার লাইব্রেরি
+                    </Link>
+                    <Link to={user.isWriter ? "/writer" : "/join-writer"} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 text-lg font-black text-emerald-950 hover:bg-emerald-50 transition-colors">
+                      <TrendingUp className="text-emerald-600 w-6 h-6" /> {user.isWriter ? "ড্যাশবোর্ড" : "লেখক হোন"}
+                    </Link>
+                    {user.isAdmin && (
+                      <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 text-lg font-black text-emerald-950 hover:bg-emerald-50 transition-colors">
+                        <Star className="text-emerald-600 w-6 h-6" /> অ্যাডমিন
+                      </Link>
+                    )}
+                    <div className="h-px bg-slate-100"></div>
+                    <button 
+                      onClick={() => { signOut(); setIsMenuOpen(false); }} 
+                      className="flex items-center gap-4 p-4 rounded-2xl bg-rose-50 text-lg font-black text-rose-500 hover:bg-rose-100 transition-colors w-full text-left"
+                    >
+                      <ArrowRight className="w-6 h-6" /> লগ আউট
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="h-px bg-slate-100"></div>
+                    <button 
+                      onClick={() => { setIsAuthOpen(true); setIsMenuOpen(false); }} 
+                      className="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-emerald-600 text-lg font-black text-white shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-colors"
+                    >
+                      <User className="w-6 h-6" /> লগইন / নিবন্ধন
+                    </button>
+                    <Link to="/join-writer" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 text-lg font-black text-emerald-950 hover:bg-emerald-50 transition-colors">
+                      <TrendingUp className="text-emerald-600 w-6 h-6" /> লেখক হোন
+                    </Link>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Auth Modal */}
