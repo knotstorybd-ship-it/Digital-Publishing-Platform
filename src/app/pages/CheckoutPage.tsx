@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, User, ShieldCheck, Zap, Building, Smartphone, Wallet, UploadCloud } from "lucide-react";
+import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, ShieldCheck, Zap, Building, UploadCloud, Mail, X, Calendar, Hash } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
 import confetti from "canvas-confetti";
@@ -59,6 +59,49 @@ export function CheckoutPage() {
   const [trxId, setTrxId] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [orderDetails, setOrderDetails] = useState<{
+    orderId: string;
+    amount: number;
+    method: string;
+    trxId: string;
+    items: string;
+    date: string;
+    email: string;
+    name: string;
+  } | null>(null);
+
+  const sendConfirmationEmail = async (details: typeof orderDetails) => {
+    if (!details) return;
+    try {
+      // EmailJS REST API - works without npm package
+      await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: 'service_digitalprokashoni',
+          template_id: 'template_payment_confirm',
+          user_id: 'YOUR_EMAILJS_PUBLIC_KEY', // Replace with your EmailJS public key
+          template_params: {
+            to_email: details.email,
+            to_name: details.name,
+            order_id: details.orderId,
+            amount: `৳${details.amount}`,
+            payment_method: details.method.toUpperCase(),
+            transaction_id: details.trxId,
+            items: details.items,
+            order_date: details.date,
+            platform_name: 'Digital Prokashoni',
+            support_email: 'support@digitalprokashoni.com'
+          }
+        })
+      });
+      console.log('[Email] Confirmation sent to', details.email);
+    } catch (err) {
+      console.warn('[Email] Could not send confirmation email:', err);
+      // Non-blocking — checkout still succeeds even if email fails
+    }
+  };
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
   const totalAmount = selectedPlan ? selectedPlan.price : cartTotal;
@@ -77,8 +120,11 @@ export function CheckoutPage() {
 
     setLoading(true);
     try {
+      const orderId = `DP-${Date.now().toString(36).toUpperCase()}`;
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
       if (isPlanPurchase) {
-        // Create pending plan order
         await addOrder({
           user_id: user.id,
           book_id: "plan_" + selectedPlan.id,
@@ -89,7 +135,6 @@ export function CheckoutPage() {
           type: 'subscription'
         });
       } else {
-        // Create pending orders for each book in cart
         for (const book of cart) {
           await addOrder({
             user_id: user.id,
@@ -104,13 +149,29 @@ export function CheckoutPage() {
         clearCart();
       }
 
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#059669', '#10b981', '#34d399']
-      });
+      const details = {
+        orderId,
+        amount: totalAmount,
+        method: paymentMethod,
+        trxId,
+        items: isPlanPurchase ? selectedPlan.name : cart.map(b => b.title).join(', '),
+        date: dateStr,
+        email: user.email,
+        name: user.name,
+      };
+      setOrderDetails(details);
+
+      // Fire confetti
+      confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 }, colors: ['#059669', '#10b981', '#34d399', '#fbbf24'] });
+      setTimeout(() => confetti({ particleCount: 100, spread: 100, origin: { y: 0.5 }, colors: ['#059669', '#6ee7b7'] }), 400);
+
+      // Show popup and navigate to step 3
+      setShowSuccessPopup(true);
       setStep(3);
+
+      // Send email in background (non-blocking)
+      sendConfirmationEmail(details);
+
     } catch (error) {
       console.error(error);
       alert("অর্ডার সম্পন্ন করতে সমস্যা হয়েছে।");
@@ -135,6 +196,69 @@ export function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-[#fafbfc] pt-32 pb-20">
+
+      {/* ===== SUCCESS POPUP OVERLAY ===== */}
+      {showSuccessPopup && orderDetails && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-emerald-950/60 backdrop-blur-md">
+          <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden relative">
+            {/* Green top bar */}
+            <div className="h-2 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+            <div className="p-10">
+              {/* Icon */}
+              <div className="w-20 h-20 bg-emerald-100 rounded-[2rem] flex items-center justify-center text-emerald-600 mx-auto mb-6">
+                <Check className="w-10 h-10 stroke-[3]" />
+              </div>
+              <h2 className="text-3xl font-black text-emerald-950 text-center mb-2">পেমেন্ট সফলভাবে জমা হয়েছে!</h2>
+              <p className="text-slate-400 font-medium text-center text-sm mb-8">প্রতিটি বিবরণ আপনার ইমেইলে পাঠানো হয়েছে</p>
+
+              {/* Order Details */}
+              <div className="bg-slate-50 rounded-3xl p-6 space-y-4 mb-8">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Hash className="w-3 h-3" />অর্ডার আইডি</span>
+                  <span className="font-black text-emerald-600 text-sm">{orderDetails.orderId}</span>
+                </div>
+                <div className="h-px bg-slate-200"></div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest">প্যাকেজ / বই</span>
+                  <span className="font-bold text-emerald-950 text-sm text-right max-w-[55%] truncate">{orderDetails.items}</span>
+                </div>
+                <div className="h-px bg-slate-200"></div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest">মোট পরিমাণ</span>
+                  <span className="font-black text-2xl text-emerald-600">৳{orderDetails.amount}</span>
+                </div>
+                <div className="h-px bg-slate-200"></div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest">ট্রানজাকশন আইডি</span>
+                  <span className="font-bold text-emerald-950 text-sm font-mono">{orderDetails.trxId}</span>
+                </div>
+                <div className="h-px bg-slate-200"></div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Calendar className="w-3 h-3" />তারিখ</span>
+                  <span className="font-bold text-slate-500 text-xs">{orderDetails.date}</span>
+                </div>
+                <div className="h-px bg-slate-200"></div>
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2"><Mail className="w-3 h-3" />ইমেইল</span>
+                  <span className="font-bold text-slate-500 text-xs">{orderDetails.email}</span>
+                </div>
+              </div>
+
+              <div className="p-4 bg-amber-50 border border-amber-100 rounded-2xl mb-6">
+                <p className="text-amber-700 text-xs font-bold text-center">নিশ্চিতকরণ: এডমিন ভেরিফাই করার পর স্বয়ংক্রিয়ভাবে আনলক হয়ে যাবে। সাধারণত ৫-১০ মিনিট সময় লাগে।</p>
+              </div>
+
+              <button
+                onClick={() => { setShowSuccessPopup(false); navigate(isPlanPurchase ? '/writer' : '/library'); }}
+                className="w-full py-5 bg-emerald-600 text-white rounded-2xl font-black shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all"
+              >
+                ড্যাশবোর্ডে যান →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ===== END SUCCESS POPUP ===== */}
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-center mb-16 gap-4">
           {[
