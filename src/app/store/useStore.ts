@@ -1023,8 +1023,11 @@ export const useStore = () => {
   };
 
   const approveTestimonial = async (id: string) => {
-    const { error } = await supabase.from('testimonials').update({ is_approved: true }).eq('id', id);
+    const { data, error } = await supabase.from('testimonials').update({ is_approved: true }).eq('id', id).select();
     if (error) throw error;
+    if (!data || data.length === 0) {
+      throw new Error("Approval blocked by database (RLS policy). Please make sure you ran the latest SQL script.");
+    }
     currentState.testimonials = currentState.testimonials.map(t => t.id === id ? { ...t, is_approved: true } : t);
     notify();
   };

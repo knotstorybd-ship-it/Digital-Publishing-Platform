@@ -3,7 +3,7 @@ import { Star, ShoppingCart, Heart, Share2, Download, BookOpen, ShieldCheck, Zap
 import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
 import { SEO } from "../components/SEO";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function BookDetailPage() {
   const { id } = useParams();
@@ -13,6 +13,16 @@ export function BookDetailPage() {
   const isPurchased = user && orders.some(o => o.book_id === book?.id && o.user_id === user.id);
   const isWishlisted = book ? favoriteBookIds.includes(book.id) : false;
   const bookReviews = reviews.filter(r => r.book_id === book?.id);
+  
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  const dynamicRating = bookReviews.length > 0 
+    ? (bookReviews.reduce((acc, r) => acc + r.rating, 0) / bookReviews.length).toFixed(1)
+    : book.rating;
+  const dynamicReviewsCount = bookReviews.length > 0 ? bookReviews.length : book.reviews;
 
   useEffect(() => {
     const handleReviewSubmit = async (e: any) => {
@@ -191,8 +201,8 @@ export function BookDetailPage() {
                     <Star className="w-6 h-6 fill-amber-600" />
                   </div>
                   <div>
-                    <p className="text-xl font-black text-emerald-950">{book.rating}</p>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{book.reviews} রিভিউ</p>
+                    <p className="text-xl font-black text-emerald-950">{dynamicRating}</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{dynamicReviewsCount} রিভিউ</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -275,38 +285,87 @@ export function BookDetailPage() {
           <div className="grid lg:grid-cols-12 gap-12">
             <div className="lg:col-span-4 space-y-6">
               <div className="bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100 text-center">
-                <div className="text-6xl font-black text-emerald-950 mb-4">{book.rating}</div>
+                <div className="text-6xl font-black text-emerald-950 mb-4">{dynamicRating}</div>
                 <div className="flex justify-center gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className={`w-5 h-5 ${i < Math.round(book.rating) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
+                    <Star key={i} className={`w-5 h-5 ${i < Math.round(Number(dynamicRating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
                   ))}
                 </div>
-                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{book.reviews} রিভিউ</p>
+                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{dynamicReviewsCount} রিভিউ</p>
               </div>
 
               {isPurchased ? (
                 <div className="bg-emerald-50 rounded-[3rem] p-8 border-2 border-dashed border-emerald-200 text-center">
-                  <h3 className="font-black text-emerald-950 mb-2">আপনার মতামত দিন</h3>
-                  <p className="text-xs font-medium text-emerald-600/70 mb-6">বইটি আপনার কেমন লেগেছে তা অন্য পাঠকদের সাথে শেয়ার করুন।</p>
-                  <button 
-                    onClick={() => {
-                      const comment = prompt("আপনার মতামত লিখুন:");
-                      if (comment) {
-                        const ratingStr = prompt("রেটিং দিন (১ থেকে ৫):", "5");
-                        const rating = parseInt(ratingStr || "5", 10);
-                        if (rating >= 1 && rating <= 5) {
-                           // Use window to avoid importing useStore explicitly if not available, but we DO have it!
-                           // Wait, I can't just use `useStore` destructured here if I didn't destructure `addBookReview` at the top!
-                           window.dispatchEvent(new CustomEvent('submit-review', { detail: { bookId: book.id, rating, comment } }));
-                        } else {
-                           alert("রেটিং ১ থেকে ৫ এর মধ্যে হতে হবে।");
-                        }
-                      }
-                    }}
-                    className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all"
-                  >
-                    রিভিউ লিখুন
-                  </button>
+                  {!showReviewForm ? (
+                    <>
+                      <h3 className="font-black text-emerald-950 mb-2">আপনার মতামত দিন</h3>
+                      <p className="text-xs font-medium text-emerald-600/70 mb-6">বইটি আপনার কেমন লেগেছে তা অন্য পাঠকদের সাথে শেয়ার করুন।</p>
+                      <button 
+                        onClick={() => setShowReviewForm(true)}
+                        className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all"
+                      >
+                        রিভিউ লিখুন
+                      </button>
+                    </>
+                  ) : (
+                    <form 
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!reviewComment.trim()) return;
+                        setIsSubmittingReview(true);
+                        window.dispatchEvent(new CustomEvent('submit-review', { detail: { bookId: book.id, rating: reviewRating, comment: reviewComment } }));
+                        setTimeout(() => {
+                          setIsSubmittingReview(false);
+                          setShowReviewForm(false);
+                          setReviewComment("");
+                          setReviewRating(5);
+                        }, 1000);
+                      }}
+                      className="text-left space-y-4"
+                    >
+                      <div>
+                        <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">রেটিং</label>
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              onClick={() => setReviewRating(s)}
+                              className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:bg-amber-50"
+                            >
+                              <Star className={`w-5 h-5 ${reviewRating >= s ? 'fill-amber-400 text-amber-400' : 'text-slate-300'}`} />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">মতামত</label>
+                        <textarea
+                          required
+                          value={reviewComment}
+                          onChange={(e) => setReviewComment(e.target.value)}
+                          placeholder="বইটি কেমন লাগলো?"
+                          className="w-full p-4 bg-white rounded-xl border border-emerald-100 text-sm focus:ring-2 focus:ring-emerald-500/50 resize-none h-24"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <button 
+                          type="button"
+                          onClick={() => setShowReviewForm(false)}
+                          className="flex-1 py-3 bg-white text-slate-500 rounded-xl font-bold text-xs hover:bg-slate-50 border border-slate-200 transition-colors"
+                        >
+                          বাতিল
+                        </button>
+                        <button 
+                          type="submit"
+                          disabled={isSubmittingReview}
+                          className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-bold text-xs hover:bg-emerald-700 shadow-md disabled:opacity-50 transition-all"
+                        >
+                          {isSubmittingReview ? "পাঠানো হচ্ছে..." : "সাবমিট করুন"}
+                        </button>
+                      </div>
+                    </form>
+                  )}
                 </div>
               ) : (
                 <div className="bg-slate-50 rounded-[3rem] p-8 text-center">
