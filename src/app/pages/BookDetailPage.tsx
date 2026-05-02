@@ -263,7 +263,6 @@ export function BookDetailPage() {
                 </div>
               </div>
             </div>
-            </div>
           </div>
         </div>
 
