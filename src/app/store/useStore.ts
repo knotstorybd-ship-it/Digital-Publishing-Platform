@@ -288,7 +288,7 @@ const syncAuth = async () => {
     currentState.user = {
       id: session.user.id,
       email: session.user.email!,
-      name: profile?.name || session.user.user_metadata.full_name || "User",
+      name: profile?.name || session.user.user_metadata.full_name || session.user.user_metadata.name || "User",
       isWriter: !!authorData,
       isAdmin: profile?.role === 'admin' || session.user.email === 'admin@digitalpro.com',
       avatar: profile?.avatar || session.user.user_metadata.avatar_url,
@@ -480,6 +480,39 @@ export const useStore = () => {
       options: { redirectTo: window.location.href }
     });
     if (error) throw error;
+  };
+
+  const signInWithPassword = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (error) throw error;
+    await syncAuth();
+  };
+
+  const signUp = async (email: string, password: string, name: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name,
+          name: name
+        }
+      }
+    });
+    if (error) throw error;
+    
+    if (data.user) {
+      await supabase.from('profiles').upsert({
+        id: data.user.id,
+        name: name,
+        email: email
+      });
+    }
+    
+    return data;
   };
 
   const signOut = async () => {
@@ -948,6 +981,8 @@ export const useStore = () => {
     ...state,
     signIn,
     signInWithGoogle,
+    signInWithPassword,
+    signUp,
     signOut,
     logout: signOut,
     fetchAuthorOrders,

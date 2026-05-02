@@ -250,29 +250,23 @@ export function WriterDashboardPage() {
           ))}
         </nav>
 
-        <div className="p-6 space-y-4">
-          <div className="bg-slate-50 rounded-3xl p-5 border border-slate-100">
-            <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-2">আপনার প্ল্যান</p>
-            <p className="text-sm font-black text-slate-800 mb-1">{user.subscription.planName}</p>
-            <p className="text-[10px] text-slate-500 flex items-center gap-1 font-medium">
-              <Clock className="w-3 h-3 text-primary" />
-              মেয়াদ: {expirationDate}
-            </p>
+        {/* User Profile Summary in Sidebar */}
+        <div className="p-6 border-t border-slate-100">
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <div className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center font-black shadow-lg shadow-primary/20 flex-shrink-0">
+              {user.name.charAt(0)}
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="font-bold text-slate-800 text-sm truncate">{user.name}</span>
+              <span className="text-[10px] text-slate-400 truncate">{user.email}</span>
+            </div>
           </div>
-
-          <Link 
-            to="/" 
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-secondary/10 text-secondary rounded-2xl font-bold hover:bg-secondary/20 transition-all"
-          >
-            <Globe className="w-5 h-5" />
-            ওয়েবসাইট দেখুন
-          </Link>
-
+          
           <button 
             onClick={() => signOut()}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 text-slate-400 hover:text-destructive hover:bg-destructive/5 rounded-2xl font-bold transition-all"
+            className="w-full mt-4 flex items-center gap-3 px-5 py-3 rounded-xl font-bold text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all text-sm"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-4 h-4" />
             লগআউট
           </button>
         </div>
