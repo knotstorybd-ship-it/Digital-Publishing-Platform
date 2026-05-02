@@ -95,17 +95,9 @@ export function WriterRegistrationPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "",
     bio: "",
     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.floor(Math.random() * 1000)}`
   });
-
-  const validatePassword = (pass: string) => {
-    const hasCapital = /[A-Z]/.test(pass);
-    const hasNumber = /[0-9]/.test(pass);
-    const isLongEnough = pass.length >= 6;
-    return hasCapital && hasNumber && isLongEnough;
-  };
 
   // Redirect if already a writer
   useEffect(() => {
@@ -134,30 +126,11 @@ export function WriterRegistrationPage() {
     setError("");
 
     try {
-      let userId = user?.id;
-
       if (!user) {
-        // Attempt signup
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email: formData.email,
-          password: formData.password,
-          options: {
-            data: {
-              name: formData.name,
-              avatar_url: formData.avatar
-            }
-          }
-        });
-
-        if (authError) {
-          if (authError.message.includes("rate limit") || authError.message.toLowerCase().includes("email")) {
-            throw new Error("ইমেইল কনফার্মেশন সার্ভারে সমস্যা হচ্ছে। দয়া করে গুগল (Google) দিয়ে লগইন করুন।");
-          }
-          throw authError;
-        }
-        if (!authData.user) throw new Error("Registration failed");
-        userId = authData.user.id;
+        throw new Error("দয়া করে গুগল (Google) দিয়ে লগইন করুন।");
       }
+      
+      let userId = user.id;
 
       const expiresAt = new Date();
       if (selectedPlan.id === "plan1") expiresAt.setMonth(expiresAt.getMonth() + 3);
@@ -310,10 +283,11 @@ export function WriterRegistrationPage() {
                 </div>
 
                 {!user && (
-                  <div className="mb-10">
+                  <div className="mb-10 text-center">
+                    <p className="text-emerald-950 font-bold mb-6">প্ল্যাটফর্মে স্প্যাম প্রতিরোধ করতে এবং আপনার অ্যাকাউন্টের সর্বোচ্চ নিরাপত্তা নিশ্চিত করতে আমরা শুধুমাত্র Google Login ব্যবহার করি।</p>
                     <button
                       onClick={signInWithGoogle}
-                      className="w-full py-5 bg-white border-2 border-slate-100 rounded-[1.5rem] font-black text-emerald-950 hover:bg-slate-50 transition-all flex items-center justify-center gap-4 group"
+                      className="w-full py-5 bg-white border-2 border-slate-100 rounded-[1.5rem] font-black text-emerald-950 hover:bg-slate-50 transition-all flex items-center justify-center gap-4 group shadow-sm"
                     >
                       <svg className="w-6 h-6 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -323,11 +297,6 @@ export function WriterRegistrationPage() {
                       </svg>
                       গুগল দিয়ে লগইন করুন
                     </button>
-                    <div className="flex items-center gap-4 my-8">
-                      <div className="h-px flex-1 bg-slate-100"></div>
-                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">অথবা ফরম পূরণ করুন</span>
-                      <div className="h-px flex-1 bg-slate-100"></div>
-                    </div>
                   </div>
                 )}
 
@@ -344,56 +313,6 @@ export function WriterRegistrationPage() {
                   </div>
                 )}
 
-                <div className="space-y-8">
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">সম্পূর্ণ নাম</label>
-                    <div className="relative group">
-                      <User className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-600 transition-colors" />
-                      <input
-                        type="text"
-                        placeholder="আপনার নাম"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="w-full pl-16 pr-8 py-5 bg-slate-50 border-0 rounded-[1.5rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">ইমেইল ঠিকানা</label>
-                    <div className="relative group">
-                      <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-600 transition-colors" />
-                      <input
-                        type="email"
-                        placeholder="example@mail.com"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className="w-full pl-16 pr-8 py-5 bg-slate-50 border-0 rounded-[1.5rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-
-                  {!user && (
-                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">পাসওয়ার্ড</label>
-                      <div className="relative group">
-                        <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-600 transition-colors" />
-                        <input
-                          type="password"
-                          placeholder="••••••••"
-                          value={formData.password}
-                          onChange={(e) => setFormData({...formData, password: e.target.value})}
-                          className={`w-full pl-16 pr-8 py-5 bg-slate-50 border-0 rounded-[1.5rem] font-bold focus:ring-4 outline-none transition-all ${
-                            formData.password && !validatePassword(formData.password) ? 'ring-2 ring-rose-500' : 'focus:ring-emerald-50'
-                          }`}
-                        />
-                      </div>
-                      {formData.password && !validatePassword(formData.password) && (
-                        <p className="text-[10px] text-rose-500 font-bold uppercase tracking-widest ml-4">কমপক্ষে ৬ ডিজিট, ১টি বড় অক্ষর ও ১টি সংখ্যা দিন</p>
-                      )}
-                    </div>
-                  )}
-
                   <div className="flex gap-4 pt-6">
                     <button
                       onClick={() => setStep(1)}
@@ -402,22 +321,16 @@ export function WriterRegistrationPage() {
                       <ArrowLeft className="w-5 h-5" />
                       পেছনে
                     </button>
-                    <button
-                      onClick={() => {
-                        if (!user && !validatePassword(formData.password)) {
-                          setError("পাসওয়ার্ড অবশ্যই কমপক্ষে ৬ ডিজিটের হতে হবে এবং ১টি বড় হাতের অক্ষর ও ১টি সংখ্যা থাকতে হবে।");
-                          return;
-                        }
-                        setError("");
-                        setStep(3);
-                      }}
-                      className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 text-lg"
-                    >
-                      পরবর্তী ধাপ
-                      <ArrowRight className="w-6 h-6" />
-                    </button>
+                    {user && (
+                      <button
+                        onClick={() => setStep(3)}
+                        className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 text-lg"
+                      >
+                        পরবর্তী ধাপ
+                        <ArrowRight className="w-6 h-6" />
+                      </button>
+                    )}
                   </div>
-                </div>
               </div>
             </div>
           )}
