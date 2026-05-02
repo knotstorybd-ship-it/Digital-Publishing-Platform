@@ -470,13 +470,7 @@ export const useStore = () => {
   };
 
   const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (err) {
-      console.warn("SignOut error", err);
-    }
-
-    // Force clear all Supabase auth keys from local storage
+    // Force clear all Supabase auth keys from local storage FIRST
     const keysToRemove = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -495,6 +489,10 @@ export const useStore = () => {
     currentState.reviews = [];
     currentState.payoutRequests = [];
     notify();
+
+    // Fire and forget, don't wait for it if it hangs
+    supabase.auth.signOut().catch(err => console.warn("SignOut error", err));
+
     window.location.href = "/";
   };
 
