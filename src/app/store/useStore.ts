@@ -475,6 +475,18 @@ export const useStore = () => {
     } catch (err) {
       console.warn("SignOut error", err);
     }
+
+    // Force clear all Supabase auth keys from local storage
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('sb-')) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(k => localStorage.removeItem(k));
+    localStorage.removeItem("dp_user");
+
     // Explicitly clear state to ensure UI updates immediately
     currentState.user = null;
     currentState.orders = [];
