@@ -1137,7 +1137,6 @@ export function AdminDashboardPage() {
             </div>
           </div>
         )}
-      </main>
     </div>
   );
 }

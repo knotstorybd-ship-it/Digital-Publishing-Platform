@@ -628,21 +628,30 @@ export function AuthorDashboardPage() {
                   {/* File Upload Section - HIGHLIGHTED AT TOP */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 bg-emerald-50 rounded-[3rem] border-2 border-dashed border-emerald-200">
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/60 ml-6">বইয়ের কভার (Image)</label>
+                      <label className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-900/60 ml-6">বইয়ের কভার (PNG/JPG &lt; 500KB)</label>
                       <div className="relative group cursor-pointer">
                         <input 
                           type="file" 
-                          accept="image/*" 
+                          accept="image/png, image/jpeg" 
                           className="hidden" 
                           id="cover-upload" 
                           onChange={(e) => {
+                            const file = e.target.files?.[0];
                             const label = document.getElementById('cover-label');
-                            if (label && e.target.files?.[0]) label.innerText = "✓ কভার সিলেক্ট করা হয়েছে";
+                            if (file) {
+                              if (file.size > 500 * 1024) {
+                                alert("কভার ইমেজ অবশ্যই 500KB এর নিচে হতে হবে!");
+                                e.target.value = "";
+                                if (label) label.innerText = "কভার ইমেজ সিলেক্ট করুন";
+                                return;
+                              }
+                              if (label) label.innerText = "✓ কভার সিলেক্ট করা হয়েছে";
+                            }
                           }}
                         />
                         <label htmlFor="cover-upload" className="w-full h-32 bg-white border-2 border-emerald-100 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 group-hover:border-emerald-400 group-hover:bg-emerald-50 transition-all cursor-pointer">
                           <Camera className="w-6 h-6 text-emerald-400 group-hover:text-emerald-600" />
-                          <span id="cover-label" className="text-[10px] font-black text-emerald-600">কভার ইমেজ সিলেক্ট করুন</span>
+                          <span id="cover-label" className="text-[10px] font-black text-emerald-600 text-center px-4">কভার ইমেজ সিলেক্ট করুন (Max: 500KB)</span>
                         </label>
                       </div>
                     </div>
