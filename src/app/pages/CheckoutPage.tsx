@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, ShieldCheck, Zap, Building, UploadCloud, Mail, X, Calendar, Hash } from "lucide-react";
+import { CreditCard, Check, ArrowLeft, ArrowRight, Trash2, Package, ShieldCheck, Zap, Building, UploadCloud, Mail, X, Calendar, Hash, Smartphone } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
 import confetti from "canvas-confetti";

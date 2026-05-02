@@ -453,6 +453,19 @@ export const useStore = () => {
   }, []);
 
   const signIn = async (email: string) => {
+    // Hardcoded bypass for testing/demo
+    if (email === "admin@digitalpro.com") {
+      currentState.user = {
+        id: "admin-id",
+        name: "Admin User",
+        email: "admin@digitalpro.com",
+        isWriter: true,
+        isAdmin: true,
+      };
+      notify();
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithOtp({ 
       email,
       options: { emailRedirectTo: window.location.origin }

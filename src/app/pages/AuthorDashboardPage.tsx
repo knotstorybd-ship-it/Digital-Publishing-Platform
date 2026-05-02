@@ -112,6 +112,8 @@ export function AuthorDashboardPage() {
   const maxDaySale = Math.max(...last7DaysSales.map(d => d.amount), 1);
   const nextPaymentProgress = Math.min((totalRoyalty / 500) * 100, 100);
 
+  const [isUploading, setIsUploading] = useState(false);
+
   if (!user || !user.isWriter) {
     return null;
   }
@@ -122,8 +124,6 @@ export function AuthorDashboardPage() {
     { label: "রয়্যালটি", value: `৳${totalRoyalty.toLocaleString()}`, icon: DollarSign, color: "text-amber-600", bg: "bg-amber-50" },
     { label: "রিভিউ", value: myBooks.reduce((sum, b) => sum + (b.reviews || 0), 0), icon: MessageSquare, color: "text-rose-600", bg: "bg-rose-50" },
   ];
-
-  const [isUploading, setIsUploading] = useState(false);
 
   const handleBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

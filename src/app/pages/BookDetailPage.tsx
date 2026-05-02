@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router";
-import { Star, ShoppingCart, Heart, Share2, Download, BookOpen, ShieldCheck, Zap, ArrowLeft, Bookmark, CreditCard } from "lucide-react";
+import { Star, ShoppingCart, Heart, Share2, Download, BookOpen, ShieldCheck, Zap, ArrowLeft, Bookmark, CreditCard, Eye } from "lucide-react";
 import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
 import { SEO } from "../components/SEO";
