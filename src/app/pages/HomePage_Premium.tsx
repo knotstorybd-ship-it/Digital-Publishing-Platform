@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router";
 import { 
   BookOpen, Zap, TrendingUp, ArrowRight, Star, Shield, Users, Quote, Edit3, Sparkles, ShoppingBag, 
@@ -15,7 +16,18 @@ export function HomePage() {
   const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
   const navigate = useNavigate();
+
+  const approvedTestimonials = testimonials.filter(t => t.is_approved);
+
+  useEffect(() => {
+    if (approvedTestimonials.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveTestimonialIndex((prev) => (prev + 1) % approvedTestimonials.length);
+    }, 6000); // Rotate every 6 seconds
+    return () => clearInterval(interval);
+  }, [approvedTestimonials.length]);
 
   const faqs = [
     {
@@ -335,29 +347,63 @@ export function HomePage() {
               </div>
 
               {approvedTestimonials.length > 0 ? (
-                <div className="grid gap-6">
-                  {approvedTestimonials.slice(0, 3).map((t, i) => (
-                    <div
-                      key={t.id}
-                      className="bg-white p-6 rounded-[2rem] shadow-xl shadow-emerald-900/5 border border-emerald-100/50 relative group"
+                <div className="relative min-h-[280px]">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={approvedTestimonials[activeTestimonialIndex]?.id || 'empty'}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.5, ease: "circOut" }}
+                      className="bg-white p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-emerald-900/10 border border-emerald-100/50 relative"
                     >
-                      <div className="flex items-center gap-1 mb-4">
+                      <div className="flex items-center gap-1.5 mb-6">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`w-3 h-3 ${i < t.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
+                          <Star 
+                            key={i} 
+                            className={`w-4 h-4 ${i < (approvedTestimonials[activeTestimonialIndex]?.rating || 5) ? 'fill-amber-400 text-amber-400' : 'text-slate-100'}`} 
+                          />
                         ))}
                       </div>
-                      <p className="text-emerald-950/70 font-medium italic mb-6 text-sm leading-relaxed">"{t.content}"</p>
-                      <div className="flex items-center gap-3">
-                        <img src={t.user_avatar} className="w-10 h-10 rounded-xl object-cover shadow-sm" />
+                      
+                      <p className="text-emerald-950/80 font-medium italic mb-8 text-lg md:text-xl leading-relaxed">
+                        "{approvedTestimonials[activeTestimonialIndex]?.content}"
+                      </p>
+                      
+                      <div className="flex items-center gap-4">
+                        <div className="relative">
+                          <img 
+                            src={approvedTestimonials[activeTestimonialIndex]?.user_avatar} 
+                            className="w-14 h-14 rounded-2xl object-cover shadow-lg border-2 border-white" 
+                          />
+                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center">
+                            <CheckCircle2 className="w-3 h-3 text-white" />
+                          </div>
+                        </div>
                         <div>
-                          <div className="font-black text-emerald-950 text-sm">{t.user_name}</div>
-                          <div className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">
-                            {t.user_id ? "Verified Reader" : "Guest Reader"}
+                          <div className="font-black text-emerald-950 text-lg">
+                            {approvedTestimonials[activeTestimonialIndex]?.user_name}
+                          </div>
+                          <div className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">
+                            {approvedTestimonials[activeTestimonialIndex]?.user_id ? "Verified Member" : "Guest Member"}
                           </div>
                         </div>
                       </div>
+                    </motion.div>
+                  </AnimatePresence>
+
+                  {/* Carousel Indicators */}
+                  {approvedTestimonials.length > 1 && (
+                    <div className="flex gap-2 mt-8 ml-4">
+                      {approvedTestimonials.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveTestimonialIndex(idx)}
+                          className={`h-1.5 rounded-full transition-all duration-500 ${activeTestimonialIndex === idx ? 'w-8 bg-emerald-600' : 'w-2 bg-emerald-200 hover:bg-emerald-300'}`}
+                        />
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
               ) : (
                 <div className="bg-emerald-50/50 border-2 border-dashed border-emerald-100 rounded-[2.5rem] p-12 text-center">
