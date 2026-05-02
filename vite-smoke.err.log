@@ -3858,3 +3858,198 @@ C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useSto
    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 8196|  :root {
 8197|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8193|    initial-value: 0;
+8194|  }
+8195|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8196|  :root {
+8197|    --font-size: 16px;[39m
+[2m9:16:59 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\components\Navbar.tsx: Unexpected token (91:2)
+
+[0m [90m 89 |[31m       setIsEmailLoading([36mfalse[31m)[33m;[31m
+ [90m 90 |[31m     }
+[31m[1m>[22m[31m[90m 91 |[31m   }[33m;[31m
+ [90m    |[31m   [31m[1m^[22m[31m
+ [90m 92 |[31m
+ [90m 93 |[31m   [36mconst[31m [isScrolled[33m,[31m setIsScrolled] [33m=[31m useState([36mfalse[31m)[33m;[31m
+ [90m 94 |[31m   [0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/components/Navbar.tsx[39m:91:2
+[33m  89 |        setIsEmailLoading(false);
+  90 |      }
+  91 |    };
+     |    ^
+  92 |  
+  93 |    const [isScrolled, setIsScrolled] = useState(false);[39m
+      at constructor (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6599:19)
+      at TypeScriptParserMixin.unexpected (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6619:16)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11442:22)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9786:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10784:23)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12421:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:17)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12895:23)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12767:17)
+      at TypeScriptParserMixin.parseModuleItem (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12744:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13316:36)
+      at TypeScriptParserMixin.parseBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13309:10)
+      at TypeScriptParserMixin.parseProgram (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12622:10)
+      at TypeScriptParserMixin.parseTopLevel (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12612:25)
+      at TypeScriptParserMixin.parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:14488:25)
+      at TypeScriptParserMixin.parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10126:18)
+      at parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:14522:38)
+      at parser (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:261:32)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:223:11)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:189:28
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:113:33
+      at step (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:287:14)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:223:11)
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8196|    initial-value: 0;
+8197|  }
+8198|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8199|  :root {
+8200|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8196|    initial-value: 0;
+8197|  }
+8198|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8199|  :root {
+8200|    --font-size: 16px;[39m
+[2m9:17:20 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\components\Navbar.tsx: Unexpected token (91:2)
+
+[0m [90m 89 |[39m       setIsEmailLoading([36mfalse[39m)[33m;[39m
+ [90m 90 |[39m     }
+[31m[1m>[22m[39m[90m 91 |[39m   }[33m;[39m
+ [90m    |[39m   [31m[1m^[22m[39m
+ [90m 92 |[39m
+ [90m 93 |[39m   [36mconst[39m [isScrolled[33m,[39m setIsScrolled] [33m=[39m useState([36mfalse[39m)[33m;[39m
+ [90m 94 |[39m   [0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/components/Navbar.tsx[39m:91:2
+[33m  89 |        setIsEmailLoading(false);
+  90 |      }
+  91 |    };
+     |    ^
+  92 |  
+  93 |    const [isScrolled, setIsScrolled] = useState(false);[39m
+[2m9:17:20 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\components\Navbar.tsx: Unexpected token (91:2)
+
+[0m [90m 89 |[39m       setIsEmailLoading([36mfalse[39m)[33m;[39m
+ [90m 90 |[39m     }
+[31m[1m>[22m[39m[90m 91 |[39m   }[33m;[39m
+ [90m    |[39m   [31m[1m^[22m[39m
+ [90m 92 |[39m
+ [90m 93 |[39m   [36mconst[39m [isScrolled[33m,[39m setIsScrolled] [33m=[39m useState([36mfalse[39m)[33m;[39m
+ [90m 94 |[39m   [0m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/components/Navbar.tsx[39m:91:2
+[33m  89 |        setIsEmailLoading(false);
+  90 |      }
+  91 |    };
+     |    ^
+  92 |  
+  93 |    const [isScrolled, setIsScrolled] = useState(false);[39m
+[2m9:17:20 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\components\Navbar.tsx: Unexpected token (91:2)
+
+[0m [90m 89 |[31m       setIsEmailLoading([36mfalse[31m)[33m;[31m
+ [90m 90 |[31m     }
+[31m[1m>[22m[31m[90m 91 |[31m   }[33m;[31m
+ [90m    |[31m   [31m[1m^[22m[31m
+ [90m 92 |[31m
+ [90m 93 |[31m   [36mconst[31m [isScrolled[33m,[31m setIsScrolled] [33m=[31m useState([36mfalse[31m)[33m;[31m
+ [90m 94 |[31m   [0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/components/Navbar.tsx[39m:91:2
+[33m  89 |        setIsEmailLoading(false);
+  90 |      }
+  91 |    };
+     |    ^
+  92 |  
+  93 |    const [isScrolled, setIsScrolled] = useState(false);[39m
+      at constructor (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6599:19)
+      at TypeScriptParserMixin.unexpected (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6619:16)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11442:22)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9786:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10784:23)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12421:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:17)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12895:23)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12767:17)
+      at TypeScriptParserMixin.parseModuleItem (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12744:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13316:36)
+      at TypeScriptParserMixin.parseBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13309:10)
+      at TypeScriptParserMixin.parseProgram (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12622:10)
+      at TypeScriptParserMixin.parseTopLevel (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12612:25)
+      at TypeScriptParserMixin.parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:14488:25)
+      at TypeScriptParserMixin.parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10126:18)
+      at parse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:14522:38)
+      at parser (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\transformation\normalize-file.js:64:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:261:32)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:223:11)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:189:28
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:113:33
+      at step (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:287:14)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\gensync\index.js:223:11)
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8196|    initial-value: 0;
+8197|  }
+8198|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8199|  :root {
+8200|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8196|    initial-value: 0;
+8197|  }
+8198|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8199|  :root {
+8200|    --font-size: 16px;[39m

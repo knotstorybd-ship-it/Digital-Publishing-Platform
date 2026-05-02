@@ -5,16 +5,21 @@ import { useStore } from "../store/useStore";
 import { Logo } from "./Logo";
 
 export function Navbar() {
-  const { cart, user, signIn, signInWithGoogle, signOut, books, authors, searchQuery, setSearchQuery } = useStore();
+  const { 
+    cart, user, signIn, signInWithGoogle, signInWithPassword, signUp, resetPassword, signOut, 
+    books, authors, searchQuery, setSearchQuery 
+  } = useStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+  const [authMode, setAuthMode] = useState<"login" | "signup" | "reset">("login");
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [nameInput, setNameInput] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [error, setError] = useState("");
   
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -53,28 +58,30 @@ export function Navbar() {
     e.preventDefault();
     if (!emailInput.trim()) return;
     setIsEmailLoading(true);
-    setError("");
     try {
       if (authMode === "login") {
         if (!passwordInput) {
-          // Fallback to magic link if no password (optional, but user asked for password auth)
           await signIn(emailInput.trim());
+          setSuccessMessage("লগইন লিঙ্ক আপনার ইমেইলে পাঠানো হয়েছে!");
         } else {
-          await useStore().signInWithPassword(emailInput.trim(), passwordInput);
+          await signInWithPassword(emailInput.trim(), passwordInput);
+          setIsAuthOpen(false);
         }
-      } else {
+      } else if (authMode === "signup") {
         if (!nameInput || !passwordInput) {
           throw new Error("সবগুলো ঘর পূরণ করুন।");
         }
         if (passwordInput.length < 6) {
           throw new Error("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
         }
-        await useStore().signUp(emailInput.trim(), passwordInput, nameInput);
-        alert("আপনার ইমেইল ভেরিফাই করতে ইনবক্স চেক করুন।");
+        await signUp(emailInput.trim(), passwordInput, nameInput);
+        setSuccessMessage("আপনার ইমেইল ভেরিফাই করতে ইনবক্স চেক করুন।");
+      } else if (authMode === "reset") {
+        await resetPassword(emailInput.trim());
+        setSuccessMessage("পাসওয়ার্ড রিসেট লিঙ্ক ইমেইলে পাঠানো হয়েছে!");
       }
-      setIsAuthOpen(false);
     } catch (err: any) {
-      setError(err.message || "লগইন করতে সমস্যা হয়েছে।");
+      setError(err.message || "সমস্যা হয়েছে।");
     } finally {
       setIsEmailLoading(false);
     }
@@ -286,84 +293,139 @@ export function Navbar() {
               <h2 className="text-3xl font-black text-emerald-950 mb-3 tracking-tight">
                 {authMode === "login" ? (
                   <>আপনার অ্যাকাউন্টে <br /><span className="text-emerald-600">লগইন করুন</span></>
-                ) : (
+                ) : authMode === "signup" ? (
                   <>নতুন অ্যাকাউন্ট <br /><span className="text-emerald-600">তৈরি করুন</span></>
+                ) : (
+                  <>পাসওয়ার্ড <br /><span className="text-emerald-600">রিসেট করুন</span></>
                 )}
               </h2>
               <p className="text-slate-400 font-bold text-sm uppercase tracking-widest italic">Digital Prokashoni</p>
             </div>
 
-            <button 
-              onClick={handleGoogleLogin}
-              disabled={isGoogleLoading}
-              className="w-full py-4 bg-white border-2 border-slate-100 text-emerald-950 rounded-2xl font-black hover:bg-slate-50 transition-all flex items-center justify-center gap-4 mb-6 shadow-sm disabled:opacity-50"
-            >
-              {isGoogleLoading ? (
-                <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <img src="https://www.google.com/favicon.ico" className="w-5 h-5" />
-              )}
-              গুগল দিয়ে {authMode === "login" ? "লগইন" : "সাইনআপ"}
-            </button>
+            {successMessage ? (
+              <div className="text-center p-8 bg-emerald-50 rounded-3xl border border-emerald-100">
+                <div className="w-16 h-16 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-600/20">
+                  <Star className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-black text-emerald-950 mb-2">অভিনন্দন!</h3>
+                <p className="text-slate-600 font-medium leading-relaxed">{successMessage}</p>
+                <button 
+                  onClick={() => {
+                    setIsAuthOpen(false);
+                    setSuccessMessage("");
+                    setAuthMode("login");
+                  }}
+                  className="mt-6 w-full py-4 bg-emerald-950 text-white rounded-2xl font-black hover:bg-black transition-all"
+                >
+                  বন্ধ করুন
+                </button>
+              </div>
+            ) : (
+              <>
+                <button 
+                  onClick={handleGoogleLogin}
+                  disabled={isGoogleLoading}
+                  className="w-full py-4 bg-white border-2 border-slate-100 text-emerald-950 rounded-2xl font-black hover:bg-slate-50 transition-all flex items-center justify-center gap-4 mb-6 shadow-sm disabled:opacity-50"
+                >
+                  {isGoogleLoading ? (
+                    <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <img src="https://www.google.com/favicon.ico" className="w-5 h-5" />
+                  )}
+                  গুগল দিয়ে {authMode === "login" ? "লগইন" : authMode === "signup" ? "সাইনআপ" : "রিসেট"}
+                </button>
 
+                <div className="flex items-center gap-4 my-6">
+                  <div className="flex-1 h-px bg-slate-100"></div>
+                  <span className="text-xs font-black text-slate-300 uppercase tracking-widest">অথবা</span>
+                  <div className="flex-1 h-px bg-slate-100"></div>
+                </div>
 
-            <div className="flex items-center gap-4 my-6">
-              <div className="flex-1 h-px bg-slate-100"></div>
-              <span className="text-xs font-black text-slate-300 uppercase tracking-widest">অথবা</span>
-              <div className="flex-1 h-px bg-slate-100"></div>
-            </div>
+                <form onSubmit={handleEmailLogin} className="space-y-4">
+                  {authMode === "signup" && (
+                    <input
+                      type="text"
+                      placeholder="আপনার পূর্ণ নাম..."
+                      value={nameInput}
+                      onChange={(e) => setNameInput(e.target.value)}
+                      className="w-full px-6 py-4 bg-slate-50 border-0 rounded-2xl font-bold text-emerald-950 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
+                      required
+                    />
+                  )}
+                  <input
+                    type="email"
+                    placeholder="আপনার ইমেইল দিন..."
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    className="w-full px-6 py-4 bg-slate-50 border-0 rounded-2xl font-bold text-emerald-950 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
+                    required
+                  />
+                  {authMode !== "reset" && (
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="পাসওয়ার্ড দিন..."
+                        value={passwordInput}
+                        onChange={(e) => setPasswordInput(e.target.value)}
+                        className="w-full px-6 py-4 bg-slate-50 border-0 rounded-2xl font-bold text-emerald-950 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 outline-none transition-all pr-16"
+                        required={authMode === "signup"}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-600 transition-colors font-bold text-xs uppercase tracking-widest"
+                      >
+                        {showPassword ? "Hide" : "Show"}
+                      </button>
+                    </div>
+                  )}
+                  
+                  {authMode === "login" && (
+                    <div className="text-right px-2">
+                      <button 
+                        type="button"
+                        onClick={() => setAuthMode("reset")}
+                        className="text-xs font-bold text-slate-400 hover:text-emerald-600 transition-colors"
+                      >
+                        পাসওয়ার্ড ভুলে গেছেন?
+                      </button>
+                    </div>
+                  )}
 
-            <form onSubmit={handleEmailLogin} className="space-y-4">
-              {authMode === "signup" && (
-                <input
-                  type="text"
-                  placeholder="আপনার পূর্ণ নাম..."
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  className="w-full px-6 py-4 bg-slate-50 border-0 rounded-2xl font-bold text-emerald-950 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
-                  required
-                />
-              )}
-              <input
-                type="email"
-                placeholder="আপনার ইমেইল দিন..."
-                value={emailInput}
-                onChange={(e) => setEmailInput(e.target.value)}
-                className="w-full px-6 py-4 bg-slate-50 border-0 rounded-2xl font-bold text-emerald-950 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
-                required
-              />
-              <input
-                type="password"
-                placeholder="পাসওয়ার্ড দিন..."
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full px-6 py-4 bg-slate-50 border-0 rounded-2xl font-bold text-emerald-950 placeholder:text-slate-300 focus:ring-4 focus:ring-emerald-100 outline-none transition-all"
-                required={authMode === "signup"}
-              />
-              
-              {error && <p className="text-rose-500 text-xs font-bold px-2">{error}</p>}
-              
-              <button
-                type="submit"
-                disabled={isEmailLoading}
-                className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/20 disabled:opacity-50"
-              >
-                {isEmailLoading ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                ) : (
-                  authMode === "login" ? "লগইন করুন" : "অ্যাকাউন্ট তৈরি করুন"
-                )}
-              </button>
-            </form>
+                  {error && <p className="text-rose-500 text-xs font-bold px-2">{error}</p>}
+                  
+                  <button
+                    type="submit"
+                    disabled={isEmailLoading}
+                    className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 shadow-xl shadow-emerald-600/20 disabled:opacity-50"
+                  >
+                    {isEmailLoading ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    ) : (
+                      authMode === "login" ? "লগইন করুন" : authMode === "signup" ? "অ্যাকাউন্ট তৈরি করুন" : "লিঙ্ক পাঠান"
+                    )}
+                  </button>
+                </form>
 
-            <div className="mt-6 text-center">
-              <button 
-                onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
-                className="text-sm font-bold text-slate-400 hover:text-emerald-600 transition-colors"
-              >
-                {authMode === "login" ? "অ্যাকাউন্ট নেই? সাইনআপ করুন" : "অ্যাকাউন্ট আছে? লগইন করুন"}
-              </button>
-            </div>
+                <div className="mt-6 text-center space-y-3">
+                  {authMode === "login" ? (
+                    <button 
+                      onClick={() => setAuthMode("signup")}
+                      className="text-sm font-bold text-slate-400 hover:text-emerald-600 transition-colors"
+                    >
+                      অ্যাকাউন্ট নেই? সাইনআপ করুন
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={() => setAuthMode("login")}
+                      className="text-sm font-bold text-slate-400 hover:text-emerald-600 transition-colors"
+                    >
+                      অ্যাকাউন্ট আছে? লগইন করুন
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
 
             <p className="mt-8 text-center text-xs text-slate-400 font-medium">
               লগইন করার মাধ্যমে আপনি আমাদের <Link to="/terms" className="text-emerald-600 font-bold underline">শর্তাবলী</Link> মেনে নিচ্ছেন।

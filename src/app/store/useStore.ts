@@ -515,6 +515,14 @@ export const useStore = () => {
     return data;
   };
 
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/reset-password',
+    });
+    if (error) throw error;
+    return true;
+  };
+
   const signOut = async () => {
     // Force clear all Supabase auth keys from local storage FIRST
     const keysToRemove = [];
@@ -983,6 +991,7 @@ export const useStore = () => {
     signInWithGoogle,
     signInWithPassword,
     signUp,
+    resetPassword,
     signOut,
     logout: signOut,
     fetchAuthorOrders,

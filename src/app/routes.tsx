@@ -23,6 +23,7 @@ import { ErrorPage } from "./pages/ErrorPage";
 
 import { LibraryPage } from "./pages/LibraryPage";
 import { ReaderPage } from "./pages/ReaderPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 
 export const router = createBrowserRouter([
   {
@@ -53,6 +54,7 @@ export const router = createBrowserRouter([
       { path: "publishing-policy", Component: PublishingPolicyPage },
       { path: "reader-terms", Component: ReaderTermsPage },
       { path: "payment-info", Component: PaymentInfoPage },
+      { path: "reset-password", Component: ResetPasswordPage },
       { path: "*", Component: NotFoundPage },
     ],
   },
