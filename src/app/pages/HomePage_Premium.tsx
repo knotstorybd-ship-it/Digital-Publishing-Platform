@@ -10,13 +10,14 @@ import { useStore } from "../store/useStore";
 import { SEO } from "../components/SEO";
 
 export function HomePage() {
-  const { books, addToCart, user, authors, siteSettings, testimonials, addTestimonial, profilesCount, loading } = useStore();
+  const { books, addToCart, user, authors, siteSettings, testimonials, addTestimonial, profilesCount, loading, orders } = useStore();
   const [newTestimonial, setNewTestimonial] = useState("");
   const [guestName, setGuestName] = useState("");
   const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
+  const [activeAlgorithmTab, setActiveAlgorithmTab] = useState("trending");
   const navigate = useNavigate();
 
   const approvedTestimonials = testimonials.filter(t => t.is_approved === true || String(t.is_approved) === 'true');
@@ -62,9 +63,34 @@ export function HomePage() {
     }
   ];
 
+  // Algorithmic Data Processing
+  const trendingBooks = [...books]
+    .sort((a, b) => {
+      const aSales = orders.filter(o => o.book_id === a.id).length;
+      const bSales = orders.filter(o => o.book_id === b.id).length;
+      return bSales - aSales;
+    })
+    .slice(0, 4);
 
+  const topRatedBooks = [...books].sort((a, b) => b.rating - a.rating).slice(0, 4);
 
-  const popularBooks = [...books].sort((a, b) => b.rating - a.rating).slice(0, 4);
+  let recommendedBooks = [...books].sort(() => Math.random() - 0.5).slice(0, 4);
+  if (user) {
+    const userPurchases = orders.filter(o => o.user_id === user.id && o.book_id);
+    if (userPurchases.length > 0) {
+      const purchasedBookIds = userPurchases.map(o => o.book_id);
+      const purchasedCategories = books
+        .filter(b => purchasedBookIds.includes(b.id))
+        .map(b => b.category);
+      
+      const suggested = books.filter(b => 
+        !purchasedBookIds.includes(b.id) && purchasedCategories.includes(b.category)
+      );
+      if (suggested.length > 0) {
+        recommendedBooks = suggested.slice(0, Math.max(4, suggested.length));
+      }
+    }
+  }
 
   const hasSubmitted = user 
     ? testimonials.some(t => t.user_id === user.id)
@@ -177,21 +203,41 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Featured Books Section */}
+      {/* Algorithmic Discovery Section */}
       <section className="py-16 md:py-24 bg-slate-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 md:mb-12 gap-4">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-8">
             <div>
-              <h2 className="text-3xl md:text-5xl font-black text-emerald-950 mb-2 md:mb-4 tracking-tight">জনপ্রিয় বইসমূহ</h2>
-              <p className="text-slate-500 font-medium">পাঠকদের পছন্দের তালিকায় থাকা সেরা কিছু বই</p>
+              <h2 className="text-3xl md:text-5xl font-black text-emerald-950 mb-4 tracking-tight">আপনার জন্য <span className="text-emerald-600">বাছাইকৃত</span></h2>
+              
+              <div className="flex flex-wrap items-center gap-4 bg-white p-2 rounded-2xl md:rounded-full border border-slate-100 shadow-sm inline-flex">
+                <button 
+                  onClick={() => setActiveAlgorithmTab('trending')}
+                  className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all ${activeAlgorithmTab === 'trending' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  <span className="flex items-center gap-2"><TrendingUp className="w-4 h-4" /> ট্রেন্ডিং</span>
+                </button>
+                <button 
+                  onClick={() => setActiveAlgorithmTab('top')}
+                  className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all ${activeAlgorithmTab === 'top' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  <span className="flex items-center gap-2"><Star className="w-4 h-4" /> সেরা রেটিং</span>
+                </button>
+                <button 
+                  onClick={() => setActiveAlgorithmTab('recommended')}
+                  className={`px-6 py-3 rounded-full text-xs font-black uppercase tracking-widest transition-all ${activeAlgorithmTab === 'recommended' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  <span className="flex items-center gap-2"><Target className="w-4 h-4" /> আপনার জন্য</span>
+                </button>
+              </div>
             </div>
-            <Link to="/browse" className="hidden md:flex items-center gap-2 text-emerald-600 font-black hover:gap-3 transition-all">
+            <Link to="/browse" className="hidden lg:flex items-center gap-2 text-emerald-600 font-black hover:gap-3 transition-all shrink-0">
               সবগুলো দেখুন <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-            {popularBooks.map((book, i) => (
+            {(activeAlgorithmTab === 'trending' ? trendingBooks : activeAlgorithmTab === 'top' ? topRatedBooks : recommendedBooks).map((book, i) => (
               <div
                 key={book.id}
                 className="group bg-white rounded-2xl md:rounded-[2rem] overflow-hidden shadow-lg shadow-emerald-900/5 border border-emerald-100/20 hover:shadow-2xl transition-all flex flex-col"
