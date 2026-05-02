@@ -595,7 +595,9 @@ export const useStore = () => {
       transaction_id: paymentDetails?.txnId,
       screenshot_url: screenshotUrl,
       order_type: "subscription",
-      plan_name: planName
+      plan_name: planName,
+      user_name: currentState.user.name,
+      user_email: currentState.user.email
     }).select().single();
 
     if (orderError) throw orderError;
@@ -754,7 +756,9 @@ export const useStore = () => {
         payment_method: paymentDetails?.method || "card",
         transaction_id: paymentDetails?.txnId,
         screenshot_url: screenshotUrl,
-        order_type: "book"
+        order_type: "book",
+        user_name: currentState.user!.name,
+        user_email: currentState.user!.email
       })
     );
     await Promise.all(orderPromises);
@@ -800,6 +804,9 @@ export const useStore = () => {
         subscription_plan: order.plan_name,
         subscription_expiry: expiresAt.toISOString(),
       }, { onConflict: 'id' });
+      
+      // Also update profile to mark as writer
+      await supabase.from('profiles').update({ is_writer: true }).eq('id', order.user_id);
     }
 
     currentState.orders = currentState.orders.map(o => o.id === orderId ? { ...o, status: 'completed' } : o);

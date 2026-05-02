@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { 
   LayoutDashboard, 
   BookCopy, 
@@ -647,7 +647,10 @@ export function AdminDashboardPage() {
                       </td>
                       <td className="py-8 px-6">
                         <div className="flex flex-col">
-                          <span className="font-bold text-slate-600">{order.user_id}</span>
+                          <span className="font-bold text-emerald-950">{order.user_name || "Unknown User"}</span>
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                            {order.user_email}
+                          </span>
                           <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mt-1">
                             {order.payment_method} - ৳{order.amount}
                           </span>

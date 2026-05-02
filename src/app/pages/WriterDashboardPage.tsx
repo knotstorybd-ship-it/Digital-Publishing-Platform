@@ -129,7 +129,42 @@ export function WriterDashboardPage() {
     );
   }
 
-  // If user is logged in but not a writer yet, show plans
+  // If user is logged in but not a writer yet, show plans or pending status
+  const pendingSubscription = orders.find(o => o.user_id === user?.id && o.order_type === 'subscription' && o.status === 'pending');
+
+  if (pendingSubscription) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="max-w-xl w-full bg-white rounded-[4rem] p-12 shadow-2xl shadow-emerald-900/5 text-center border border-emerald-100/50 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-amber-500"></div>
+          <div className="w-24 h-24 bg-amber-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8">
+            <Clock className="w-12 h-12 text-amber-500 animate-pulse" />
+          </div>
+          <h1 className="text-3xl font-black text-emerald-950 mb-4 tracking-tight">অনুমোদনের অপেক্ষায়</h1>
+          <p className="text-emerald-900/60 font-medium mb-12 leading-relaxed">
+            আপনার সাবস্ক্রিপশন অনুরোধটি সফলভাবে জমা হয়েছে। আমাদের এডমিন প্যানেল আপনার পেমেন্ট ভেরিফাই করার পর আপনার ড্যাশবোর্ডটি সচল করে দেওয়া হবে। সাধারণত ১২-২৪ ঘণ্টা সময় লাগতে পারে।
+          </p>
+          <div className="bg-slate-50 rounded-3xl p-6 mb-10 text-left border border-slate-100">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">প্ল্যান</span>
+              <span className="text-sm font-bold text-emerald-950">{pendingSubscription.plan_name}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">অবস্থা</span>
+              <span className="px-3 py-1 bg-amber-100 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-widest">পেন্ডিং</span>
+            </div>
+          </div>
+          <Link 
+            to="/"
+            className="w-full py-5 bg-emerald-600 text-white rounded-2xl font-black shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3"
+          >
+            হোমপেজে ফিরে যান
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (!user.isWriter || !user.subscription) {
 
     return (
