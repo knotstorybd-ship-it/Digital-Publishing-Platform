@@ -185,31 +185,39 @@ export function HomePage() {
                 key={book.id}
                 className="group bg-white rounded-2xl md:rounded-[2rem] overflow-hidden shadow-lg shadow-emerald-900/5 border border-emerald-100/20 hover:shadow-2xl transition-all flex flex-col"
               >
-                <div className="relative aspect-[3/4] overflow-hidden">
+                <Link to={`/book/${book.id}`} className="relative aspect-[3/4] overflow-hidden block">
                   <img src={book.cover} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                </div>
+                </Link>
                 <div className="p-4 md:p-6 flex flex-col flex-grow">
-                  <div className="flex items-center gap-1 mb-2">
-                    <Star className="w-3 h-3 md:w-4 md:h-4 fill-amber-400 text-amber-400" />
-                    <span className="text-xs md:text-sm font-black text-emerald-950">{book.rating}</span>
-                  </div>
-                  <h3 className="font-black text-sm md:text-base text-emerald-950 mb-1 line-clamp-1">{book.title}</h3>
-                  <p className="text-[10px] md:text-xs font-bold text-slate-400 line-clamp-1 mb-2 md:mb-4">{book.author}</p>
-                  
-                  <div className="mt-auto flex flex-col gap-2 md:gap-3">
-                    <div className="flex items-center justify-between">
-                      <div className="text-base md:text-lg font-black text-emerald-600">৳{book.price}</div>
-                      <Link to={`/book/${book.id}`} className="p-1.5 md:p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
-                        <Eye className="w-4 h-4 md:w-5 md:h-5" />
-                      </Link>
+                  <Link to={`/book/${book.id}`} className="block">
+                    <div className="flex items-center gap-1 mb-2">
+                      <Star className="w-3 h-3 md:w-4 md:h-4 fill-amber-400 text-amber-400" />
+                      <span className="text-xs md:text-sm font-black text-emerald-950">{book.rating}</span>
                     </div>
+                    <h3 className="font-black text-sm md:text-base text-emerald-950 mb-1 line-clamp-1 group-hover:text-emerald-600 transition-colors">{book.title}</h3>
+                    <p className="text-[10px] md:text-xs font-bold text-slate-400 line-clamp-1 mb-2 md:mb-3">{book.author}</p>
+                    <div className="text-base md:text-lg font-black text-emerald-600 mb-4">৳{book.price}</div>
+                  </Link>
+                  
+                  <div className="mt-auto flex gap-2">
                     <button 
-                      onClick={() => addToCart(book)}
-                      className="w-full py-2 md:py-3 bg-emerald-50 text-emerald-700 rounded-xl font-black text-xs md:text-sm hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-1 md:gap-2"
+                      onClick={(e) => { e.preventDefault(); addToCart(book); }}
+                      className="flex-1 py-2 md:py-3 bg-emerald-50 text-emerald-700 rounded-xl font-black text-xs hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-1.5"
                     >
                       <ShoppingBag className="w-3 h-3 md:w-4 md:h-4" /> 
-                      <span className="hidden sm:inline">কার্টে যোগ করুন</span>
-                      <span className="sm:hidden">কার্টে নিন</span>
+                      <span className="hidden sm:inline">কার্টে নিন</span>
+                      <span className="sm:hidden">কার্টে</span>
+                    </button>
+                    <button 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        addToCart(book);
+                        navigate('/checkout');
+                      }}
+                      className="flex-1 py-2 md:py-3 bg-emerald-600 text-white rounded-xl font-black text-xs shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all flex items-center justify-center gap-1.5"
+                    >
+                      <Zap className="w-3 h-3 md:w-4 md:h-4" /> 
+                      কিনুন
                     </button>
                   </div>
                 </div>

@@ -1,11 +1,12 @@
-import { useParams, Link } from "react-router";
-import { Star, ShoppingCart, Heart, Share2, Download, Eye, BookOpen, ShieldCheck, Zap, ArrowLeft, Bookmark } from "lucide-react";
+import { useParams, Link, useNavigate } from "react-router";
+import { Star, ShoppingCart, Heart, Share2, Download, BookOpen, ShieldCheck, Zap, ArrowLeft, Bookmark, CreditCard } from "lucide-react";
 import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
 import { SEO } from "../components/SEO";
 
 export function BookDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { getBookById, addToCart, books, orders, user, favoriteBookIds, toggleFavoriteBook } = useStore();
   const book = getBookById(id || "");
   const isPurchased = user && orders.some(o => o.book_id === book?.id && o.user_id === user.id);
@@ -36,6 +37,11 @@ export function BookDetailPage() {
     addToCart(book);
   };
 
+  const handleBuyNow = () => {
+    addToCart(book);
+    navigate('/checkout');
+  };
+
   return (
     <div className="min-h-screen bg-[#fafbfc] pt-24 pb-20 selection:bg-emerald-100 selection:text-emerald-900">
       <SEO 
@@ -46,10 +52,10 @@ export function BookDetailPage() {
       />
       <div className="max-w-7xl mx-auto px-4">
         {/* Breadcrumbs */}
-        <Link to="/browse" className="inline-flex items-center gap-2 text-slate-400 hover:text-emerald-600 font-black text-[10px] uppercase tracking-widest transition-colors mb-8 group">
+        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 text-slate-400 hover:text-emerald-600 font-black text-[10px] uppercase tracking-widest transition-colors mb-8 group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          লাইব্রেরিতে ফিরে যান
-        </Link>
+          পূর্বের পেজে ফিরে যান
+        </button>
 
         <div className="grid lg:grid-cols-12 gap-16 mb-20">
           {/* Left: Book Cover & Actions */}
@@ -93,13 +99,22 @@ export function BookDetailPage() {
                     </a>
                   </div>
                 ) : (
-                  <button
-                    onClick={handleAddToCart}
-                    className="flex-[3] py-6 bg-emerald-600 text-white rounded-[2rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 text-lg"
-                  >
-                    <ShoppingCart className="w-6 h-6" />
-                    ৳{book.price} - কার্টে যোগ করুন
-                  </button>
+                  <div className="flex-[3] flex gap-3">
+                    <button
+                      onClick={handleAddToCart}
+                      className="flex-1 py-6 bg-white border-2 border-emerald-600 text-emerald-600 rounded-[2rem] font-black hover:bg-emerald-50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm lg:text-base shadow-sm"
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      কার্টে যোগ করুন
+                    </button>
+                    <button
+                      onClick={handleBuyNow}
+                      className="flex-1 py-6 bg-emerald-600 text-white rounded-[2rem] font-black shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm lg:text-base"
+                    >
+                      <CreditCard className="w-5 h-5" />
+                      ৳{book.price} - কিনুন
+                    </button>
+                  </div>
                 )}
                 <button 
                   onClick={async () => {
@@ -200,7 +215,7 @@ export function BookDetailPage() {
                   { label: "ভাষা", val: book.language || "বাংলা" },
                   { label: "প্রকাশকাল", val: book.published || "২০২৪" },
                   { label: "ফরম্যাট", val: "PDF, EPUB" },
-                  { label: "প্রকাশনা", val: "অ্যান্টিগ্রাভিটি" }
+                  { label: "প্রকাশনা", val: "Digital Prokashoni" }
                 ].map((info, i) => (
                   <div key={i} className="p-4 bg-slate-50 rounded-2xl">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">{info.label}</p>
