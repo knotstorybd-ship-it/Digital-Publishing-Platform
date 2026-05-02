@@ -470,7 +470,11 @@ export const useStore = () => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn("SignOut error", err);
+    }
     // Explicitly clear state to ensure UI updates immediately
     currentState.user = null;
     currentState.orders = [];
@@ -479,6 +483,7 @@ export const useStore = () => {
     currentState.reviews = [];
     currentState.payoutRequests = [];
     notify();
+    window.location.href = "/";
   };
 
   const fetchAuthorOrders = async () => {
