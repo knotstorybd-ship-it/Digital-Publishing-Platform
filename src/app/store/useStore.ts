@@ -471,7 +471,14 @@ export const useStore = () => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    // State cleanup is handled by onAuthStateChange SIGNED_OUT event
+    // Explicitly clear state to ensure UI updates immediately
+    currentState.user = null;
+    currentState.orders = [];
+    currentState.favoriteBookIds = [];
+    currentState.followedAuthorIds = [];
+    currentState.reviews = [];
+    currentState.payoutRequests = [];
+    notify();
   };
 
   const fetchAuthorOrders = async () => {

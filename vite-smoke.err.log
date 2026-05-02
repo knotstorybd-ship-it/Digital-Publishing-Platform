@@ -2846,3 +2846,209 @@ C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useSto
    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 8174|  :root {
 8175|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8171|    initial-value: 0;
+8172|  }
+8173|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8174|  :root {
+8175|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8171|    initial-value: 0;
+8172|  }
+8173|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8174|  :root {
+8175|    --font-size: 16px;[39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+      at failureErrorWithLog (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:1467:15)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:736:50
+      at responseCallbacks.<computed> (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:603:9)
+      at handleIncomingPacket (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:658:12)
+      at Socket.readFromStdout (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:581:7)
+      at Socket.emit (node:events:508:28)
+      at addChunk (node:internal/streams/readable:563:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+      at Readable.push (node:internal/streams/readable:394:5)
+      at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2m6:48:13 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:935:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:935:0
+[33m  
+  [33mUnexpected "}"[33m
+  933|      deleteTestimonial
+  934|    };
+  935|  };
+     |  ^
+  936|  
+  [39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8171|    initial-value: 0;
+8172|  }
+8173|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8174|  :root {
+8175|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8171|    initial-value: 0;
+8172|  }
+8173|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8174|  :root {
+8175|    --font-size: 16px;[39m
