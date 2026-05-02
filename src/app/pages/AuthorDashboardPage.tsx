@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import confetti from "canvas-confetti";
 import { 
   User, 
+  Users,
   BookOpen, 
   TrendingUp, 
   DollarSign, 
@@ -30,6 +31,7 @@ import {
 } from "lucide-react";
 import { useStore } from "../store/useStore";
 import { Link, useNavigate } from "react-router";
+import { supabase } from "../../lib/supabase";
 
 export function AuthorDashboardPage() {
   const { user, getMyBooks, updateProfile, signOut, books, orders, addBook, updateBook, deleteBook, fetchAuthorOrders } = useStore();
@@ -37,6 +39,39 @@ export function AuthorDashboardPage() {
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [editingBook, setEditingBook] = useState<any>(null);
+  const [followers, setFollowers] = useState<any[]>([]);
+  const [loadingFollowers, setLoadingFollowers] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'followers' && user) {
+      const fetchFollowers = async () => {
+        setLoadingFollowers(true);
+        try {
+          const { data: followData } = await supabase
+            .from('author_follows')
+            .select('user_id')
+            .eq('author_id', user.id);
+            
+          if (followData && followData.length > 0) {
+            const userIds = followData.map(f => f.user_id);
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('id, name, avatar, bio')
+              .in('id', userIds);
+            
+            if (profileData) setFollowers(profileData);
+          } else {
+            setFollowers([]);
+          }
+        } catch (error) {
+          console.error("Error fetching followers", error);
+        } finally {
+          setLoadingFollowers(false);
+        }
+      };
+      fetchFollowers();
+    }
+  }, [activeTab, user]);
   
   const myBooks = getMyBooks();
   const myBookIds = myBooks.map(b => b.id);
@@ -222,6 +257,7 @@ export function AuthorDashboardPage() {
               { id: "upload", label: "নতুন বই আপলোড", icon: Upload },
               { id: "my-books", label: "আমার বইসমূহ", icon: BookCopy },
               { id: "earnings", label: "আয় ও রয়্যালটি", icon: DollarSign },
+              { id: "followers", label: "ফলোয়ার্স", icon: Users },
               { id: "settings", label: "সেটিংস", icon: Settings },
             ].map((tab) => (
               <button
@@ -485,6 +521,49 @@ export function AuthorDashboardPage() {
                     ) : (
                       <div className="text-center py-20 bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-200">
                         <p className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">এখনও কোনো সেলস রেকর্ড নেই</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Followers Tab */}
+              {activeTab === "followers" && (
+                <motion.div 
+                  key="followers"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-[3.5rem] shadow-sm border border-emerald-100/30 overflow-hidden"
+                >
+                  <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+                    <div>
+                      <h3 className="text-2xl font-black text-emerald-950 mb-1">আমার ফলোয়ার্স</h3>
+                      <p className="text-xs font-bold text-slate-400">{followers.length} জন পাঠক আপনাকে ফলো করছেন</p>
+                    </div>
+                  </div>
+                  
+                  <div className="p-10">
+                    {loadingFollowers ? (
+                      <div className="py-20 flex justify-center">
+                        <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : followers.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {followers.map(follower => (
+                          <div key={follower.id} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+                            <img src={follower.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${follower.name}`} alt={follower.name} className="w-14 h-14 rounded-full object-cover shadow-sm bg-white" />
+                            <div className="flex-1 overflow-hidden">
+                              <h4 className="font-black text-emerald-950 text-sm truncate">{follower.name}</h4>
+                              <p className="text-[10px] font-bold text-slate-400 truncate">{follower.bio || "ডিজিটাল প্রকাশনীর একজন পাঠক"}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-20 bg-slate-50/50 rounded-[2.5rem] border-2 border-dashed border-slate-200">
+                        <Users className="w-16 h-16 text-slate-200 mx-auto mb-6" />
+                        <h3 className="text-xl font-black text-emerald-950 mb-2">কোনো ফলোয়ার নেই</h3>
+                        <p className="text-sm font-medium text-slate-400">নিয়মিত বই প্রকাশ করুন, পাঠকরা আপনাকে ফলো করতে শুরু করবে।</p>
                       </div>
                     )}
                   </div>
