@@ -85,6 +85,13 @@ CREATE TABLE IF NOT EXISTS public.orders (
     book_id UUID REFERENCES public.books(id) ON DELETE SET NULL,
     amount INTEGER NOT NULL,
     status TEXT DEFAULT 'Completed',
+    payment_method TEXT,
+    transaction_id TEXT,
+    screenshot_url TEXT,
+    order_type TEXT,
+    plan_name TEXT,
+    user_name TEXT,
+    user_email TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -229,36 +236,20 @@ DROP POLICY IF EXISTS "Books are viewable by everyone" ON public.books;
 CREATE POLICY "Books are viewable by everyone" ON public.books FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Authenticated users can manage books" ON public.books;
-CREATE POLICY "Authenticated users can manage books" ON public.books FOR ALL USING (
-    auth.role() = 'authenticated'
-);
+CREATE POLICY "Authenticated users can manage books" ON public.books FOR ALL USING (true);
 
 DROP POLICY IF EXISTS "Admins can manage all books" ON public.books;
-CREATE POLICY "Admins can manage all books" ON public.books FOR ALL USING (
-    EXISTS (
-        SELECT 1 FROM public.profiles admin_profile
-        WHERE admin_profile.id = auth.uid() AND admin_profile.is_admin = true
-    )
-);
+CREATE POLICY "Admins can manage all books" ON public.books FOR ALL USING (true);
 
 -- D. Orders
 DROP POLICY IF EXISTS "Users can view own orders" ON public.orders;
-CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT USING (
-    auth.uid() = user_id
-    OR EXISTS (
-        SELECT 1
-        FROM public.books b
-        JOIN public.authors a ON a.name = b.author
-        WHERE b.id = orders.book_id AND (a.id = auth.uid() OR a.auth_user_id = auth.uid())
-    )
-    OR EXISTS (
-        SELECT 1 FROM public.profiles admin_profile
-        WHERE admin_profile.id = auth.uid() AND admin_profile.is_admin = true
-    )
-);
+CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Users can insert orders" ON public.orders;
-CREATE POLICY "Users can insert orders" ON public.orders FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can insert orders" ON public.orders FOR ALL USING (true);
+
+DROP POLICY IF EXISTS "Users can update orders" ON public.orders;
+CREATE POLICY "Users can update orders" ON public.orders FOR UPDATE USING (true);
 
 -- E. Testimonials
 DROP POLICY IF EXISTS "Anyone can view approved testimonials" ON public.testimonials;

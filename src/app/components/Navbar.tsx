@@ -26,7 +26,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isExcludedPath = location.pathname.startsWith("/admin");
+  const isExcludedPath = location.pathname.toLowerCase().startsWith("/admin");
 
   if (isExcludedPath) return null;
 

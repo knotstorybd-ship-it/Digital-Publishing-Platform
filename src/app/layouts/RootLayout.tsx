@@ -5,7 +5,7 @@ import { ScrollToTop } from "../components/ScrollToTop";
 
 export function RootLayout() {
   const location = useLocation();
-  const isExcludedPath = location.pathname.startsWith("/writer") || location.pathname.startsWith("/admin");
+  const isExcludedPath = location.pathname.toLowerCase().startsWith("/writer") || location.pathname.toLowerCase().startsWith("/admin");
 
   return (
     <div className="min-h-screen flex flex-col bg-background relative">
