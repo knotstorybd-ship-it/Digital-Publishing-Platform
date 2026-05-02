@@ -107,6 +107,18 @@ CREATE TABLE IF NOT EXISTS public.testimonials (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- E2. Book Reviews Table
+CREATE TABLE IF NOT EXISTS public.book_reviews (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    book_id TEXT NOT NULL,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_name TEXT NOT NULL,
+    user_avatar TEXT,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 -- F. Site Settings Table
 CREATE TABLE IF NOT EXISTS public.site_settings (
     id INTEGER PRIMARY KEY DEFAULT 1,
@@ -273,6 +285,13 @@ CREATE POLICY "Anyone can update testimonials" ON public.testimonials FOR UPDATE
 
 DROP POLICY IF EXISTS "Anyone can delete testimonials" ON public.testimonials;
 CREATE POLICY "Anyone can delete testimonials" ON public.testimonials FOR DELETE USING (true);
+
+-- E2. Book Reviews
+DROP POLICY IF EXISTS "Anyone can view book reviews" ON public.book_reviews;
+CREATE POLICY "Anyone can view book reviews" ON public.book_reviews FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Anyone can insert book reviews" ON public.book_reviews;
+CREATE POLICY "Anyone can insert book reviews" ON public.book_reviews FOR INSERT WITH CHECK (true);
 
 -- F. Site Settings
 DROP POLICY IF EXISTS "Public can view site settings" ON public.site_settings;

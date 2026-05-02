@@ -3,14 +3,29 @@ import { Star, ShoppingCart, Heart, Share2, Download, BookOpen, ShieldCheck, Zap
 import { BookCard } from "../components/BookCard";
 import { useStore } from "../store/useStore";
 import { SEO } from "../components/SEO";
+import { useEffect } from "react";
 
 export function BookDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getBookById, addToCart, books, orders, user, favoriteBookIds, toggleFavoriteBook } = useStore();
+  const { getBookById, addToCart, books, orders, user, favoriteBookIds, toggleFavoriteBook, reviews, addBookReview } = useStore();
   const book = getBookById(id || "");
   const isPurchased = user && orders.some(o => o.book_id === book?.id && o.user_id === user.id);
   const isWishlisted = book ? favoriteBookIds.includes(book.id) : false;
+  const bookReviews = reviews.filter(r => r.book_id === book?.id);
+
+  useEffect(() => {
+    const handleReviewSubmit = async (e: any) => {
+      try {
+        await addBookReview(e.detail.bookId, e.detail.rating, e.detail.comment);
+        alert("আপনার রিভিউ সফলভাবে যুক্ত হয়েছে!");
+      } catch (err: any) {
+        alert("এরর: " + err.message);
+      }
+    };
+    window.addEventListener('submit-review', handleReviewSubmit);
+    return () => window.removeEventListener('submit-review', handleReviewSubmit);
+  }, [addBookReview]);
 
   if (!book) {
     return (
@@ -247,6 +262,86 @@ export function BookDetailPage() {
                   ))}
                 </div>
               </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Community Reviews */}
+        <div className="mb-20">
+          <div className="flex items-center justify-between mb-10 px-4">
+            <h2 className="text-3xl font-black text-emerald-950 tracking-tight">পাঠকের <span className="text-emerald-600">মতামত</span></h2>
+          </div>
+          
+          <div className="grid lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-4 space-y-6">
+              <div className="bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100 text-center">
+                <div className="text-6xl font-black text-emerald-950 mb-4">{book.rating}</div>
+                <div className="flex justify-center gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className={`w-5 h-5 ${i < Math.round(book.rating) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
+                  ))}
+                </div>
+                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{book.reviews} রিভিউ</p>
+              </div>
+
+              {isPurchased ? (
+                <div className="bg-emerald-50 rounded-[3rem] p-8 border-2 border-dashed border-emerald-200 text-center">
+                  <h3 className="font-black text-emerald-950 mb-2">আপনার মতামত দিন</h3>
+                  <p className="text-xs font-medium text-emerald-600/70 mb-6">বইটি আপনার কেমন লেগেছে তা অন্য পাঠকদের সাথে শেয়ার করুন।</p>
+                  <button 
+                    onClick={() => {
+                      const comment = prompt("আপনার মতামত লিখুন:");
+                      if (comment) {
+                        const ratingStr = prompt("রেটিং দিন (১ থেকে ৫):", "5");
+                        const rating = parseInt(ratingStr || "5", 10);
+                        if (rating >= 1 && rating <= 5) {
+                           // Use window to avoid importing useStore explicitly if not available, but we DO have it!
+                           // Wait, I can't just use `useStore` destructured here if I didn't destructure `addBookReview` at the top!
+                           window.dispatchEvent(new CustomEvent('submit-review', { detail: { bookId: book.id, rating, comment } }));
+                        } else {
+                           alert("রেটিং ১ থেকে ৫ এর মধ্যে হতে হবে।");
+                        }
+                      }
+                    }}
+                    className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all"
+                  >
+                    রিভিউ লিখুন
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-slate-50 rounded-[3rem] p-8 text-center">
+                  <p className="text-sm font-bold text-slate-500">বইটি কিনলে আপনিও রিভিউ দিতে পারবেন।</p>
+                </div>
+              )}
+            </div>
+
+            <div className="lg:col-span-8 space-y-6">
+              {bookReviews.length > 0 ? (
+                bookReviews.map((review) => (
+                  <div key={review.id} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
+                    <div className="flex gap-4 items-start">
+                      <img src={review.user_avatar} className="w-12 h-12 rounded-xl object-cover" />
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-black text-emerald-950">{review.user_name}</p>
+                          <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest px-2 py-0.5 bg-emerald-50 rounded-full">Verified</span>
+                        </div>
+                        <div className="flex gap-1 mb-3">
+                          {[...Array(5)].map((_, i) => <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />)}
+                        </div>
+                        <p className="text-slate-600 font-medium leading-relaxed text-sm">
+                          {review.comment}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-slate-50 p-8 rounded-[2.5rem] text-center">
+                  <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">এখনো কোনো মতামত পাওয়া যায়নি</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

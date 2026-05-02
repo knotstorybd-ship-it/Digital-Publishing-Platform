@@ -92,6 +92,17 @@ export interface Testimonial {
   created_at: string;
 }
 
+export interface BookReview {
+  id: string;
+  book_id: string;
+  user_id: string;
+  user_name: string;
+  user_avatar: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
+
 type State = {
   user: User | null;
   books: Book[];
@@ -332,14 +343,15 @@ const initSupabase = async () => {
   }, 10000);
   
   try {
-    const [booksRes, authorsRes, settingsRes, testimonialsRes, profilesRes, ordersRes] = await Promise.all([
+    const [booksRes, authorsRes, settingsRes, testimonialsRes, profilesRes, ordersRes, notificationsRes, reviewsRes] = await Promise.all([
       supabase.from('books').select('*').order('created_at', { ascending: false }),
       supabase.from('authors').select('*').order('book_count', { ascending: false }),
       supabase.from('site_settings').select('*').eq('id', 1).single(),
       supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
       supabase.from('profiles').select('id', { count: 'exact', head: true }),
       supabase.from('orders').select('*').order('created_at', { ascending: false }),
-      supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20)
+      supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20),
+      supabase.from('book_reviews').select('*').order('created_at', { ascending: false })
     ]);
 
     if (booksRes.data) currentState.books = booksRes.data.map(mapBookFromDb);
@@ -349,6 +361,7 @@ const initSupabase = async () => {
     if (profilesRes.count !== null) currentState.profilesCount = profilesRes.count;
     if (ordersRes.data) currentState.orders = ordersRes.data;
     if (notificationsRes.data) currentState.notifications = notificationsRes.data;
+    if (reviewsRes.data) currentState.reviews = reviewsRes.data;
     
     try { await syncAuth(); } catch (authErr) { console.warn('Auth sync failed:', authErr); }
   } catch (error) {
@@ -406,7 +419,7 @@ const initSupabase = async () => {
       if (payload.eventType === 'DELETE') currentState.profilesCount--;
       notify();
     })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'reviews' }, (payload) => {
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'book_reviews' }, (payload) => {
       if (payload.eventType === 'INSERT') currentState.reviews = [payload.new, ...currentState.reviews];
       notify();
     })
@@ -1023,6 +1036,26 @@ export const useStore = () => {
     notify();
   };
 
+  const addBookReview = async (book_id: string, rating: number, comment: string) => {
+    if (!currentState.user) throw new Error("লগইন প্রয়োজন");
+    const { data, error } = await supabase.from('book_reviews').insert({
+      book_id,
+      user_id: currentState.user.id,
+      user_name: currentState.user.name,
+      user_avatar: currentState.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentState.user.name}`,
+      rating,
+      comment
+    }).select();
+    if (error) throw error;
+    if (data && data[0]) {
+      const exists = currentState.reviews.some(r => r.id === data[0].id);
+      if (!exists) {
+        currentState.reviews = [data[0], ...currentState.reviews];
+        notify();
+      }
+    }
+  };
+
   return {
     ...state,
     signIn,
@@ -1058,6 +1091,7 @@ export const useStore = () => {
     updateSiteSettings,
     addTestimonial,
     approveTestimonial,
-    deleteTestimonial
+    deleteTestimonial,
+    addBookReview
   };
 };
