@@ -4,11 +4,14 @@ import { Link, useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/useStore";
 import confetti from "canvas-confetti";
 
+import bkashIcon from "../../images/bkash.png";
+import nagadIcon from "../../images/nagad.png";
+
 const paymentMethods = [
   {
     id: "bkash",
     name: "বিকাশ (bKash)",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/BKash_Logo.svg/1024px-BKash_Logo.svg.png",
+    icon: bkashIcon,
     color: "bg-[#D12053]",
     description: "সবচেয়ে জনপ্রিয় ও নিরাপদ মোবাইল পেমেন্ট",
     active: true
@@ -16,7 +19,7 @@ const paymentMethods = [
   {
     id: "nagad",
     name: "নগদ (Nagad)",
-    icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Nagad_Logo_2024.png/1024px-Nagad_Logo_2024.png",
+    icon: nagadIcon,
     color: "bg-[#F7941D]",
     description: "দ্রুত ও সহজ পেমেন্ট প্রক্রিয়া",
     active: false

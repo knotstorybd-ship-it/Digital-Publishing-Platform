@@ -113,6 +113,7 @@ export function AuthorDashboardPage() {
   const nextPaymentProgress = Math.min((totalRoyalty / 500) * 100, 100);
 
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!user || !user.isWriter) {
     return null;
@@ -136,13 +137,14 @@ export function AuthorDashboardPage() {
     const bookData = {
       title: formData.get("title") as string,
       author: user.name,
+      author_id: user.id,
       price: Number(formData.get("price")),
       category: formData.get("category") as string,
       description: formData.get("desc") as string,
       pages: Number(formData.get("pages")) || 0,
     };
 
-    setIsUploading(true);
+    setIsSubmitting(true);
     try {
       if (editingBook) {
         await updateBook(editingBook.id, bookData);
@@ -162,7 +164,7 @@ export function AuthorDashboardPage() {
       console.error("Upload Error:", error);
       alert(`বই আপলোড করতে সমস্যা হয়েছে: ${error.message || "Unknown error"}. নিশ্চিত করুন যে আপনি Supabase-এ 'books' নামে একটি পাবলিক বাকেট তৈরি করেছেন।`);
     } finally {
-      setIsUploading(false);
+      setIsSubmitting(false);
     }
   };
 

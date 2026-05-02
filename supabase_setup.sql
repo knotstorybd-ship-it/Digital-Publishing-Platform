@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS public.books (
     reviews INTEGER DEFAULT 0,
     is_featured BOOLEAN DEFAULT false,
     status TEXT DEFAULT 'Published' CHECK (status IN ('Published', 'Draft', 'Archived')),
+    author_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -352,3 +353,16 @@ DROP POLICY IF EXISTS "Authenticated Update book-covers" ON storage.objects;
 CREATE POLICY "Authenticated Update book-covers" ON storage.objects FOR UPDATE USING (
     bucket_id = 'book-covers' AND auth.role() = 'authenticated'
 );
+
+-- Notifications Table
+CREATE TABLE IF NOT EXISTS public.notifications (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    type TEXT NOT NULL,
+    message TEXT NOT NULL,
+    metadata JSONB,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Enable all for admin" ON public.notifications FOR ALL USING (true);

@@ -26,6 +26,10 @@ export function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isExcludedPath = location.pathname.startsWith("/admin");
+
+  if (isExcludedPath) return null;
+
   const isWriterMode = !!(user?.isWriter && user?.subscription);
   const showCart = !isWriterMode && (cart.length > 0 || location.pathname === '/checkout');
 

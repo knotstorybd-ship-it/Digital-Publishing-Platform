@@ -4060,3 +4060,532 @@ C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useSto
    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 8202|  :root {
 8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[2m9:57:51 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:51 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:51 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:51 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:51 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+      at failureErrorWithLog (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:1467:15)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:736:50
+      at responseCallbacks.<computed> (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:603:9)
+      at handleIncomingPacket (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:658:12)
+      at Socket.readFromStdout (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:581:7)
+      at Socket.emit (node:events:508:28)
+      at addChunk (node:internal/streams/readable:563:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+      at Readable.push (node:internal/streams/readable:394:5)
+      at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[2m9:57:52 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:308:4: ERROR: Expected ";" but found "else"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:308:4
+[33m  
+  [33mExpected ";" but found "else"[33m
+  306|      };
+  307|      notify();
+  308|    } else {
+     |      ^
+  309|      currentState.user = null;
+  310|      notify();
+  [39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"[39m
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+      at failureErrorWithLog (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:1467:15)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:736:50
+      at responseCallbacks.<computed> (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:603:9)
+      at handleIncomingPacket (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:658:12)
+      at Socket.readFromStdout (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\esbuild\lib\main.js:581:7)
+      at Socket.emit (node:events:508:28)
+      at addChunk (node:internal/streams/readable:563:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+      at Readable.push (node:internal/streams/readable:394:5)
+      at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+[2m9:58:01 AM[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m Pre-transform error: Transform failed with 1 error:
+C:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts:310:0: ERROR: Unexpected "}"
+  Plugin: [35mvite:esbuild[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/store/useStore.ts[39m:310:0
+[33m  
+  [33mUnexpected "}"[33m
+  308|      notify();
+  309|    }
+  310|  };
+     |  ^
+  311|  
+  312|  let _initialized = false;
+  [39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8199|    initial-value: 0;
+8200|  }
+8201|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8202|  :root {
+8203|    --font-size: 16px;[39m
+[2m10:00:08 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\src\app\pages\AdminDashboardPage.tsx: Expected corresponding JSX closing tag for <div>. (1135:6)
+
+[0m [90m 1133 |[31m           [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 1134 |[31m         )}
+[31m[1m>[22m[31m[90m 1135 |[31m       [33m<[31m[33m/[31m[33mmain[31m[33m>[31m
+ [90m      |[31m       [31m[1m^[22m[31m
+ [90m 1136 |[31m     [33m<[31m[33m/[31m[33mdiv[31m[33m>[31m
+ [90m 1137 |[31m   )[33m;[31m
+ [90m 1138 |[31m }[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/shnit/OneDrive/Desktop/Digital Publishing Platform/src/app/pages/AdminDashboardPage.tsx[39m:1135:6
+      at constructor (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:365:19)
+      at TypeScriptParserMixin.raise (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6599:19)
+      at TypeScriptParserMixin.jsxParseElementAt (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4727:16)
+      at TypeScriptParserMixin.jsxParseElement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4749:17)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4759:19)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10831:21)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9775:39
+      at TypeScriptParserMixin.tryParse (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:6907:20)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9775:18)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10800:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12426:12)
+      at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10800:17)
+      at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12493:17)
+      at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11675:28)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11331:23)
+      at TypeScriptParserMixin.parseExprAtom (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:4764:20)
+      at TypeScriptParserMixin.parseExprSubscripts (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11081:23)
+      at TypeScriptParserMixin.parseUpdate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11066:21)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:11046:23)
+      at TypeScriptParserMixin.parseMaybeUnary (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9837:18)
+      at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10899:61)
+      at TypeScriptParserMixin.parseExprOps (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10904:23)
+      at TypeScriptParserMixin.parseMaybeConditional (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10881:23)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10831:21)
+      at TypeScriptParserMixin.parseMaybeAssign (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9786:20)
+      at TypeScriptParserMixin.parseExpressionBase (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10784:23)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:39
+      at TypeScriptParserMixin.allowInAnd (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12421:16)
+      at TypeScriptParserMixin.parseExpression (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:10780:17)
+      at TypeScriptParserMixin.parseReturnStatement (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13142:28)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12798:21)
+      at TypeScriptParserMixin.parseStatementContent (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9508:18)
+      at TypeScriptParserMixin.parseStatementLike (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12767:17)
+      at TypeScriptParserMixin.parseStatementListItem (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12747:17)
+      at TypeScriptParserMixin.parseBlockOrModuleBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13316:61)
+      at TypeScriptParserMixin.parseBlockBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13309:10)
+      at TypeScriptParserMixin.parseBlock (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13297:10)
+      at TypeScriptParserMixin.parseFunctionBody (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12100:24)
+      at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12086:10)
+      at TypeScriptParserMixin.parseFunctionBodyAndFinish (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:9172:18)
+      at C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13445:12
+      at TypeScriptParserMixin.withSmartMixTopicForbiddingContext (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:12403:14)
+      at TypeScriptParserMixin.parseFunction (C:\Users\shnit\OneDrive\Desktop\Digital Publishing Platform\node_modules\@babel\parser\lib\index.js:13444:10)
+[33m[vite:css][postcss] @import must precede all other statements (besides @charset or empty @layer)
+8205|    initial-value: 0;
+8206|  }
+8207|  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+   |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8208|  :root {
+8209|    --font-size: 16px;[39m

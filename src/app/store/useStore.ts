@@ -17,6 +17,7 @@ export interface Book {
   reviews?: number;
   isFeatured?: boolean;
   status: "Published" | "Draft" | "Archived";
+  author_id?: string;
 }
 
 export interface Author {
@@ -107,6 +108,7 @@ type State = {
   followedAuthorIds: string[];
   reviews: any[];
   payoutRequests: any[];
+  notifications: any[];
 };
 
 const mapBookFromDb = (row: any): Book => ({
@@ -224,6 +226,7 @@ let currentState: State = {
   followedAuthorIds: [],
   reviews: [],
   payoutRequests: [],
+  notifications: [],
 };
 
 const listeners = new Set<(state: State) => void>();
@@ -253,10 +256,14 @@ const syncAuth = async () => {
   const { data: { session } } = await supabase.auth.getSession();
   
   if (session?.user) {
+    const isSystemAdmin = session.user.email === 'admin@digitalpro.com' || sessionStorage.getItem("dp_admin_auth") === "true";
+    
     const [profileRes, authorRes, ordersRes, favoritesRes, followsRes] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', session.user.id).single(),
       supabase.from('authors').select('*').eq('email', session.user.email).single(),
-      supabase.from('orders').select('*').eq('user_id', session.user.id),
+      isSystemAdmin 
+        ? supabase.from('orders').select('*').order('created_at', { ascending: false })
+        : supabase.from('orders').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
       supabase.from('favorite_books').select('book_id').eq('user_id', session.user.id),
       supabase.from('author_follows').select('author_id').eq('user_id', session.user.id)
     ]);
@@ -331,7 +338,8 @@ const initSupabase = async () => {
       supabase.from('site_settings').select('*').eq('id', 1).single(),
       supabase.from('testimonials').select('*').order('created_at', { ascending: false }),
       supabase.from('profiles').select('id', { count: 'exact', head: true }),
-      supabase.from('orders').select('id', { count: 'exact', head: true })
+      supabase.from('orders').select('*').order('created_at', { ascending: false }),
+      supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(20)
     ]);
 
     if (booksRes.data) currentState.books = booksRes.data.map(mapBookFromDb);
@@ -339,7 +347,8 @@ const initSupabase = async () => {
     if (settingsRes.data) currentState.siteSettings = mapSiteSettingsFromDb(settingsRes.data);
     if (testimonialsRes.data) currentState.testimonials = testimonialsRes.data;
     if (profilesRes.count !== null) currentState.profilesCount = profilesRes.count;
-    if (ordersRes.count !== null) currentState.ordersCount = ordersRes.count;
+    if (ordersRes.data) currentState.orders = ordersRes.data;
+    if (notificationsRes.data) currentState.notifications = notificationsRes.data;
     
     try { await syncAuth(); } catch (authErr) { console.warn('Auth sync failed:', authErr); }
   } catch (error) {
@@ -405,6 +414,24 @@ const initSupabase = async () => {
       if (payload.eventType === 'INSERT') currentState.payoutRequests = [payload.new, ...currentState.payoutRequests];
       if (payload.eventType === 'UPDATE') currentState.payoutRequests = currentState.payoutRequests.map(p => p.id === payload.new.id ? payload.new : p);
       notify();
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, async (payload) => {
+      const msg = `নতুন পেমেন্ট: ৳${payload.new.amount} (${payload.new.order_type})`;
+      await supabase.from('notifications').insert({ type: 'new_payment', message: msg, metadata: payload.new });
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'books' }, async (payload) => {
+      const msg = `নতুন বই আপলোড: ${payload.new.title}`;
+      await supabase.from('notifications').insert({ type: 'new_book', message: msg, metadata: payload.new });
+    })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'testimonials' }, async (payload) => {
+      const msg = `নতুন টেস্টমোনিয়াল: ${payload.new.user_name}`;
+      await supabase.from('notifications').insert({ type: 'new_testimonial', message: msg, metadata: payload.new });
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, (payload) => {
+      if (payload.eventType === 'INSERT') {
+        currentState.notifications = [payload.new, ...currentState.notifications];
+        notify();
+      }
     })
     .subscribe();
 };
@@ -684,6 +711,8 @@ export const useStore = () => {
   const deleteBook = async (id: string) => {
     const { error } = await supabase.from('books').delete().eq('id', id);
     if (error) throw error;
+    currentState.books = currentState.books.filter(b => b.id !== id);
+    notify();
   };
 
   const updateAuthor = async (id: string, updates: Partial<Author>) => {
@@ -698,6 +727,8 @@ export const useStore = () => {
   const deleteAuthor = async (id: string) => {
     const { error } = await supabase.from('authors').delete().eq('id', id);
     if (error) throw error;
+    currentState.authors = currentState.authors.filter(a => a.id !== id);
+    notify();
   };
 
   const updateProfile = async (updates: Partial<User>) => {

@@ -44,9 +44,10 @@ export function AdminDashboardPage() {
   const { 
     books, deleteBook, addBook, authors, updateAuthor, deleteAuthor, updateBook, orders,
     siteSettings, updateSiteSettings, testimonials, approveTestimonial, deleteTestimonial,
-    user, signIn, signInWithGoogle, signOut, approvePayment, rejectPayment
+    user, signIn, signInWithGoogle, signOut, approvePayment, rejectPayment, notifications
   } = useStore();
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [showEditAuthorModal, setShowEditAuthorModal] = useState(false);
   const [showEditBookModal, setShowEditBookModal] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
@@ -196,10 +197,15 @@ export function AdminDashboardPage() {
     showNotify(`"${book.title}" featured status updated`);
   };
 
-  const handleDeleteBook = (id: string) => {
+  const handleDeleteBook = async (id: string) => {
     if (confirm("Are you sure you want to delete this book?")) {
-      deleteBook(id);
-      showNotify("Book deleted successfully", "success");
+      try {
+        await deleteBook(id);
+        showNotify("Book deleted successfully", "success");
+      } catch (err: any) {
+        console.error("Delete Error:", err);
+        showNotify(`Error: ${err.message || "Failed to delete book"}`, "error");
+      }
     }
   };
 
@@ -301,8 +307,14 @@ export function AdminDashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="p-4 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm">
+            <button 
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="p-4 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm relative group"
+            >
               <Bell className="w-6 h-6" />
+              {notifications.some(n => !n.is_read) && (
+                <span className="absolute top-3 right-3 w-3 h-3 bg-rose-500 border-2 border-white rounded-full animate-pulse"></span>
+              )}
             </button>
             <button 
               onClick={() => setShowAddModal(true)}
@@ -1058,6 +1070,74 @@ export function AdminDashboardPage() {
         </div>
       )}
 
+        {/* Notification Modal */}
+        {showNotifications && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-emerald-950/20 backdrop-blur-md" onClick={() => setShowNotifications(false)}></div>
+            <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col max-h-[80vh]">
+              <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-10">
+                <div>
+                  <h3 className="text-2xl font-black text-emerald-950">Notifications History</h3>
+                  <p className="text-sm font-bold text-slate-400">System updates and user activity</p>
+                </div>
+                <button 
+                  onClick={() => setShowNotifications(false)}
+                  className="p-3 bg-slate-50 text-slate-400 hover:text-rose-600 rounded-xl transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-8 space-y-4">
+                {notifications.length === 0 ? (
+                  <div className="py-20 text-center space-y-4">
+                    <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto text-slate-300">
+                      <Bell className="w-10 h-10" />
+                    </div>
+                    <p className="text-slate-400 font-bold">No notifications yet</p>
+                  </div>
+                ) : (
+                  notifications.map((notif: any) => (
+                    <div 
+                      key={notif.id}
+                      className={`p-6 rounded-[2rem] border transition-all ${
+                        notif.is_read ? 'bg-slate-50 border-transparent opacity-60' : 'bg-white border-emerald-100 shadow-lg shadow-emerald-600/5'
+                      }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className={`p-3 rounded-xl ${
+                          notif.type === 'new_payment' ? 'bg-emerald-50 text-emerald-600' :
+                          notif.type === 'new_book' ? 'bg-blue-50 text-blue-600' :
+                          'bg-amber-50 text-amber-600'
+                        }`}>
+                          {notif.type === 'new_payment' ? <CreditCard className="w-5 h-5" /> : 
+                           notif.type === 'new_book' ? <BookCopy className="w-5 h-5" /> : 
+                           <Quote className="w-5 h-5" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-bold text-emerald-950 mb-1">{notif.message}</p>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            {new Date(notif.created_at).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className="p-8 border-t border-slate-100 bg-slate-50/50">
+                <button 
+                  onClick={() => setShowNotifications(false)}
+                  className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-xl shadow-emerald-600/20 hover:bg-emerald-700 transition-all"
+                >
+                  Close History
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
