@@ -992,6 +992,44 @@ export function AdminDashboardPage() {
                     <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Author Assignment</label>
                     <input name="author" required defaultValue={selectedBook?.author} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="Primary author" />
                   </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Unit Price (৳)</label>
+                    <input name="price" type="number" required defaultValue={selectedBook?.price} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="Price in BDT" />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Category</label>
+                    <input name="category" required defaultValue={selectedBook?.category} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="Fiction, Non-fiction etc" />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Publication Status</label>
+                    <select name="status" defaultValue={selectedBook?.status || "Published"} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none appearance-none">
+                      <option value="Published">Published</option>
+                      <option value="Draft">Draft</option>
+                      <option value="Archived">Archived</option>
+                    </select>
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Cover URL</label>
+                    <input name="cover" defaultValue={selectedBook?.cover} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-3xl font-bold focus:ring-4 focus:ring-emerald-50 outline-none" placeholder="Image URL" />
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-emerald-900/40 ml-4">Brief Summary / Description</label>
+                  <textarea name="desc" defaultValue={selectedBook?.description} rows={4} className="w-full px-8 py-5 bg-slate-50 border-0 rounded-[2.5rem] font-bold focus:ring-4 focus:ring-emerald-50 outline-none resize-none" placeholder="What is this book about?" />
+                </div>
+
+                <div className="flex items-center gap-4 px-6 py-4 bg-emerald-50/50 rounded-3xl border border-emerald-100/50">
+                  <input 
+                    type="checkbox" 
+                    name="isFeatured" 
+                    id="isFeatured" 
+                    defaultChecked={selectedBook?.isFeatured} 
+                    className="w-6 h-6 rounded-lg border-2 border-emerald-200 text-emerald-600 focus:ring-emerald-500" 
+                  />
+                  <label htmlFor="isFeatured" className="text-sm font-bold text-emerald-950 cursor-pointer">
+                    Highlight as Featured Publication
+                  </label>
                 </div>
                 
                 <div className="flex gap-4 pt-10">
