@@ -1,6 +1,22 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 
+const parseLocalState = <T>(key: string, fallback: T): T => {
+  if (typeof window === "undefined") return fallback;
+  const raw = localStorage.getItem(key);
+  if (!raw) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+};
+
+const getSafeFileExtension = (fileName: string) => {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  return ext && /^[a-z0-9]+$/.test(ext) ? ext : "bin";
+};
+
 export interface Book {
   id: string;
   title: string;
@@ -206,29 +222,34 @@ const authorToDb = (author: Partial<Author>) => {
   return row;
 };
 
+const getDefaultSiteSettings = (): SiteSettings => ({
+  heroTitle: "নতুন যুগের নতুন লেখকদের জন্য",
+  heroSubtitle: "আধুনিক প্রকাশনা",
+  heroDescription: "ডিজিটাল প্রকাশনার আধুনিক দিগন্ত। আপনার প্রতিভাকে পৌঁছে দেই লক্ষাধিক পাঠকের কাছে, স্বচ্ছ রয়্যালটি ব্যবস্থাপনায়।",
+  heroCtaText: "লেখা শুরু করুন",
+  heroSecondaryCtaText: "লাইব্রেরি দেখুন",
+  featuredAuthorName: "আরিফ রহমান",
+  featuredAuthorRating: "৪.৯",
+  totalReadersCount: "৫০,০০০+",
+  authorsCountText: "১০,০০০+ লেখক যুক্ত আছেন",
+});
+
 let currentState: State = {
   user: (() => {
+    if (typeof window === "undefined") return null;
     try {
       const cached = localStorage.getItem("dp_user");
-      return cached ? JSON.parse(cached) : null;
-    } catch { return null; }
+      return cached ? (JSON.parse(cached) as User) : null;
+    } catch {
+      return null;
+    }
   })(),
-  books: JSON.parse(localStorage.getItem("dp_books") || "[]"),
-  authors: JSON.parse(localStorage.getItem("dp_authors") || "[]"),
-  cart: JSON.parse(localStorage.getItem("dp_cart") || "[]"),
+  books: parseLocalState<Book[]>("dp_books", []),
+  authors: parseLocalState<Author[]>("dp_authors", []),
+  cart: parseLocalState<Book[]>("dp_cart", []),
   orders: [],
-  testimonials: JSON.parse(localStorage.getItem("dp_testimonials") || "[]"),
-  siteSettings: JSON.parse(localStorage.getItem("dp_site_settings") || JSON.stringify({
-    heroTitle: "নতুন যুগের নতুন লেখকদের জন্য",
-    heroSubtitle: "আধুনিক প্রকাশনা",
-    heroDescription: "ডিজিটাল প্রকাশনার আধুনিক দিগন্ত। আপনার প্রতিভাকে পৌঁছে দেই লক্ষাধিক পাঠকের কাছে, স্বচ্ছ রয়্যালটি ব্যবস্থাপনায়।",
-    heroCtaText: "লেখা শুরু করুন",
-    heroSecondaryCtaText: "লাইব্রেরি দেখুন",
-    featuredAuthorName: "আরিফ রহমান",
-    featuredAuthorRating: "৪.৯",
-    totalReadersCount: "৫০,০০০+",
-    authorsCountText: "১০,০০০+ লেখক যুক্ত আছেন",
-  })),
+  testimonials: parseLocalState<Testimonial[]>("dp_testimonials", []),
+  siteSettings: parseLocalState<SiteSettings>("dp_site_settings", getDefaultSiteSettings()),
   loading: false,
   profilesCount: 0,
   ordersCount: 0,
@@ -243,15 +264,17 @@ let currentState: State = {
 const listeners = new Set<(state: State) => void>();
 
 const notify = () => {
-  localStorage.setItem("dp_cart", JSON.stringify(currentState.cart));
-  localStorage.setItem("dp_books", JSON.stringify(currentState.books));
-  localStorage.setItem("dp_authors", JSON.stringify(currentState.authors));
-  localStorage.setItem("dp_testimonials", JSON.stringify(currentState.testimonials));
-  localStorage.setItem("dp_site_settings", JSON.stringify(currentState.siteSettings));
-  if (currentState.user) {
-    localStorage.setItem("dp_user", JSON.stringify(currentState.user));
-  } else {
-    localStorage.removeItem("dp_user");
+  if (typeof window !== "undefined") {
+    localStorage.setItem("dp_cart", JSON.stringify(currentState.cart));
+    localStorage.setItem("dp_books", JSON.stringify(currentState.books));
+    localStorage.setItem("dp_authors", JSON.stringify(currentState.authors));
+    localStorage.setItem("dp_testimonials", JSON.stringify(currentState.testimonials));
+    localStorage.setItem("dp_site_settings", JSON.stringify(currentState.siteSettings));
+    if (currentState.user) {
+      localStorage.setItem("dp_user", JSON.stringify(currentState.user));
+    } else {
+      localStorage.removeItem("dp_user");
+    }
   }
   listeners.forEach((listener) => listener({ ...currentState }));
 };
@@ -267,14 +290,10 @@ const syncAuth = async () => {
   const { data: { session } } = await supabase.auth.getSession();
   
   if (session?.user) {
-    const isSystemAdmin = session.user.email === 'admin@digitalpro.com' || sessionStorage.getItem("dp_admin_auth") === "true";
-    
     const [profileRes, authorRes, ordersRes, favoritesRes, followsRes] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', session.user.id).single(),
       supabase.from('authors').select('*').eq('email', session.user.email).single(),
-      isSystemAdmin 
-        ? supabase.from('orders').select('*').order('created_at', { ascending: false })
-        : supabase.from('orders').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
+      supabase.from('orders').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
       supabase.from('favorite_books').select('book_id').eq('user_id', session.user.id),
       supabase.from('author_follows').select('author_id').eq('user_id', session.user.id)
     ]);
@@ -308,7 +327,7 @@ const syncAuth = async () => {
       email: session.user.email!,
       name: profile?.name || session.user.user_metadata.full_name || session.user.user_metadata.name || "User",
       isWriter: !!authorData,
-      isAdmin: profile?.role === 'admin' || session.user.email === 'admin@digitalpro.com',
+      isAdmin: profile?.role === 'admin',
       avatar: profile?.avatar || session.user.user_metadata.avatar_url,
       bio: profile?.bio || "",
       phone: profile?.phone || authorData?.phone,
@@ -493,19 +512,6 @@ export const useStore = () => {
   }, []);
 
   const signIn = async (email: string) => {
-    // Hardcoded bypass for testing/demo
-    if (email === "admin@digitalpro.com") {
-      currentState.user = {
-        id: "admin-id",
-        name: "Admin User",
-        email: "admin@digitalpro.com",
-        isWriter: true,
-        isAdmin: true,
-      };
-      notify();
-      return;
-    }
-
     const { error } = await supabase.auth.signInWithOtp({ 
       email,
       options: { emailRedirectTo: window.location.origin }
@@ -617,7 +623,7 @@ export const useStore = () => {
 
     let screenshotUrl = "";
     if (paymentDetails?.screenshot) {
-      const fileExt = paymentDetails.screenshot.name.split('.').pop();
+      const fileExt = getSafeFileExtension(paymentDetails.screenshot.name);
       const fileName = `payment_${Date.now()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
         .from('payments')
@@ -665,7 +671,7 @@ export const useStore = () => {
     let pdfUrl = "";
 
     if (coverFile) {
-      const fileExt = coverFile.name.split('.').pop();
+      const fileExt = getSafeFileExtension(coverFile.name);
       const fileName = `${Math.random()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
         .from('book-covers')
@@ -677,7 +683,7 @@ export const useStore = () => {
     }
 
     if (pdfFile) {
-      const fileExt = pdfFile.name.split('.').pop();
+      const fileExt = getSafeFileExtension(pdfFile.name);
       const fileName = `${Math.random()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
         .from('book-covers')
@@ -781,7 +787,7 @@ export const useStore = () => {
     const isManual = paymentDetails && paymentDetails.method !== 'card';
     let screenshotUrl = "";
     if (paymentDetails?.screenshot) {
-      const fileExt = paymentDetails.screenshot.name.split('.').pop();
+      const fileExt = getSafeFileExtension(paymentDetails.screenshot.name);
       const fileName = `payment_cart_${Date.now()}.${fileExt}`;
       const { error: uploadError } = await supabase.storage
         .from('payments')

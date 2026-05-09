@@ -44,7 +44,7 @@ export function AdminDashboardPage() {
   const { 
     books, deleteBook, addBook, authors, updateAuthor, deleteAuthor, updateBook, orders,
     siteSettings, updateSiteSettings, testimonials, approveTestimonial, deleteTestimonial,
-    user, signIn, signInWithGoogle, signOut, approvePayment, rejectPayment, notifications
+    user, signOut, approvePayment, rejectPayment, notifications
   } = useStore();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -54,104 +54,29 @@ export function AdminDashboardPage() {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error'} | null>(null);
-  
-  // Admin Login State - standalone, no Supabase required
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(
-    () => sessionStorage.getItem("dp_admin_auth") === "true"
-  );
-  const [adminUsername, setAdminUsername] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const ADMIN_USERNAME = "admin";
-  const ADMIN_PASSWORD = "dp@2026";
-
-  const handleAdminLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (adminUsername === ADMIN_USERNAME && adminPassword === ADMIN_PASSWORD) {
-      setIsAdminAuthenticated(true);
-      sessionStorage.setItem("dp_admin_auth", "true");
-      setLoginError("");
-    } else {
-      setLoginError("Wrong username or password!");
-    }
-  };
-
-  const handleAdminLogout = () => {
-    setIsAdminAuthenticated(false);
-    sessionStorage.removeItem("dp_admin_auth");
-  };
-
-  if (!isAdminAuthenticated) {
+  if (!user?.isAdmin) {
     return (
-      <div className="min-h-screen bg-[#fafbfc] flex items-center justify-center p-4 selection:bg-emerald-100">
-        <div className="max-w-md w-full bg-white rounded-[3.5rem] p-12 shadow-2xl border border-emerald-50">
-          <div className="text-center mb-10">
-            <div className="w-20 h-20 bg-emerald-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-              <Lock className="w-10 h-10 text-emerald-600" />
-            </div>
-            <h2 className="text-3xl font-black text-emerald-950 mb-2 tracking-tight">এডমিন এক্সেস</h2>
-            <p className="text-slate-500 font-medium">ড্যাশবোর্ড দেখতে লগইন করুন</p>
+      <div className="min-h-screen bg-[#fafbfc] flex items-center justify-center p-4">
+        <div className="max-w-xl w-full bg-white rounded-[3.5rem] p-12 shadow-2xl border border-emerald-50 text-center">
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-[2rem] bg-emerald-50">
+            <ShieldCheck className="w-10 h-10 text-emerald-600" />
           </div>
-
-          <form onSubmit={handleAdminLogin} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-black text-emerald-950 ml-2 uppercase tracking-widest">ইউজারনেম</label>
-              <input 
-                type="text"
-                value={adminUsername}
-                onChange={(e) => setAdminUsername(e.target.value)}
-                className="w-full px-8 py-5 bg-slate-50 border-none rounded-[1.5rem] focus:ring-4 focus:ring-emerald-100 transition-all font-bold"
-                placeholder="ইউজারনেম দিন"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-black text-emerald-950 ml-2 uppercase tracking-widest">পাসওয়ার্ড</label>
-              <div className="relative">
-                <input 
-                  type={showPassword ? "text" : "password"}
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  className="w-full px-8 py-5 bg-slate-50 border-none rounded-[1.5rem] focus:ring-4 focus:ring-emerald-100 transition-all font-bold pr-20"
-                  placeholder="পাসওয়ার্ড দিন"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-600 transition-colors font-bold text-xs uppercase tracking-widest"
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
-            </div>
-
-            {loginError && (
-              <p className="text-red-500 text-sm font-bold text-center">
-                {loginError}
-              </p>
-            )}
-
-            <button 
-              type="submit"
-              className="w-full py-5 bg-emerald-950 text-white rounded-[1.5rem] font-black shadow-xl shadow-emerald-950/20 hover:bg-black transition-all text-lg flex items-center justify-center gap-3"
-            >
-              লগইন করুন
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            <button 
-              type="button"
-              onClick={() => navigate('/')}
-              className="w-full py-4 text-slate-400 font-black hover:text-emerald-600 transition-all flex items-center justify-center gap-2"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              হোমপেজে ফিরে যান
-            </button>
-          </form>
+          <h2 className="text-3xl font-black text-emerald-950 mb-4 tracking-tight">অ্যাক্সেস অমঞ্জুর</h2>
+          <p className="text-slate-500 mb-8">এই পেজটি শুধুমাত্র প্রশাসনিক ব্যবহারকারীদের জন্য। অনুগ্রহ করে সঠিক অ্যাকাউন্ট দিয়ে লগইন করুন।</p>
+          <button
+            onClick={() => navigate("/")}
+            className="w-full py-4 px-6 bg-emerald-600 text-white rounded-2xl font-black mb-3"
+          >
+            হোমে ফিরে যান
+          </button>
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full py-4 px-6 bg-slate-100 text-slate-700 rounded-2xl font-black"
+          >
+            পেজ রিফ্রেশ করুন
+          </button>
         </div>
       </div>
     );
@@ -230,7 +155,7 @@ export function AdminDashboardPage() {
       )}
 
       <aside className="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col shadow-2xl z-20">
-        <div className="p-10 border-b border-slate-100">
+        <div className="p-6 md:p-10 border-b border-slate-100">
           <div className="flex items-center gap-4 group">
             <div className="w-12 h-12 bg-emerald-600 rounded-[1.25rem] flex items-center justify-center shadow-xl shadow-emerald-600/20 group-hover:rotate-12 transition-transform">
               <ShieldCheck className="w-7 h-7 text-white" />
@@ -242,7 +167,7 @@ export function AdminDashboardPage() {
           </div>
         </div>
 
-        <nav className="flex-1 p-8 space-y-3">
+        <nav className="flex-1 p-4 md:p-8 space-y-3">
           {[
             { id: "overview", label: "Dashboard Overview", icon: LayoutDashboard },
             { id: "authors", label: "Author Network", icon: Users },
@@ -295,10 +220,10 @@ export function AdminDashboardPage() {
         </div>
       </aside>
 
-      <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+      <main className="flex-1 p-4 md:p-12 overflow-y-auto">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 md:mb-12">
           <div>
-            <h1 className="text-4xl font-black text-emerald-950 tracking-tight mb-2">
+            <h1 className="text-2xl md:text-4xl font-black text-emerald-950 tracking-tight mb-2">
               Welcome Back, <span className="text-emerald-600">Admin</span>
             </h1>
             <div className="flex items-center gap-2 text-slate-400 font-bold text-sm">
@@ -320,7 +245,7 @@ export function AdminDashboardPage() {
               onClick={() => setShowAddModal(true)}
               className="flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black shadow-2xl shadow-emerald-600/20 hover:bg-emerald-700 hover:scale-105 transition-all text-lg"
             >
-              <Plus className="w-6 h-6" />
+              <Plus className="w-5 h-5 md:w-6 h-6" />
               Create New Entry
             </button>
           </div>
@@ -329,9 +254,9 @@ export function AdminDashboardPage() {
         {/* Overview Tab */}
         {activeTab === "overview" && (
           <div className="space-y-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               {stats.map((stat, i) => (
-                <div key={i} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+                <div key={i} className="bg-white p-5 md:p-8 rounded-3xl md:rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="flex justify-between items-start mb-6 relative z-10">
                     <div className={`p-4 bg-${stat.color}-50 text-${stat.color}-600 rounded-2xl`}>
@@ -343,7 +268,7 @@ export function AdminDashboardPage() {
                     </div>
                   </div>
                   <div className="relative z-10">
-                    <div className="text-3xl font-black text-emerald-950 mb-2 tracking-tight">{stat.value}</div>
+                    <div className="text-xl md:text-3xl font-black text-emerald-950 mb-2 tracking-tight">{stat.value}</div>
                     <div className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
                   </div>
                 </div>
@@ -351,10 +276,10 @@ export function AdminDashboardPage() {
             </div>
 
             <div className="grid lg:grid-cols-3 gap-10">
-              <div className="lg:col-span-2 bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100">
+              <div className="lg:col-span-2 bg-white rounded-3xl md:rounded-[3rem] p-6 md:p-10 shadow-sm border border-slate-100">
                 <div className="flex items-center justify-between mb-10">
                   <div>
-                    <h3 className="text-2xl font-black text-emerald-950">Financial Performance</h3>
+                    <h3 className="text-xl md:text-2xl font-black text-emerald-950">Financial Performance</h3>
                     <p className="text-sm font-bold text-slate-400">Transaction monitoring and trends</p>
                   </div>
                   <button className="flex items-center gap-2 px-6 py-3 bg-slate-50 rounded-xl text-xs font-black text-slate-500 uppercase tracking-widest hover:bg-slate-100 transition-all">
@@ -363,7 +288,7 @@ export function AdminDashboardPage() {
                   </button>
                 </div>
                 
-                <div className="h-80 flex items-end justify-between gap-6 px-4">
+                <div className="h-64 md:h-80 flex items-end justify-between gap-6 px-4">
                   {[65, 45, 85, 55, 95, 75, 80, 60, 90, 70, 85, 100].map((h, i) => (
                     <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
                       <div 
@@ -380,9 +305,9 @@ export function AdminDashboardPage() {
                 </div>
               </div>
               
-              <div className="bg-white rounded-[3rem] p-10 shadow-sm border border-slate-100">
+              <div className="bg-white rounded-3xl md:rounded-[3rem] p-6 md:p-10 shadow-sm border border-slate-100">
                 <div className="flex items-center justify-between mb-10">
-                  <h3 className="text-2xl font-black text-emerald-950">Recent Logs</h3>
+                  <h3 className="text-xl md:text-2xl font-black text-emerald-950">Recent Logs</h3>
                   <button className="text-emerald-600 font-black text-xs uppercase tracking-widest hover:underline">See All</button>
                 </div>
                 <div className="space-y-8">
@@ -418,10 +343,10 @@ export function AdminDashboardPage() {
 
         {/* Books Management Tab */}
         {activeTab === "books" && (
-          <div className="bg-white rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
+          <div className="bg-white rounded-3xl md:rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
             <div className="p-10 border-b border-slate-50 flex flex-col md:flex-row justify-between items-center gap-8 bg-slate-50/30">
               <div>
-                <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Content Repository</h3>
+                <h3 className="text-xl md:text-2xl font-black text-emerald-950 mb-1 tracking-tight">Content Repository</h3>
                 <p className="text-sm font-bold text-slate-400">Total volume: {books.length} publications</p>
               </div>
               <div className="flex items-center gap-4 w-full md:w-auto">
@@ -432,7 +357,7 @@ export function AdminDashboardPage() {
                     placeholder="Filter by title, author or ISBN..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-16 pr-8 py-5 bg-white border border-slate-200 rounded-[2rem] text-sm font-bold focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none transition-all shadow-sm"
+                    className="w-full pl-12 md:pl-16 pr-6 md:pr-8 py-3 md:py-5 bg-white border border-slate-200 rounded-2xl md:rounded-[2rem] text-sm font-bold focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 outline-none transition-all shadow-sm"
                   />
                 </div>
                 <button className="p-5 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-emerald-600 transition-all shadow-sm">
@@ -525,7 +450,7 @@ export function AdminDashboardPage() {
 
         {/* Author Network Tab */}
         {activeTab === "authors" && (
-          <div className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+          <div className="bg-white rounded-3xl md:rounded-[3.5rem] p-6 md:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
               <div>
                 <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Author Network</h3>
@@ -632,7 +557,7 @@ export function AdminDashboardPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-[3.5rem] shadow-sm border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-3xl md:rounded-[3.5rem] shadow-sm border border-slate-100 overflow-hidden">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-50/50">
@@ -743,7 +668,7 @@ export function AdminDashboardPage() {
 
         {/* Appearance Tab */}
         {activeTab === "appearance" && (
-          <div className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
+          <div className="bg-white rounded-3xl md:rounded-[3.5rem] p-6 md:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
             <div className="mb-12">
               <h3 className="text-2xl font-black text-emerald-950 mb-1 tracking-tight">Site Appearance</h3>
               <p className="text-sm font-bold text-slate-400">Modify hero section, CTA text, and other site-wide information</p>
@@ -818,10 +743,10 @@ export function AdminDashboardPage() {
         
         {/* Testimonials Tab */}
         {activeTab === "testimonials" && (
-          <div className="bg-white rounded-[3.5rem] p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+          <div className="bg-white rounded-3xl md:rounded-[3.5rem] p-6 md:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 mb-16">
               <div>
-                <h3 className="text-4xl font-black text-emerald-950 mb-2 tracking-tight">Testimonial Management</h3>
+                <h3 className="text-2xl md:text-4xl font-black text-emerald-950 mb-2 tracking-tight">Testimonial Management</h3>
                 <p className="text-sm font-bold text-slate-400">Review and approve user feedback for the homepage</p>
               </div>
               <div className="flex items-center gap-4 bg-slate-50 p-3 rounded-3xl">
@@ -943,19 +868,19 @@ export function AdminDashboardPage() {
             onClick={() => { setShowAddModal(false); setShowEditBookModal(false); }}
             className="absolute inset-0 bg-emerald-950/60 backdrop-blur-md"
           ></div>
-          <div className="relative w-full max-w-4xl bg-white rounded-[4rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col md:flex-row">
+          <div className="relative w-full max-w-4xl bg-white rounded-3xl md:rounded-[4rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col md:flex-row">
             <div className="w-full md:w-80 bg-emerald-950 p-12 text-white flex flex-col justify-between overflow-hidden relative">
               <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-full blur-[100px] -mr-32 -mt-32 opacity-20"></div>
               <div className="relative z-10">
                 <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-md">
                   <BookCopy className="w-8 h-8" />
                 </div>
-                <h3 className="text-3xl font-black mb-4 leading-tight">{showAddModal ? "Establish New Publication" : "Modify Content Meta"}</h3>
+                <h3 className="text-2xl md:text-3xl font-black mb-4 leading-tight">{showAddModal ? "Establish New Publication" : "Modify Content Meta"}</h3>
                 <p className="text-emerald-100/50 font-medium">Ensure all bibliographic data is accurate and categorized correctly for optimal platform discovery.</p>
               </div>
             </div>
 
-            <div className="flex-1 p-12 md:p-20 overflow-y-auto max-h-[90vh]">
+            <div className="flex-1 p-6 md:p-20 overflow-y-auto max-h-[90vh]">
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -1066,7 +991,7 @@ export function AdminDashboardPage() {
                 </div>
               </div>
               <div className="text-center md:text-left">
-                <h3 className="text-4xl font-black text-emerald-950 mb-2 tracking-tight">{selectedAuthor.name}</h3>
+                <h3 className="text-2xl md:text-4xl font-black text-emerald-950 mb-2 tracking-tight">{selectedAuthor.name}</h3>
                 <div className="flex items-center justify-center md:justify-start gap-4">
                   <span className="flex items-center gap-2 text-sm font-bold text-emerald-600">
                     <Mail className="w-4 h-4" />
